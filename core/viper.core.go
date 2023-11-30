@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"microservice-go/config"
-	"microservice-go/utils"
 	"os"
 )
 
 func (_Entrance) SetupViper(file *[]byte) *config.Entrance {
 	logPrefix := "setup viper"
 
-	utils.Use.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
+	fmt.Printf("%s %s\n", logPrefix, "start ->")
 
 	v := viper.New()
 	v.SetConfigType("yaml")
@@ -34,7 +33,7 @@ func (_Entrance) SetupViper(file *[]byte) *config.Entrance {
 		panic(fmt.Errorf("Viper unmarshal error: %s \n", err))
 	}
 
-	utils.Use.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
+	fmt.Printf("%s %s\n", logPrefix, "success ->")
 
 	return &_config
 }
