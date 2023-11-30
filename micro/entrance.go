@@ -1,4 +1,4 @@
-package register
+package micro
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"net"
 )
 
-func ServiceInstance() {
+func RegisterServiceInstance() {
 	logPrefix := "setup grpc"
 	utils.Use.Logger.Info(fmt.Sprintf("%s %s %s", logPrefix, store.Use.Config.Local.Micro.Address.Inside, "start ->"))
 

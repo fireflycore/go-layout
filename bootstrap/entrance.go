@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"fmt"
 	"microservice-go/core"
-	"microservice-go/register"
+	"microservice-go/micro"
 	"microservice-go/store"
 )
 
@@ -18,7 +18,7 @@ func Setup() {
 	store.Use.Micro.Ctx, store.Use.Micro.Cancel = context.WithCancel(context.Background())
 	store.Use.Micro.Lease = core.Use.Micro.Etcd.CreateLease(store.Use.Micro.Cli)
 
-	register.ServiceInstance()
+	micro.RegisterServiceInstance()
 
 	core.Use.WatchProcess(func() {
 		if _, err := store.Use.Micro.Cli.Revoke(store.Use.Micro.Ctx, store.Use.Micro.Lease); err != nil {
