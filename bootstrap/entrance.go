@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	_ "embed"
+	"fmt"
 	"microservice-go/core"
 	"microservice-go/register"
 	"microservice-go/store"
@@ -18,4 +19,12 @@ func Setup() {
 	store.Use.Micro.Lease = core.Use.Micro.Etcd.CreateLease(store.Use.Micro.Cli)
 
 	register.ServiceInstance()
+
+	core.Use.WatchProcess(func() {
+		if _, err := store.Use.Micro.Cli.Revoke(store.Use.Micro.Ctx, store.Use.Micro.Lease); err != nil {
+			fmt.Println(err)
+			return
+		}
+		store.Use.Micro.Cancel()
+	})
 }
