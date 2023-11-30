@@ -6,7 +6,7 @@ type MicroserviceEntity struct {
 }
 
 type MicroserviceDiscoverEntity struct {
-	Gateway         string `json:"gateway"`
-	ServiceInstance string `json:"service_instance"`
-	Service         string `json:"service"`
+	Gateway   string `json:"gateway"`
+	Namespace string `json:"namespace"`
+	Service   string `json:"service"`
 }
