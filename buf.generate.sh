@@ -1,1 +1,1 @@
-buf generate buf.build/lhdht/microservice
+buf generate buf.build/lhdht/gateway
