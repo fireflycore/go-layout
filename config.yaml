@@ -1,25 +1,10 @@
 logger:
-  mode: true
+  console: true
   enable: true
-  remote:
-    name: logger
-    db: logger
-    mode: true
-    auth: 3
-    max_open_connect: 1000
-    max_idle_connect: 1000
-    conn_max_life_time: 1000
-    address:
-    normal:
-      account:
-      password:
-    tls:
-      ca_cert:
-      client_cert:
-      client_cert_key:
 micro:
   gateway_name:
   namespace:
+  ttl: 5
   address:
     inside:
     outside:
