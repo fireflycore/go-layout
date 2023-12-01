@@ -6,14 +6,14 @@ import (
 	"go.etcd.io/etcd/client/pkg/v3/transport"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"microservice-go/model/config"
-	"microservice-go/utils"
+	"microservice-go/store"
 	"strings"
 	"time"
 )
 
 func (Entrance) SetupEtcd(config *config.DBConfigEntity) *clientv3.Client {
 	logPrefix := "setup etcd"
-	utils.Use.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
+	store.Use.Logger.Func.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -33,17 +33,17 @@ func (Entrance) SetupEtcd(config *config.DBConfigEntity) *clientv3.Client {
 		break
 	case 3: // tls
 		if config.CaCert == "" {
-			utils.Use.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
 			return nil
 		}
 
 		if config.ServerCert == "" {
-			utils.Use.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate found"))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate found"))
 			return nil
 		}
 
 		if config.ServerCertKey == "" {
-			utils.Use.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate key found"))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate key found"))
 			return nil
 		}
 
@@ -55,7 +55,7 @@ func (Entrance) SetupEtcd(config *config.DBConfigEntity) *clientv3.Client {
 
 		tlsConfig, err := tlsInfo.ClientConfig()
 		if err != nil {
-			utils.Use.Logger.Error(err.Error())
+			store.Use.Logger.Func.Error(err.Error())
 			return nil
 		}
 
@@ -70,11 +70,11 @@ func (Entrance) SetupEtcd(config *config.DBConfigEntity) *clientv3.Client {
 
 	cli, err := clientv3.New(clientOptions)
 	if err != nil {
-		utils.Use.Logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
+		store.Use.Logger.Func.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
 		return nil
 	}
 
-	utils.Use.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
+	store.Use.Logger.Func.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 
 	return cli
 }

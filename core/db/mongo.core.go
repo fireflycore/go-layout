@@ -9,14 +9,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"microservice-go/model/config"
-	"microservice-go/utils"
+	"microservice-go/store"
 	"os"
 	"time"
 )
 
 func (Entrance) SetupMongo(config *config.DBConfigEntity) *mongo.Database {
 	logPrefix := "setup mongo"
-	utils.Use.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
+	store.Use.Logger.Func.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -34,31 +34,31 @@ func (Entrance) SetupMongo(config *config.DBConfigEntity) *mongo.Database {
 		break
 	case 3: // tls
 		if config.CaCert == "" {
-			utils.Use.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
 			return nil
 		}
 
 		if config.ClientCert == "" {
-			utils.Use.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate found"))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate found"))
 			return nil
 		}
 
 		if config.ClientCertKey == "" {
-			utils.Use.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate key found"))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate key found"))
 			return nil
 		}
 
 		certPool := x509.NewCertPool()
 		CAFile, CAErr := os.ReadFile(config.CaCert)
 		if CAErr != nil {
-			utils.Use.Logger.Error(fmt.Sprintf("%s read %s error: %s", logPrefix, config.CaCert, CAErr.Error()))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s read %s error: %s", logPrefix, config.CaCert, CAErr.Error()))
 			return nil
 		}
 		certPool.AppendCertsFromPEM(CAFile)
 
 		clientCert, clientCertErr := tls.LoadX509KeyPair(config.ClientCert, config.ClientCertKey)
 		if clientCertErr != nil {
-			utils.Use.Logger.Error(fmt.Sprintf("%s tls.LoadX509KeyPair err: %v", logPrefix, clientCertErr))
+			store.Use.Logger.Func.Error(fmt.Sprintf("%s tls.LoadX509KeyPair err: %v", logPrefix, clientCertErr))
 			return nil
 		}
 
@@ -86,18 +86,18 @@ func (Entrance) SetupMongo(config *config.DBConfigEntity) *mongo.Database {
 
 	client, cErr := mongo.Connect(ctx, &clientOptions)
 	if cErr != nil {
-		utils.Use.Logger.Error(fmt.Sprintf("%s mongo client connect: %v", logPrefix, cErr))
+		store.Use.Logger.Func.Error(fmt.Sprintf("%s mongo client connect: %v", logPrefix, cErr))
 		return nil
 	}
 
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
-		utils.Use.Logger.Error(fmt.Sprintf("%s mongo client ping: %v", logPrefix, err))
+		store.Use.Logger.Func.Error(fmt.Sprintf("%s mongo client ping: %v", logPrefix, err))
 		return nil
 	}
 
 	db := client.Database(config.DB)
 
-	utils.Use.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
+	store.Use.Logger.Func.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 
 	return db
 }
