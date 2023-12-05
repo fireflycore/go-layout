@@ -112,5 +112,5 @@ func (Entrance) SetupMysql(config *config.DBConfigEntity, tables *[]interface{})
 
 	store.Use.Logger.Func.Info(fmt.Sprintf("%s success ->", logPrefix))
 
-	return nil
+	return db
 }
