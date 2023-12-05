@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -83,6 +84,18 @@ func (Entrance) SetupMongo(config *config.DBConfigEntity) *mongo.Database {
 	clientOptions.SetMaxConnecting(uint64(config.MaxOpenConnects))
 	clientOptions.SetMaxPoolSize(uint64(config.MaxIdleConnects))
 	clientOptions.SetMaxConnIdleTime(time.Second * time.Duration(config.MaxIdleConnects))
+
+	clientOptions.Monitor = &event.CommandMonitor{
+		Started: func(ctx context.Context, event *event.CommandStartedEvent) {
+			store.Use.Logger.Func.Info(fmt.Sprintf("[MongoDB][RequestID:%d][database:%s] %s\n", event.RequestID, event.DatabaseName, event.Command))
+		},
+		Succeeded: func(ctx context.Context, event *event.CommandSucceededEvent) {
+			store.Use.Logger.Func.Success(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Reply))
+		},
+		Failed: func(ctx context.Context, event *event.CommandFailedEvent) {
+			store.Use.Logger.Func.Error(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Failure))
+		},
+	}
 
 	client, cErr := mongo.Connect(ctx, &clientOptions)
 	if cErr != nil {
