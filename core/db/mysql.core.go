@@ -21,10 +21,11 @@ func (Entrance) SetupMysql(config *config.DBConfigEntity, tables *[]interface{})
 	store.Use.Logger.Func.Info(fmt.Sprintf("%s start ->", logPrefix))
 
 	clientOptions := mysql.Config{
-		Net:    "tcp",
-		Addr:   config.Address,
-		DBName: config.DB,
-		Loc:    time.Local,
+		Net:       "tcp",
+		Addr:      config.Address,
+		DBName:    config.DB,
+		Loc:       time.Local,
+		ParseTime: true,
 	}
 
 	switch config.Auth {
