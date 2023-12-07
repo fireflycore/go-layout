@@ -2,6 +2,7 @@ logger:
   console: true
   enable: true
 micro:
+  deploy: NAN
   gateway_name:
   namespace:
   ttl: 5

@@ -4,6 +4,7 @@ logger:
   console: true
   enable: true
 micro:
+  deploy: LAN
   gateway_name:
   namespace:
   ttl: 5
