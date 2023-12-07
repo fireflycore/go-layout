@@ -25,3 +25,14 @@ func StructConvert[S any, T any](source *S, target *T) {
 		return
 	}
 }
+
+func Bool(val int) bool {
+	var state bool
+	switch val {
+	case 0:
+		state = false
+	case 1:
+		state = true
+	}
+	return state
+}
