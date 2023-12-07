@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"microservice-go/store"
+	"strings"
 	"time"
 )
 
@@ -26,7 +28,21 @@ func (Entrance) Dial(endpoint []string) *grpc.ClientConn {
 		// Todo 根据负载均衡算法去进行多节点服务负载
 	}
 
-	conn, err := grpc.DialContext(ctx, endpoint[index], grpc.WithTransportCredentials(insecure.NewCredentials()))
+	address := endpoint[index]
+	switch store.Use.Config.Local.Micro.Deploy {
+	case "LAN":
+		srv := strings.Split(endpoint[index], ":")
+		cur := strings.Split(store.Use.Config.Local.Micro.Address.Outside, ":")
+
+		if srv[0] == cur[0] {
+			address = strings.Join([]string{"127.0.0.1", srv[1]}, ":")
+		}
+	case "NAN":
+		// not area network
+		break
+	}
+
+	conn, err := grpc.DialContext(ctx, address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Println(fmt.Sprintf("the service endpoint is unavailable, error: %s", err.Error()))
 		return nil
