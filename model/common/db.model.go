@@ -1,15 +1,11 @@
-package config
+package common
 
 import "microservice-go/model/base"
 
 type DBConfigEntity struct {
-	base.DBTableUUIDEntity
-
-	base.DescriptionEntity
 	base.AccountPasswordEntity `mapstructure:"normal" yaml:"normal"`
 	base.TlsEntity             `mapstructure:"tls" yaml:"tls"`
 
-	Name    string `json:"name" bson:"name" yaml:"name" mapstructure:"name"`
 	Address string `json:"address" bson:"address" yaml:"address" mapstructure:"address"`
 	DB      string `json:"db" bson:"db" yaml:"db" mapstructure:"db"`
 
@@ -21,8 +17,4 @@ type DBConfigEntity struct {
 	ConnMaxLifeTime        int  `json:"conn_max_life_time" bson:"conn_max_life_time" yaml:"conn_max_life_time" mapstructure:"conn_max_life_time"`
 	SkipDefaultTransaction bool `json:"skip_default_transaction" bson:"skip_default_transaction" yaml:"skip_default_transaction" mapstructure:"skip_default_transaction"`
 	PrepareStmt            bool `json:"prepare_stmt" bson:"prepare_stmt" yaml:"prepare_stmt" mapstructure:"prepare_stmt"`
-}
-
-func (DBConfigEntity) TableName() string {
-	return "db_config"
 }

@@ -9,13 +9,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"microservice-go/model/config"
+	"microservice-go/model/common"
 	"microservice-go/store"
 	"os"
 	"time"
 )
 
-func (Entrance) SetupMongo(config *config.DBConfigEntity) *mongo.Database {
+func (Entrance) SetupMongo(config *common.DBConfigEntity) *mongo.Database {
 	logPrefix := "setup mongo"
 	store.Use.Logger.Func.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 

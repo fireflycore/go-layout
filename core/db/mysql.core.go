@@ -10,13 +10,13 @@ import (
 	"gorm.io/gorm/logger"
 	"log"
 	"microservice-go/core/db/internal"
-	"microservice-go/model/config"
+	"microservice-go/model/common"
 	"microservice-go/store"
 	"os"
 	"time"
 )
 
-func (Entrance) SetupMysql(config *config.DBConfigEntity, tables *[]interface{}) *gorm.DB {
+func (Entrance) SetupMysql(config *common.DBConfigEntity, tables *[]interface{}) *gorm.DB {
 	logPrefix := "setup mysql"
 	store.Use.Logger.Func.Info(fmt.Sprintf("%s start ->", logPrefix))
 

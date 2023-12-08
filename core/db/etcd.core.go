@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"go.etcd.io/etcd/client/pkg/v3/transport"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"microservice-go/model/config"
+	"microservice-go/model/common"
 	"microservice-go/store"
 	"strings"
 	"time"
 )
 
-func (Entrance) SetupEtcd(config *config.DBConfigEntity) *clientv3.Client {
+func (Entrance) SetupEtcd(config *common.DBConfigEntity) *clientv3.Client {
 	logPrefix := "setup etcd"
 	store.Use.Logger.Func.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
