@@ -14,8 +14,13 @@ type DBTableEntity struct {
 }
 
 type DBTableUUIDEntity struct {
-	ID        uuid.UUID      `json:"id" gorm:"primarykey;type:uuid;default:uuid_generate_v4();"`
+	ID        uuid.UUID      `json:"id" gorm:"primarykey;"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
+}
+
+func (s *DBTableUUIDEntity) BeforeCreate(_ *gorm.DB) (err error) {
+	s.ID = uuid.New()
+	return
 }
