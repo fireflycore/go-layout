@@ -1,5 +1,14 @@
 package array
 
+func Include[T string | int](array []T, val T) bool {
+	for _, item := range array {
+		if item == val {
+			return true
+		}
+	}
+	return false
+}
+
 func Map[T any, R any](array []T, fn func(index int, item T) R) []R {
 	var temp []R
 	for index, item := range array {
