@@ -1,4 +1,4 @@
-package core
+package plugin
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func (_Entrance) SetupViper(file *[]byte) *config.Entrance {
+func SetupViper(file *[]byte) *config.Entrance {
 	logPrefix := "setup viper"
 
 	fmt.Printf("%s %s\n", logPrefix, "start ->")

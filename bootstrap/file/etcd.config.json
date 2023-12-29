@@ -1,0 +1,10 @@
+{
+  "mode": true,
+  "auth": 3,
+  "address": "127.0.0.1:10100",
+  "tls": {
+    "ca_cert": "minio.lhdht.cn/public/cert/etcd/ca.pem",
+    "client_cert": "minio.lhdht.cn/public/cert/etcd/client.crt",
+    "client_cert_key": "minio.lhdht.cn/public/etcd/client.pem"
+  }
+}

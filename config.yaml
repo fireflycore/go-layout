@@ -1,23 +1,9 @@
 logger:
   console: true
   enable: true
+  use_remote: true
 micro:
-  deploy: NAN
-  gateway_name:
-  namespace:
-  ttl: 5
   address:
-    inside:
-    outside:
-  register_center:
-    name:
-    mode:
-    auth:
-    address:
-    normal:
-      account:
-      password:
-    tls:
-      ca_cert:
-      server_cert:
-      server_cert_key:
+  namespace:
+  max_retry:
+  deploy:

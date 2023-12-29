@@ -1,10 +1,13 @@
 package store
 
+import (
+	"github.com/lhdhtrc/microservice-go/logger"
+	"github.com/lhdhtrc/microservice-go/micro"
+)
+
 type _Entrance struct {
-	Config _ConfigStoreEntrance
-	DB     _DBStoreEntrance
-	Micro  _MicroStoreEntrance
-	Logger _LoggerStoreEntrance
+	Logger logger.Abstraction
+	Micro  micro.Abstraction
 }
 
 var Use = new(_Entrance)
