@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	_ "embed"
+	"fmt"
 	"github.com/lhdhtrc/microservice-go/db"
 	"github.com/lhdhtrc/microservice-go/logger"
 	"github.com/lhdhtrc/microservice-go/micro/etcd"
@@ -10,6 +11,7 @@ import (
 	"github.com/lhdhtrc/microservice-go/utils/process"
 	"microservice-go/plugin"
 	"microservice-go/register"
+	"microservice-go/service"
 	"microservice-go/store"
 )
 
@@ -18,10 +20,7 @@ var CONFIG []byte
 
 func Setup() {
 	store.Use.Config = plugin.SetupViper(&CONFIG)
-	store.Use.Logger = logger.New(&logger.EntranceEntity{
-		Config: store.Use.Config.Logger,
-		Remote: nil,
-	})
+	store.Use.Logger = logger.New(&store.Use.Config.Logger)
 
 	store.Use.Grpc = grpc.New(store.Use.Logger)
 	store.Use.Remote = remote.New(store.Use.Logger)
@@ -51,8 +50,11 @@ func Setup() {
 	/********************************* discover service ---- start *********************************/
 	store.Use.Service = make(map[string][]string)
 	store.Use.Micro.Watcher(&[]string{
-		"/microservice",
+		"/microservice/lhdht/logger/Add",
 	}, &store.Use.Service)
+
+	fmt.Println(store.Use.Service)
+	store.Use.Logger.Remote = service.Use.Logger.Add
 	/********************************* discover service ---- end *********************************/
 
 	/********************************* register service ---- start *********************************/
