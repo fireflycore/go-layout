@@ -1,9 +1,14 @@
+system:
+  app_id: 1111111111-11111111-11111111
 logger:
   console: true
   enable: true
   use_remote: true
 micro:
-  address:
-  namespace:
-  max_retry:
-  deploy:
+  address: 120.48.39.2:10506
+  namespace: /microservice/lhdht/test
+  max_retry: 5
+  ttl: 5
+grpc:
+  deploy: false
+  address: 192.168.0.191:10506

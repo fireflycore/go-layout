@@ -1,25 +1,14 @@
 system:
-  app_id:
+  app_id: 1111111111-11111111-11111111
 logger:
   console: true
   enable: true
+  use_remote: true
 micro:
-  deploy: LAN
-  gateway_name:
-  namespace:
+  address: 120.48.39.2:10506
+  namespace: /microservice/lhdht/test
+  max_retry: 5
   ttl: 5
-  address:
-    inside:
-    outside:
-  register_center:
-    name:
-    mode:
-    auth:
-    address:
-    normal:
-      account:
-      password:
-    tls:
-      ca_cert:
-      server_cert:
-      server_cert_key:
+grpc:
+  deploy: true
+  address: 192.168.0.100:10506
