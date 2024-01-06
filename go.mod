@@ -3,7 +3,7 @@ module microservice-go
 go 1.20
 
 require (
-	github.com/lhdhtrc/microservice-go v0.2.6
+	github.com/lhdhtrc/microservice-go v0.2.7
 	github.com/spf13/viper v1.18.2
 	google.golang.org/grpc v1.60.1
 	google.golang.org/protobuf v1.32.0
