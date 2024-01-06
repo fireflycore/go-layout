@@ -6,8 +6,13 @@ import (
 )
 
 type _Entrance struct {
-	Logger logger.Abstraction
-	Micro  micro.Abstraction
+	Config  *config.EntranceEntity
+	Logger  logger.Abstraction
+	Micro   micro.Abstraction
+	Grpc    *grpc.EntranceEntity
+	Service map[string][]string
+
+	Remote *remote.EntranceEntity
 }
 
 var Use = new(_Entrance)
