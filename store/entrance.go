@@ -9,11 +9,12 @@ import (
 )
 
 type _Entrance struct {
-	Config  *config.EntranceEntity
-	Logger  logger.Abstraction
-	Micro   micro.Abstraction
-	Grpc    *grpc.EntranceEntity
-	Service map[string][]string
+	Config     *config.EntranceEntity
+	Logger     *logger.EntranceEntity
+	LoggerTemp []logger.Entity
+	Micro      micro.Abstraction
+	Grpc       *grpc.EntranceEntity
+	Service    map[string][]string
 
 	Remote *remote.EntranceEntity
 }
