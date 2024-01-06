@@ -2,9 +2,14 @@ package bootstrap
 
 import (
 	_ "embed"
+	"github.com/lhdhtrc/microservice-go/db"
 	"github.com/lhdhtrc/microservice-go/logger"
 	"github.com/lhdhtrc/microservice-go/micro/etcd"
+	"github.com/lhdhtrc/microservice-go/micro/grpc"
+	"github.com/lhdhtrc/microservice-go/remote"
+	"github.com/lhdhtrc/microservice-go/utils/process"
 	"microservice-go/plugin"
+	"microservice-go/register"
 	"microservice-go/store"
 )
 
@@ -12,21 +17,50 @@ import (
 var CONFIG []byte
 
 func Setup() {
-	config := plugin.SetupViper(&CONFIG)
-
+	store.Use.Config = plugin.SetupViper(&CONFIG)
 	store.Use.Logger = logger.New(&logger.EntranceEntity{
-		Config: config.Logger,
+		Config: store.Use.Config.Logger,
 		Remote: nil,
 	})
-	store.Use.Micro = etcd.New(&etcd.EntranceEntity{
-		Config:     nil,
-		RetryCount: 0,
-		Service:    nil,
-		Ctx:        nil,
-		Cancel:     nil,
-		Cli:        nil,
-		Lease:      0,
-		Logger:     nil,
-	})
 
+	store.Use.Grpc = grpc.New(store.Use.Logger)
+	store.Use.Remote = remote.New(store.Use.Logger)
+
+	/********************************* read remote config ---- start *********************************/
+	var etcdConfig db.ConfigEntity
+	remoteConfig := []string{
+		"http://minio.lhdht.cn/public/config/etcd.config.json",
+	}
+	store.Use.Remote.ReadRemoteConfig(remoteConfig, []interface{}{
+		&etcdConfig,
+	})
+	/********************************* read remote config ---- end *********************************/
+
+	/********************************* get remote cert ---- start *********************************/
+	etcdConfig.Address = "120.48.39.2:10103"
+	store.Use.Remote.GetRemoteCert("etcd", &etcdConfig.Tls)
+	/********************************* get remote cert ---- end *********************************/
+
+	dbs := db.New(store.Use.Logger)
+
+	/********************************* use etcd as microservice register ---- start *********************************/
+	etcdCli := dbs.SetupEtcd(&etcdConfig)
+	store.Use.Micro = etcd.New(etcdCli, store.Use.Logger, &store.Use.Config.Micro)
+	/********************************* use etcd as microservice register ---- end *********************************/
+
+	/********************************* discover service ---- start *********************************/
+	store.Use.Service = make(map[string][]string)
+	store.Use.Micro.Watcher(&[]string{
+		"/microservice",
+	}, &store.Use.Service)
+	/********************************* discover service ---- end *********************************/
+
+	/********************************* register service ---- start *********************************/
+	store.Use.Micro.CreateLease()
+	register.ServiceInstance()
+	/********************************* register service ---- end *********************************/
+
+	process.Watcher(func() {
+		store.Use.Micro.Deregister()
+	})
 }
