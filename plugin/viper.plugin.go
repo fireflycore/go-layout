@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func SetupViper(file *[]byte) *config.Entrance {
+func SetupViper(file *[]byte) *config.EntranceEntity {
 	logPrefix := "setup viper"
 
 	fmt.Printf("%s %s\n", logPrefix, "start ->")
@@ -16,7 +16,7 @@ func SetupViper(file *[]byte) *config.Entrance {
 	v := viper.New()
 	v.SetConfigType("yaml")
 
-	var _config config.Entrance
+	var _config config.EntranceEntity
 
 	if _, e := os.Stat("config.yaml"); e != nil {
 		if err := v.ReadConfig(bytes.NewReader(*file)); err != nil {
