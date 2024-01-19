@@ -11,4 +11,4 @@ micro:
   ttl: 5
 grpc:
   deploy: false
-  address: 192.168.0.191:10506
+  address: 127.0.0.1:10506
