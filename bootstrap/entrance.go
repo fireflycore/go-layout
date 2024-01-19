@@ -27,16 +27,13 @@ func Setup() {
 
 	/********************************* read remote config ---- start *********************************/
 	var etcdConfig db.ConfigEntity
-	remoteConfig := []string{
-		"http://minio.lhdht.cn/public/config/etcd.config.json",
-	}
+	remoteConfig := []string{}
 	store.Use.Remote.ReadRemoteConfig(remoteConfig, []interface{}{
 		&etcdConfig,
 	})
 	/********************************* read remote config ---- end *********************************/
 
 	/********************************* get remote cert ---- start *********************************/
-	etcdConfig.Address = "120.48.39.2:10103"
 	store.Use.Remote.GetRemoteCert("etcd", &etcdConfig.Tls)
 	/********************************* get remote cert ---- end *********************************/
 

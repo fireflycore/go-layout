@@ -5,7 +5,7 @@ logger:
   enable: true
   use_remote: true
 micro:
-  address: 120.48.39.2:10506
+  address:
   namespace: /microservice/lhdht/test
   max_retry: 5
   ttl: 5
