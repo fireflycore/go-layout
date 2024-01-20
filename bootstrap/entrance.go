@@ -48,13 +48,18 @@ func Setup() {
 	store.Use.Micro.Watcher(&[]string{
 		"/microservice/lhdht/logger/Add",
 	}, &store.Use.Service)
-	store.Use.Logger.Remote = service.Use.Logger.Add
 	/********************************* discover service ---- end *********************************/
 
 	/********************************* register service ---- start *********************************/
 	store.Use.Micro.CreateLease()
 	register.ServiceInstance()
 	/********************************* register service ---- end *********************************/
+
+	/********************************* setup service ---- start *********************************/
+	store.Use.Logger.Remote = service.Use.Logger.Add
+	/********************************* setup service ---- end *********************************/
+
+	store.Use.Logger.Info("system self check completed")
 
 	process.Watcher(func() {
 		store.Use.Micro.Deregister()
