@@ -20,11 +20,11 @@ func (EntranceEntity) Get(id string) *db.ConfigEntity {
 		return nil
 	}
 
-	coon := store.Use.Grpc.Dial(endpoint, &store.Use.Config.Grpc)
+	conn := store.Use.Grpc.Dial(endpoint, &store.Use.Config.Grpc)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	cli := pb.NewDBConfigServiceClient(coon)
+	cli := pb.NewDBConfigServiceClient(conn)
 	res, err := cli.Get(ctx, &pb.GetRequest{Id: id})
 	if err != nil {
 		store.Use.Logger.Warning(err.Error())

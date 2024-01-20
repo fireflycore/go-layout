@@ -18,11 +18,11 @@ func (EntranceEntity) Add(entity logger.Entity) {
 		return
 	}
 
-	coon := store.Use.Grpc.Dial(endpoint, &store.Use.Config.Grpc)
+	conn := store.Use.Grpc.Dial(endpoint, &store.Use.Config.Grpc)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	cli := pb.NewLoggerServiceClient(coon)
+	cli := pb.NewLoggerServiceClient(conn)
 
 	if len(store.Use.Logger.Temp) != 0 {
 		for _, log := range store.Use.Logger.Temp {
