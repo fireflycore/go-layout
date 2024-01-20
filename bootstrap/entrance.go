@@ -2,7 +2,6 @@ package bootstrap
 
 import (
 	_ "embed"
-	"fmt"
 	"github.com/lhdhtrc/microservice-go/db"
 	"github.com/lhdhtrc/microservice-go/logger"
 	"github.com/lhdhtrc/microservice-go/micro/etcd"
@@ -49,8 +48,6 @@ func Setup() {
 	store.Use.Micro.Watcher(&[]string{
 		"/microservice/lhdht/logger/Add",
 	}, &store.Use.Service)
-
-	fmt.Println(store.Use.Service)
 	store.Use.Logger.Remote = service.Use.Logger.Add
 	/********************************* discover service ---- end *********************************/
 
