@@ -1,5 +1,6 @@
 system:
-  app_id: 1111111111-11111111-11111111
+  app_id: 00000000-00000000-00000000
+  run_port:
 logger:
   console: true
   enable: true
@@ -11,4 +12,4 @@ micro:
   ttl: 5
 grpc:
   deploy: true
-  address: 192.168.0.100:10506
+  address:
