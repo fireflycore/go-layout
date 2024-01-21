@@ -6,7 +6,7 @@ import (
 )
 
 func ServiceInstance() {
-	store.Use.Grpc.Server(func(server *grpc.Server) {
+	store.Use.Grpc.CreateServer(func(server *grpc.Server) {
 		// register microservice
 	}, store.Use.Config.System.RunPort)
 }
