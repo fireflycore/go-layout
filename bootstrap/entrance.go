@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	_ "embed"
+	"fmt"
 	"github.com/lhdhtrc/microservice-go/db"
 	"github.com/lhdhtrc/microservice-go/logger"
 	"github.com/lhdhtrc/microservice-go/micro/etcd"
@@ -12,6 +13,7 @@ import (
 	"microservice-go/register"
 	"microservice-go/service"
 	"microservice-go/store"
+	"runtime"
 )
 
 //go:embed file/config.yaml
@@ -23,6 +25,8 @@ func Setup() {
 
 	store.Use.Grpc = grpc.New(store.Use.Logger)
 	store.Use.Remote = remote.New(store.Use.Logger)
+
+	dbs := db.New(store.Use.Logger)
 
 	/********************************* read remote config ---- start *********************************/
 	var etcdConfig db.ConfigEntity
@@ -36,8 +40,6 @@ func Setup() {
 	store.Use.Remote.GetRemoteCert("etcd", &etcdConfig.Tls)
 	/********************************* get remote cert ---- end *********************************/
 
-	dbs := db.New(store.Use.Logger)
-
 	/********************************* use etcd as microservice register ---- start *********************************/
 	etcdCli := dbs.SetupEtcd(&etcdConfig)
 	store.Use.Micro = etcd.New(etcdCli, store.Use.Logger, &store.Use.Config.Micro)
@@ -50,6 +52,16 @@ func Setup() {
 	}, &store.Use.Service)
 	/********************************* discover service ---- end *********************************/
 
+	/********************************* service retry ---- start *********************************/
+	store.Use.Micro.WithRetryBefore(func() {
+		store.Use.Logger.Remote = nil
+	})
+	store.Use.Micro.WithRetryAfter(func() {
+		store.Use.Grpc.Server.Stop()
+		register.ServiceInstance()
+	})
+	/********************************* service retry ---- start *********************************/
+
 	/********************************* register service ---- start *********************************/
 	store.Use.Micro.CreateLease()
 	register.ServiceInstance()
@@ -59,8 +71,7 @@ func Setup() {
 	store.Use.Logger.Remote = service.Use.Logger.Add
 	/********************************* setup service ---- end *********************************/
 
-	store.Use.Logger.Info("system self check completed")
-
+	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
 	process.Watcher(func() {
 		store.Use.Micro.Deregister()
 	})
