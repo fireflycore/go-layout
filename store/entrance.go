@@ -14,7 +14,7 @@ type _Entrance struct {
 	LoggerTemp []logger.Entity
 	Micro      micro.Abstraction
 	Grpc       *grpc.EntranceEntity
-	Service    map[string][]string
+	Endpoint    map[string][]string
 
 	Remote *remote.EntranceEntity
 }
