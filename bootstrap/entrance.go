@@ -11,7 +11,6 @@ import (
 	"github.com/lhdhtrc/microservice-go/utils/process"
 	"microservice-go/plugin"
 	"microservice-go/register"
-	"microservice-go/service"
 	"microservice-go/store"
 	"runtime"
 )
@@ -45,13 +44,6 @@ func Setup() {
 	store.Use.Micro = etcd.New(etcdCli, store.Use.Logger, &store.Use.Config.Micro)
 	/********************************* use etcd as microservice register ---- end *********************************/
 
-	/********************************* discover service ---- start *********************************/
-	store.Use.Service = make(map[string][]string)
-	store.Use.Micro.Watcher(&[]string{
-		"/microservice/lhdht/logger/Add",
-	}, &store.Use.Service)
-	/********************************* discover service ---- end *********************************/
-
 	/********************************* service retry ---- start *********************************/
 	store.Use.Micro.WithRetryBefore(func() {
 		store.Use.Logger.Remote = nil
@@ -66,10 +58,6 @@ func Setup() {
 	store.Use.Micro.CreateLease()
 	register.ServiceInstance()
 	/********************************* register service ---- end *********************************/
-
-	/********************************* setup service ---- start *********************************/
-	store.Use.Logger.Remote = service.Use.Logger.Add
-	/********************************* setup service ---- end *********************************/
 
 	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
 	process.Watcher(func() {
