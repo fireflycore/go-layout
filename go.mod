@@ -1,12 +1,15 @@
 module microservice-go
 
-go 1.20
+go 1.22.1
+
+toolchain go1.22.2
 
 require (
+	github.com/lhdhtrc/func-go v0.0.6
 	github.com/lhdhtrc/microservice-go v0.4.6
+	github.com/lhdhtrc/task-go v0.0.1
 	github.com/spf13/viper v1.18.2
 	google.golang.org/grpc v1.62.0
-	google.golang.org/protobuf v1.32.0
 )
 
 require (
@@ -51,6 +54,7 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240228224816-df926f6c8641 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240228224816-df926f6c8641 // indirect
+	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/mysql v1.5.4 // indirect
