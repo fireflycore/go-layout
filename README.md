@@ -1,4 +1,2 @@
 # Lhdht Microservice Golang Version
-
-#### introduce
-lhdht microservice，golang version
+A minimalist microservices framework based on microcore-go
