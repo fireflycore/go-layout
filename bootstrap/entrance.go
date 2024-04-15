@@ -4,14 +4,15 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/lhdhtrc/microservice-go/db"
-	"github.com/lhdhtrc/microservice-go/logger"
 	"github.com/lhdhtrc/microservice-go/micro/etcd"
 	"github.com/lhdhtrc/microservice-go/micro/grpc"
-	"github.com/lhdhtrc/microservice-go/remote"
 	"github.com/lhdhtrc/microservice-go/utils/process"
+	taskCore "github.com/lhdhtrc/task-go/core"
+	taskModel "github.com/lhdhtrc/task-go/model"
+	"microservice-go/api"
 	"microservice-go/plugin"
-	"microservice-go/register"
 	"microservice-go/store"
+	"microservice-go/task"
 	"runtime"
 )
 
@@ -20,23 +21,27 @@ var CONFIG []byte
 
 func Setup() {
 	store.Use.Config = plugin.SetupViper(&CONFIG)
-	store.Use.Logger = logger.New(&store.Use.Config.Logger)
+
+	store.Use.Task = taskCore.New(taskModel.ConfigEntity{
+		MaxCache:       10,
+		MaxConcurrency: 1,
+		MinConcurrency: 0,
+	})
 
 	store.Use.Grpc = grpc.New(store.Use.Logger)
-	store.Use.Remote = remote.New(store.Use.Logger)
 
 	dbs := db.New(store.Use.Logger)
 
 	/********************************* read remote config ---- start *********************************/
 	var etcdConfig db.ConfigEntity
 	remoteConfig := []string{}
-	store.Use.Remote.ReadRemoteConfig(remoteConfig, []interface{}{
+	task.ReadRemoteConfig(remoteConfig, []interface{}{
 		&etcdConfig,
 	})
 	/********************************* read remote config ---- end *********************************/
 
 	/********************************* get remote cert ---- start *********************************/
-	store.Use.Remote.GetRemoteCert("etcd", &etcdConfig.Tls)
+	task.GetRemoteCert("etcd", &etcdConfig.Tls)
 	/********************************* get remote cert ---- end *********************************/
 
 	/********************************* use etcd as microservice register ---- start *********************************/
@@ -50,13 +55,13 @@ func Setup() {
 	})
 	store.Use.Micro.WithRetryAfter(func() {
 		store.Use.Grpc.Server.Stop()
-		register.ServiceInstance()
+		api.ServiceInstance()
 	})
 	/********************************* service retry ---- start *********************************/
 
 	/********************************* register service ---- start *********************************/
 	store.Use.Micro.CreateLease()
-	register.ServiceInstance()
+	api.ServiceInstance()
 	/********************************* register service ---- end *********************************/
 
 	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
