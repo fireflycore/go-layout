@@ -2,8 +2,6 @@ module microservice-go
 
 go 1.22.1
 
-toolchain go1.22.2
-
 require (
 	github.com/lhdhtrc/func-go v0.0.6
 	github.com/lhdhtrc/microservice-go v0.4.6
