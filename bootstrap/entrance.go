@@ -7,6 +7,7 @@ import (
 	etcdModel "github.com/lhdhtrc/etcd-go/model"
 	"github.com/lhdhtrc/func-go/process"
 	loggerCore "github.com/lhdhtrc/logger-go/core"
+	loggerModel "github.com/lhdhtrc/logger-go/model"
 	microEtcdCore "github.com/lhdhtrc/microcore-go/etcd"
 	"github.com/lhdhtrc/microcore-go/grpc"
 	taskCore "github.com/lhdhtrc/task-go/core"
@@ -25,7 +26,7 @@ func Setup() {
 	store.Use.Config = plugin.SetupViper(&CONFIG)
 
 	/********************************* setup logger core ---- start *********************************/
-	store.Use.Logger = loggerCore.Setup(&loggerCore.LoggerOptions{
+	store.Use.Logger = loggerCore.Setup(loggerModel.ConfigEntity{
 		AppId:   store.Use.Config.System.AppId,
 		Console: true,
 		Remote:  false,
@@ -52,8 +53,9 @@ func Setup() {
 	/********************************* create task ---- end *********************************/
 
 	/********************************* setup micro core ---- start *********************************/
+	etcdCli := etcdCore.Setup(store.Use.Logger, &etcdConfig)
 	store.Use.Grpc = grpc.New(store.Use.Logger)
-	store.Use.Micro = microEtcdCore.New(etcdCore.Setup(store.Use.Logger, &etcdConfig), store.Use.Logger, &store.Use.Config.Micro)
+	store.Use.Micro = microEtcdCore.New(etcdCli, store.Use.Logger, &store.Use.Config.Micro)
 	store.Use.Micro.WithRetryAfter(func() {
 		store.Use.Grpc.Server.Stop()
 		api.ServiceInstance()
