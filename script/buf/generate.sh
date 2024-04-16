@@ -1,1 +1,1 @@
-buf generate buf.build/lhdht/gateway
+buf generate buf.build/lhdht/grpc
