@@ -1,7 +1,7 @@
 package main
 
-import "github.com/lhdhtrc/microservice-go/utils/process"
+import "github.com/lhdhtrc/func-go/script"
 
 func main() {
-	process.Run("buf/generate")
+	script.Run("script/buf/generate")
 }
