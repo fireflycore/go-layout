@@ -10,6 +10,3 @@ micro:
   namespace: /microservice/lhdht/test
   max_retry: 5
   ttl: 5
-grpc:
-  deploy: false
-  address:
