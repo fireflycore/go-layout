@@ -10,3 +10,7 @@ micro:
   namespace: /microservice/lhdht/test
   max_retry: 5
   ttl: 5
+task:
+  max_cache: 100
+  max_concurrency: 1
+  min_concurrency: 0

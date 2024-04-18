@@ -7,11 +7,9 @@ import (
 	etcdModel "github.com/lhdhtrc/etcd-go/model"
 	"github.com/lhdhtrc/func-go/process"
 	loggerCore "github.com/lhdhtrc/logger-go/core"
-	loggerModel "github.com/lhdhtrc/logger-go/model"
 	microEtcdCore "github.com/lhdhtrc/microcore-go/etcd"
 	"github.com/lhdhtrc/microcore-go/grpc"
 	taskCore "github.com/lhdhtrc/task-go/core"
-	taskModel "github.com/lhdhtrc/task-go/model"
 	"microservice-go/api"
 	"microservice-go/plugin"
 	"microservice-go/store"
@@ -26,20 +24,12 @@ func Setup() {
 	store.Use.Config = plugin.SetupViper(&CONFIG)
 
 	/********************************* setup logger core ---- start *********************************/
-	store.Use.Logger = loggerCore.Setup(loggerModel.ConfigEntity{
-		AppId:   store.Use.Config.System.AppId,
-		Console: true,
-		Remote:  false,
-		Addr:    "",
-	})
+	store.Use.Config.Logger.AppId = store.Use.Config.System.AppId
+	store.Use.Logger = loggerCore.Setup(store.Use.Config.Logger)
 	/********************************* setup logger core ---- start *********************************/
 
 	/********************************* setup task core ---- start *********************************/
-	store.Use.Task = taskCore.New(taskModel.ConfigEntity{
-		MaxCache:       10,
-		MaxConcurrency: 1,
-		MinConcurrency: 0,
-	})
+	store.Use.Task = taskCore.New(store.Use.Config.Task)
 	store.Use.Task.Setup()
 	/********************************* setup task core ---- end *********************************/
 
