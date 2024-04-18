@@ -7,7 +7,7 @@ require (
 	github.com/lhdhtrc/func-go v0.0.8
 	github.com/lhdhtrc/logger-go v0.0.2
 	github.com/lhdhtrc/microcore-go v0.6.9
-	github.com/lhdhtrc/task-go v0.0.1
+	github.com/lhdhtrc/task-go v0.0.3
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.63.2

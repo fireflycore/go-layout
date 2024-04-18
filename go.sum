@@ -39,6 +39,10 @@ github.com/lhdhtrc/microcore-go v0.6.9 h1:uWDBd8xhMXZSQJIgbAUslLQUs5wsssGm7zgOfa
 github.com/lhdhtrc/microcore-go v0.6.9/go.mod h1:F9Ue6Zy1X+YzWiyYECn1Su7Ok3BiEkQi0gS4HTqUjPI=
 github.com/lhdhtrc/task-go v0.0.1 h1:HcX/6jnKWL8IeT+eme9YcpMc5PoB5qMc4ek3pPLkcuk=
 github.com/lhdhtrc/task-go v0.0.1/go.mod h1:/g2MhfHzXrlmZdRQ1VXJHDEWx94Zeby4uQ2RvFE6ReE=
+github.com/lhdhtrc/task-go v0.0.2 h1:18k8mNGxxUCXYPQhL30GLIXi5ngcdPBp0HVaBW8CJPA=
+github.com/lhdhtrc/task-go v0.0.2/go.mod h1:/g2MhfHzXrlmZdRQ1VXJHDEWx94Zeby4uQ2RvFE6ReE=
+github.com/lhdhtrc/task-go v0.0.3 h1:4MGZ+8OyS3d8G21Z3j7sTuuNfG37Iio0vr3B/Q+iVrI=
+github.com/lhdhtrc/task-go v0.0.3/go.mod h1:/g2MhfHzXrlmZdRQ1VXJHDEWx94Zeby4uQ2RvFE6ReE=
 github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0VQdvPDY=
 github.com/magiconair/properties v1.8.7/go.mod h1:Dhd985XPs7jluiymwWYZ0G4Z61jb3vdS329zhj2hYo0=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
