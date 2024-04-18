@@ -24,6 +24,7 @@ func GetRemoteCert(dir string, config interface{}) {
 			// 分割路径，得到文件名部分
 			f := filepath.Base(remote)
 			local := filepath.Join(dirPath, f)
+			fieldValue.SetString(local)
 
 			store.Use.Task.Add(taskModel.TaskEntity{
 				Id: fmt.Sprintf("GetRemoteCert_%d", i),
