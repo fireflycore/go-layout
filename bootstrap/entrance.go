@@ -39,7 +39,9 @@ func Setup() {
 	task.ReadRemoteConfig(remoteConfig, []interface{}{
 		&etcdConfig,
 	})
+	store.Use.Task.Await()
 	task.GetRemoteCert("etcd", &etcdConfig.Tls)
+	store.Use.Task.Await()
 	/********************************* create task ---- end *********************************/
 
 	/********************************* setup micro core ---- start *********************************/
