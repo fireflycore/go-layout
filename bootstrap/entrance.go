@@ -9,11 +9,11 @@ import (
 	loggerCore "github.com/lhdhtrc/logger-go/core"
 	microEtcdCore "github.com/lhdhtrc/microcore-go/etcd"
 	"github.com/lhdhtrc/microcore-go/grpc"
+	microTask "github.com/lhdhtrc/microcore-go/task"
 	taskCore "github.com/lhdhtrc/task-go/core"
 	"microservice-go/api"
 	"microservice-go/plugin"
 	"microservice-go/store"
-	"microservice-go/task"
 	"runtime"
 )
 
@@ -36,11 +36,11 @@ func Setup() {
 	/********************************* create task ---- start *********************************/
 	var etcdConfig etcdModel.ConfigEntity
 	remoteConfig := []string{}
-	task.ReadRemoteConfig(remoteConfig, []interface{}{
+	microTask.ReadRemoteConfig(store.Use.Task, remoteConfig, []interface{}{
 		&etcdConfig,
 	})
 	store.Use.Task.Await()
-	task.GetRemoteCert("etcd", &etcdConfig.Tls)
+	microTask.GetRemoteCert(store.Use.Task, "etcd", &etcdConfig.Tls)
 	store.Use.Task.Await()
 	/********************************* create task ---- end *********************************/
 
