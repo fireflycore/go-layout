@@ -22,10 +22,10 @@ var CONFIG []byte
 
 func Setup() {
 	store.Use.Config = plugin.SetupViper(&CONFIG)
+	store.Use.RemoteService = plugin.SetupRemoteService(store.Use.Config.System.RemoteService)
 
 	/********************************* setup logger core ---- start *********************************/
-	store.Use.Config.Logger.AppId = store.Use.Config.System.AppId
-	store.Use.Logger = loggerCore.Setup(store.Use.Config.Logger)
+	store.Use.Logger = loggerCore.Setup(store.Use.Config.Logger, plugin.SetupRemoteLogger)
 	/********************************* setup logger core ---- start *********************************/
 
 	/********************************* setup task core ---- start *********************************/
