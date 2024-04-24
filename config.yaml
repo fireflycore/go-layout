@@ -3,7 +3,6 @@ system:
   run_port: 127.0.0.1:1024
   remote_service: grpc://test.lhdht.com
 logger:
-  addr:
   console: true
   remote: false
 micro:
