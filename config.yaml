@@ -1,7 +1,7 @@
 system:
   app_id: 00000000-00000000-00000000
   run_port: 127.0.0.1:1024
-  remote_service: grpc://test.lhdht.com:80
+  remote_service: test.lhdht.com:80
 logger:
   console: true
   remote: false
