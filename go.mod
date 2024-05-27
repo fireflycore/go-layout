@@ -4,14 +4,14 @@ go 1.22.1
 
 require (
 	github.com/lhdhtrc/etcd-go v0.0.1
-	github.com/lhdhtrc/func-go v0.0.9
+	github.com/lhdhtrc/func-go v0.1.3
 	github.com/lhdhtrc/logger-go v0.0.5
 	github.com/lhdhtrc/microcore-go v0.7.2
 	github.com/lhdhtrc/task-go v0.0.4
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.27.0
-	google.golang.org/grpc v1.63.2
-	google.golang.org/protobuf v1.33.0
+	google.golang.org/grpc v1.64.0
+	google.golang.org/protobuf v1.34.1
 )
 
 require (
@@ -23,7 +23,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.2.1 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
@@ -35,12 +35,12 @@ require (
 	go.etcd.io/etcd/client/pkg/v3 v3.5.13 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.13 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
-	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240415180920-8c6c420018be // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240415180920-8c6c420018be // indirect
+	golang.org/x/exp v0.0.0-20240525044651-4c93da0ed11d // indirect
+	golang.org/x/net v0.25.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/text v0.15.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240521202816-d264139d666e // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240521202816-d264139d666e // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
