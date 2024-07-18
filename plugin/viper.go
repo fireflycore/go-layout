@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func SetupViper(file *[]byte) *config.EntranceEntity {
+func InstallViper(file *[]byte) *config.EntranceEntity {
 	logPrefix := "setup viper"
 
 	fmt.Printf("%s %s\n", logPrefix, "start ->")
