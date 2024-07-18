@@ -36,7 +36,7 @@ func Setup() {
 	store.Use.Task.Await()
 	/********************************* task ---- end *********************************/
 
-	/********************************* micro core ---- start *********************************/
+	/********************************* micro ---- start *********************************/
 	store.Use.Etcd = etcd.New(store.Use.Logger, &etcdConfig)
 	store.Use.Etcd.WithLeaseRetryAfter(func() {
 		store.Use.GrpcServer.Stop()
@@ -44,7 +44,7 @@ func Setup() {
 	})
 	store.Use.Etcd.InitLease()
 	store.Use.GrpcServer = GrpcServer(api.ServiceInstance, store.Use.Config.System.RunPort)
-	/********************************* micro core ---- end *********************************/
+	/********************************* micro ---- end *********************************/
 
 	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
 	process.Watcher(func() {
