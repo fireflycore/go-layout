@@ -44,7 +44,6 @@ func Setup() {
 	})
 	store.Use.Etcd.InitLease()
 	store.Use.GrpcServer = GrpcServer(api.ServiceInstance, store.Use.Config.System.RunPort)
-
 	/********************************* micro core ---- end *********************************/
 
 	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
