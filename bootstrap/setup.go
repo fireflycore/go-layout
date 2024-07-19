@@ -50,6 +50,7 @@ func Setup() {
 
 	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
 	process.Watcher(func() {
+		store.Use.Micro.UninstallServer()
 		store.Use.Etcd.Uninstall()
 		store.Use.Task.Uninstall()
 	})
