@@ -1,15 +1,15 @@
 system:
   app_id: 00000000-00000000-00000000
-  run_port: 127.0.0.1
-  remote_service: test.lhdht.com:80
 logger:
   console: true
   remote: false
 micro:
-  address: 101.120.1.125:1024|192.168.1.101:1024
-  namespace: /microservice/lhdht/test
-  max_retry: 5
+  dns: test.lhdht.com:80
+  run: 127.0.0.1
   ttl: 5
+  max_retry: 5
+  endpoint: 101.120.1.125:1024|192.168.1.101:1024
+  namespace: /microservice/lhdht/test
 task:
   max_cache: 100
   max_concurrency: 1
