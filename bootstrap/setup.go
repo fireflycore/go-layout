@@ -6,6 +6,7 @@ import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	"github.com/lhdhtrc/func-go/process"
 	loger "github.com/lhdhtrc/logger-go/pkg"
+	micro "github.com/lhdhtrc/micro-go/pkg"
 	"github.com/lhdhtrc/task-go/pkg"
 	"microservice-go/api"
 	"microservice-go/plugin"
@@ -20,9 +21,9 @@ func Setup() {
 	store.Use.Config = plugin.InstallViper(&CONFIG)
 	store.Use.RemoteService = plugin.InstallRemoteService(store.Use.Config.System.RemoteService)
 
-	/********************************* logger core ---- start *********************************/
-	store.Use.Logger = loger.New(&store.Use.Config.Logger, plugin.InstallRemoteLogger)
-	/********************************* logger core ---- start *********************************/
+	/********************************* logger ---- start *********************************/
+	store.Use.Logger = loger.New(&store.Use.Config.Logger, plugin.InstallServerLogger)
+	/********************************* logger ---- start *********************************/
 
 	/********************************* task ---- start *********************************/
 	store.Use.Task = task.New(&store.Use.Config.Task)
@@ -37,13 +38,14 @@ func Setup() {
 	/********************************* task ---- end *********************************/
 
 	/********************************* micro ---- start *********************************/
+	store.Use.Micro = micro.New(store.Use.Logger)
 	store.Use.Etcd = etcd.New(store.Use.Logger, &etcdConfig)
 	store.Use.Etcd.WithLeaseRetryAfter(func() {
-		store.Use.GrpcServer.Stop()
-		store.Use.GrpcServer = GrpcServer(api.ServiceInstance, store.Use.Config.System.RunPort)
+		store.Use.Micro.UninstallServer()
+		store.Use.Micro.InstallServer(api.ServiceInstance, store.Use.Config.System.RunPort)
 	})
 	store.Use.Etcd.InitLease()
-	store.Use.GrpcServer = GrpcServer(api.ServiceInstance, store.Use.Config.System.RunPort)
+	store.Use.Micro.InstallServer(api.ServiceInstance, store.Use.Config.System.RunPort)
 	/********************************* micro ---- end *********************************/
 
 	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
