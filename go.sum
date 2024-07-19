@@ -35,6 +35,8 @@ github.com/lhdhtrc/micro-go v0.0.3 h1:7mbxAaCqFcfmCZTCr6BKMGPWqe0ZFO5kuKZIjszM+L
 github.com/lhdhtrc/micro-go v0.0.3/go.mod h1:rTxqBhsB0UKz6m9iHZdhp4J6ui/eCdjKDTg1pyKLOAk=
 github.com/lhdhtrc/micro-go v0.0.4 h1:t76IGd9eCrM4Ts1Vr2Klqlf+G65rjJbFaneTahHKcPM=
 github.com/lhdhtrc/micro-go v0.0.4/go.mod h1:rTxqBhsB0UKz6m9iHZdhp4J6ui/eCdjKDTg1pyKLOAk=
+github.com/lhdhtrc/micro-go v0.0.5 h1:aT9oecISxNUthGfXib3EXjzeRHJmCk8uDZGzu4JxCPE=
+github.com/lhdhtrc/micro-go v0.0.5/go.mod h1:rTxqBhsB0UKz6m9iHZdhp4J6ui/eCdjKDTg1pyKLOAk=
 github.com/lhdhtrc/task-go v0.0.7 h1:WeEq6sAilT0a/K1E3YAVPL3YJGwoj0d/NqXiARUru+c=
 github.com/lhdhtrc/task-go v0.0.7/go.mod h1:/Mh0mP2B/22CGh4v9Q+08on59qqCxX6+IFkpazA3R8g=
 github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0VQdvPDY=
