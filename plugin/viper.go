@@ -9,7 +9,7 @@ import (
 )
 
 func InstallViper(file *[]byte) *config.CoreEntity {
-	logPrefix := "setup viper"
+	logPrefix := "install viper"
 
 	fmt.Printf("%s %s\n", logPrefix, "start ->")
 
