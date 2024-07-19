@@ -9,7 +9,7 @@ import (
 	"microservice-go/model"
 )
 
-type _StoreEntity struct {
+type _CoreEntity struct {
 	Config *config.CoreEntity
 	Logger *zap.Logger
 	Etcd   *etcd.CoreEntity
@@ -21,4 +21,4 @@ type _StoreEntity struct {
 	Task *tpg.CoreEntity
 }
 
-var Use = new(_StoreEntity)
+var Use = new(_CoreEntity)
