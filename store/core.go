@@ -10,10 +10,10 @@ import (
 )
 
 type _CoreEntity struct {
-	ServiceDiscover map[string][]string
+	Config          *config.CoreEntity
 	RemoteService   *model.RemoteServiceEntity
+	ServiceDiscover map[string][]string
 
-	Config *config.CoreEntity
 	Logger *zap.Logger
 	Micro  *micro.CoreEntity
 	Etcd   *etcd.CoreEntity
