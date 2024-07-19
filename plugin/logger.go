@@ -8,14 +8,13 @@ import (
 	"time"
 )
 
-func SetupRemoteLogger(b []byte) {
+func InstallServerLogger(b []byte) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	// base example
 	var row pb.AddRequest
 	_ = json.Unmarshal(b, &row)
 	row.AppId = store.Use.Config.System.AppId
 
-	_, _ = store.Use.RemoteService.LoggerServer.Add(ctx, &row)
+	_, _ = store.Use.RemoteService.ServerLogger.Add(ctx, &row)
 }
