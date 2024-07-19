@@ -19,7 +19,7 @@ var CONFIG []byte
 
 func Setup() {
 	store.Use.Config = plugin.InstallViper(&CONFIG)
-	store.Use.RemoteService = plugin.InstallRemoteService(store.Use.Config.System.RemoteService)
+	store.Use.RemoteService = plugin.InstallRemoteService(store.Use.Config.Micro.DNS)
 
 	/********************************* logger ---- start *********************************/
 	store.Use.Logger = loger.New(&store.Use.Config.Logger, plugin.InstallServerLogger)
@@ -42,10 +42,10 @@ func Setup() {
 	store.Use.Etcd = etcd.New(store.Use.Logger, &etcdConfig)
 	store.Use.Etcd.WithLeaseRetryAfter(func() {
 		store.Use.Micro.UninstallServer()
-		store.Use.Micro.InstallServer(api.ServiceInstance, store.Use.Config.System.RunPort)
+		store.Use.Micro.InstallServer(api.ServiceInstance, store.Use.Config.Micro.Run)
 	})
 	store.Use.Etcd.InitLease()
-	store.Use.Micro.InstallServer(api.ServiceInstance, store.Use.Config.System.RunPort)
+	store.Use.Micro.InstallServer(api.ServiceInstance, store.Use.Config.Micro.Run)
 	/********************************* micro ---- end *********************************/
 
 	store.Use.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))

@@ -6,8 +6,6 @@ logger:
 micro:
   dns: test.lhdht.com:80
   run: 127.0.0.1:1024
-  ttl: 5
-  max_retry: 5
   endpoint: 101.120.1.125:1024|192.168.1.101:1024
   namespace: /microservice/lhdht/test
 task:
