@@ -14,10 +14,11 @@ type _CoreEntity struct {
 	RemoteService   *model.RemoteServiceEntity
 	ServiceDiscover map[string][]string
 
+	Micro *micro.CoreEntity
+	Etcd  *etcd.CoreEntity
+	Task  *task.CoreEntity
+
 	Logger *zap.Logger
-	Micro  *micro.CoreEntity
-	Etcd   *etcd.CoreEntity
-	Task   *task.CoreEntity
 }
 
 var Use = new(_CoreEntity)
