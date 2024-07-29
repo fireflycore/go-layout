@@ -20,6 +20,6 @@ A minimalist microservices framework based on microcore-go
 - Complete config.yaml.
 - create task in bootstrap/entrance.go, read local or remote etcd config file.
 - `go mod tidy`
-- `go run script/entrance.go` 
+- `go run script/core.go` 
   - Execute the buf cli script where protobuf is stored in the cloud, optional
 - `go run main.go`
