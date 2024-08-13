@@ -23,3 +23,4 @@ A minimalist microservices framework based on microcore-go
 - `go run script/core.go` 
   - Execute the buf cli script where protobuf is stored in the cloud, optional
 - `go run main.go`
+- 
