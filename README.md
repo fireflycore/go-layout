@@ -1,4 +1,4 @@
-## Lhdht Microservice Golang Version
+## Firefly Microservice Framework Golang Version
 A minimalist microservices framework based on microcore-go
 
 ### config.yaml
@@ -18,7 +18,7 @@ A minimalist microservices framework based on microcore-go
 ### start-up process
 - Deploying etcd.
 - Complete config.yaml.
-- create task in bootstrap/entrance.go, read local or remote etcd config file.
+- create task in bootstrap/core.go, read local or remote etcd config file.
 - `go mod tidy`
 - `go run script/core.go` 
   - Execute the buf cli script where protobuf is stored in the cloud, optional
