@@ -3,8 +3,8 @@ package plugin
 import (
 	"context"
 	"encoding/json"
-	pb "microservice-go/dep/protobuf/gen/acme/logger/server/v1"
-	"microservice-go/store"
+	pb "go-layout/dep/protobuf/gen/acme/logger/server/v1"
+	"go-layout/store"
 	"time"
 )
 

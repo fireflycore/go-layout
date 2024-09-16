@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/spf13/viper"
-	"microservice-go/config"
+	"go-layout/config"
 	"os"
 )
 

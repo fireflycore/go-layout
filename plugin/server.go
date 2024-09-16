@@ -1,10 +1,10 @@
 package plugin
 
 import (
+	serverLogger "go-layout/dep/protobuf/gen/acme/logger/server/v1"
+	"go-layout/model"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	serverLogger "microservice-go/dep/protobuf/gen/acme/logger/server/v1"
-	"microservice-go/model"
 )
 
 func InstallRemoteService(remote string) *model.RemoteServiceEntity {

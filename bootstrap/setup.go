@@ -8,9 +8,9 @@ import (
 	loger "github.com/lhdhtrc/logger-go/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg"
 	"github.com/lhdhtrc/task-go/pkg"
-	"microservice-go/api"
-	"microservice-go/plugin"
-	"microservice-go/store"
+	"go-layout/api"
+	"go-layout/plugin"
+	"go-layout/store"
 	"runtime"
 )
 

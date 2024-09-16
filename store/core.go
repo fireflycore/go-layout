@@ -4,9 +4,9 @@ import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg"
 	task "github.com/lhdhtrc/task-go/pkg"
+	"go-layout/config"
+	"go-layout/model"
 	"go.uber.org/zap"
-	"microservice-go/config"
-	"microservice-go/model"
 )
 
 type _CoreEntity struct {

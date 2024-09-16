@@ -1,7 +1,7 @@
 package main
 
 import (
-	"microservice-go/bootstrap"
+	"go-layout/bootstrap"
 )
 
 func main() {
