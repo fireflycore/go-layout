@@ -1,1 +1,0 @@
-buf generate buf.build/lhdht/grpc
