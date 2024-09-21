@@ -6,7 +6,7 @@ managed:
       module: buf.build/googleapis/googleapis
   override:
     - file_option: go_package_prefix
-      value: microservice-go
+      value: go-layout
 plugins:
   - remote: buf.build/grpc/go
     out: dep/protobuf/gen
