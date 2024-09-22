@@ -15,4 +15,4 @@ plugins:
     out: dep/protobuf/gen
     opt: paths=source_relative
 inputs:
-  - module: buf.build/lhdht/grpc:main
+  - module: buf.build/firefly/guide:main
