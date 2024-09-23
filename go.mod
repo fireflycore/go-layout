@@ -4,7 +4,7 @@ go 1.22.1
 
 require (
 	github.com/lhdhtrc/etcd-go v0.1.5
-	github.com/lhdhtrc/func-go v0.1.4
+	github.com/lhdhtrc/func-go v0.1.5
 	github.com/lhdhtrc/logger-go v0.0.6
 	github.com/lhdhtrc/micro-go v0.0.6
 	github.com/lhdhtrc/task-go v0.0.7
