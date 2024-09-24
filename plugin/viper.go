@@ -18,12 +18,12 @@ func InstallViper(file *[]byte) *config.CoreEntity {
 
 	var _config config.CoreEntity
 
-	if _, e := os.Stat("package.yaml"); e != nil {
+	if _, e := os.Stat("config.yaml"); e != nil {
 		if err := v.ReadConfig(bytes.NewReader(*file)); err != nil {
 			panic("config file not fount")
 		}
 	} else {
-		v.SetConfigFile("package.yaml")
+		v.SetConfigFile("config.yaml")
 		if err := v.ReadInConfig(); err != nil {
 			panic(fmt.Errorf("Viper ReadInConfig error: %s \n", err))
 		}

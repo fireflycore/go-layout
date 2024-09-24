@@ -14,11 +14,11 @@ import (
 	"runtime"
 )
 
-//go:embed file/package.yaml
-var PACKAGE []byte
+//go:embed file/config.yaml
+var CONFIG []byte
 
 func Setup() {
-	store.Use.Config = plugin.InstallViper(&PACKAGE)
+	store.Use.Config = plugin.InstallViper(&CONFIG)
 	store.Use.RemoteService = plugin.InstallRemoteService(store.Use.Config.Micro.DNS)
 
 	/********************************* logger ---- start *********************************/
