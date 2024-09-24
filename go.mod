@@ -3,11 +3,11 @@ module go-layout
 go 1.22.1
 
 require (
-	github.com/lhdhtrc/etcd-go v0.1.5
+	github.com/lhdhtrc/etcd-go v0.1.7
 	github.com/lhdhtrc/func-go v0.1.5
 	github.com/lhdhtrc/logger-go v0.0.6
-	github.com/lhdhtrc/micro-go v0.0.6
-	github.com/lhdhtrc/task-go v0.0.7
+	github.com/lhdhtrc/micro-go v0.0.7
+	github.com/lhdhtrc/task-go v0.0.8
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.65.0
