@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/bufbuild/protovalidate-go"
-	micro "github.com/lhdhtrc/micro-go/pkg"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz"
 	"google.golang.org/grpc/metadata"
@@ -17,20 +16,7 @@ type DemoService struct {
 	uc *biz.DemoUseCase
 }
 
-func NewDemoService(uc *biz.DemoUseCase, mr micro.Register) *DemoService {
-	node := &micro.ServiceNode{
-		Name:   pb.DemoService_ServiceDesc.ServiceName,
-		Method: make(map[string]string),
-	}
-
-	for _, item := range pb.DemoService_ServiceDesc.Methods {
-		node.Method[item.MethodName] = ""
-	}
-
-	if err := mr.Install(node); err != nil {
-		panic(err)
-	}
-
+func NewDemoService(uc *biz.DemoUseCase) *DemoService {
 	return &DemoService{uc: uc}
 }
 
