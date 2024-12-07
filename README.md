@@ -5,4 +5,5 @@ A minimalist microservices framework based on microcore-go
 ## Initial run command
 - `go mod tidy`
 - `buf generate`
+- `wire ./cmd/server`
 - `go run main.go`
