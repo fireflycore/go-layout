@@ -1,0 +1,20 @@
+{
+  "micro": {
+    "mode": true,
+    "app_id": "00000000-0000-0000-0000-00000000000",
+    "namespace": "/microservice",
+    "max_retry": 5,
+    "ttl": 5,
+
+    "outer_net_ip": "113.112.111.110",
+    "internal_net_ip": "192.168.1.100"
+  },
+  "server": {
+    "grpc_port": 10000
+  },
+  "task": {
+    "max_cache": 100,
+    "max_concurrency": 1,
+    "min_concurrency": 0
+  }
+}
