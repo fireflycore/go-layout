@@ -15,4 +15,6 @@ plugins:
     out: dep/protobuf/gen
     opt: paths=source_relative
 inputs:
-  - module: buf.build/firefly/guide:main
+  - module: buf.build/firefly/demo:main
+    types:
+      - acme.demo.v1
