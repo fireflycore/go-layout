@@ -2,12 +2,12 @@ package service
 
 import (
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
-	"go-layout/model"
+	"go-layout/internal/biz"
 	"time"
 )
 
-func SaveDTO(src *pb.SaveRequest) *model.DemoEntity {
-	var dst model.DemoEntity
+func SaveDTO(src *pb.SaveRequest) *biz.Demo {
+	var dst biz.Demo
 	dst.Title = src.Title
 	dst.Description = src.Description
 	dst.Content = src.Content
@@ -16,7 +16,7 @@ func SaveDTO(src *pb.SaveRequest) *model.DemoEntity {
 	return &dst
 }
 
-func GetDTO(src *model.DemoEntity) *pb.Demo {
+func GetDTO(src *biz.Demo) *pb.Demo {
 	var dst pb.Demo
 	dst.Id = src.ID
 	dst.Title = src.Title
