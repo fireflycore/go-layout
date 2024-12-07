@@ -5,8 +5,8 @@ import (
 	"github.com/google/wire"
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	gorme "github.com/lhdhtrc/gorm/pkg"
+	"go-layout/internal/biz"
 	"go-layout/internal/conf"
-	"go-layout/model"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"gorm.io/gorm"
 )
@@ -24,7 +24,7 @@ func NewMysql(lc *conf.LoggerConf, mc *gorme.Config) (*gorm.DB, error) {
 	mc.WithLoggerConsole(lc.Console)
 
 	return gorme.NewMysql(mc, []interface{}{
-		&model.DemoEntity{},
+		&biz.Demo{},
 	})
 }
 
