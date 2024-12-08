@@ -45,8 +45,8 @@ github.com/lhdhtrc/func-go v0.2.4 h1:jbFgXzDw9lGPtB9CKB6EX9+l5aqJ9VD+edOTbcAlgL8
 github.com/lhdhtrc/func-go v0.2.4/go.mod h1:7ipMminEb+FfG1h4GJreJiKkzYe7hV06xGuE8bZCu/A=
 github.com/lhdhtrc/gorm v0.3.1 h1:jGl+DYNaOjKzJuTRya1QDU8enO1COJimp/Q1JtvNcXU=
 github.com/lhdhtrc/gorm v0.3.1/go.mod h1:44GmTEiQ4njLviG18lnxKz275Uvath90TskGZsnhkNU=
-github.com/lhdhtrc/micro-go v0.1.6 h1:iPnFyN1zVcvAYsXJTub1FfBt9pvG2OFvNdDP6ah2Z8Y=
-github.com/lhdhtrc/micro-go v0.1.6/go.mod h1:9UtwB8WOM6irTa4fpOtChNonrALOv1fnj7AWYdrbHzg=
+github.com/lhdhtrc/micro-go v0.1.8 h1:3AvPO+4lvHB5bOh6tM2lMWGcFHuTCKvPLExHAe6SNNw=
+github.com/lhdhtrc/micro-go v0.1.8/go.mod h1:9UtwB8WOM6irTa4fpOtChNonrALOv1fnj7AWYdrbHzg=
 github.com/lhdhtrc/task-go v0.0.9 h1:vlPifhKZibMOMyvexIOiSxNHBhpmUc9XDxowkOamXg4=
 github.com/lhdhtrc/task-go v0.0.9/go.mod h1:IL4HK45k+789u6SwtHad0iUohXuyoCfN+T2U4749AR8=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
