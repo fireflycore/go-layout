@@ -17,4 +17,7 @@ plugins:
 inputs:
   - module: buf.build/firefly/demo:main
     types:
+      - acme.logger.access.v1
+      - acme.logger.server.v1
+      - acme.logger.operation.v1
       - acme.demo.v1
