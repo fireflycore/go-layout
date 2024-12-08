@@ -18,9 +18,9 @@ type Data struct {
 	Mysql *gorm.DB
 }
 
-func NewMysql(lc *conf.LoggerConf, mc *gorme.Config) (*gorm.DB, error) {
+func NewMysql(lc *conf.LoggerConf, mc *gorme.Config, logger biz.OperationLogger) (*gorm.DB, error) {
 	//mc.WithAutoMigrate(true)
-	//mc.WithLoggerHandle(plugin.InstallOperationLogger)
+	mc.WithLoggerHandle(logger)
 	mc.WithLoggerConsole(lc.Console)
 
 	return gorme.NewMysql(mc, []interface{}{
@@ -28,7 +28,7 @@ func NewMysql(lc *conf.LoggerConf, mc *gorme.Config) (*gorm.DB, error) {
 	})
 }
 
-func NewData(bc *conf.BootstrapConf, dc *conf.DataConf) (*Data, func(), error) {
+func NewData(bc *conf.BootstrapConf, dc *conf.DataConf, logger biz.OperationLogger) (*Data, func(), error) {
 	cleanup := func() {
 		fmt.Println("closing the data resources")
 	}
@@ -38,7 +38,7 @@ func NewData(bc *conf.BootstrapConf, dc *conf.DataConf) (*Data, func(), error) {
 		result.Etcd = cli
 		return nil, nil, err
 	}
-	if orm, err := NewMysql(bc.Logger, dc.Mysql); err != nil {
+	if orm, err := NewMysql(bc.Logger, dc.Mysql, logger); err != nil {
 		result.Mysql = orm
 		return nil, nil, err
 	}
