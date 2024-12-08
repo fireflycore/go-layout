@@ -9,12 +9,12 @@ import (
 )
 
 func NewGrpcServer(
-	AccessLogger biz.AccessLogger,
+	logger biz.AccessLogger,
 
 	Demo *service.DemoService,
 ) *grpc.Server {
 	srv := grpc.NewServer(grpc.UnaryInterceptor(
-		middleware.GrpcAccessLogger(AccessLogger),
+		middleware.GrpcAccessLogger(logger),
 	))
 
 	demo.RegisterDemoServiceServer(srv, Demo)
