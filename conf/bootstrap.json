@@ -6,8 +6,14 @@
     "max_retry": 5,
     "ttl": 5,
 
-    "outer_net_ip": "113.112.111.110",
-    "internal_net_ip": "192.168.1.100"
+    "network": "main-network",
+    "outer_addr": "113.112.111.110",
+    "internal_addr": "192.168.1.100"
+  },
+  "gateway": {
+    "network": "main-network",
+    "outer_addr": "113.112.111.110",
+    "internal_addr": "192.168.1.100"
   },
   "server": {
     "grpc_port": 10000

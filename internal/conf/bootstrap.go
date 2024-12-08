@@ -9,11 +9,18 @@ import (
 )
 
 type BootstrapConf struct {
-	Server *ServerConf
-	Logger *LoggerConf
+	Server  *ServerConf
+	Logger  *LoggerConf
+	Gateway *GatewayConf
 
 	Micro *micro.ServiceConfig
 	Task  *task.Config
+}
+
+type GatewayConf struct {
+	Network    string `json:"network"`
+	OuterAddr  string `json:"outer_addr"`
+	InsideAddr string `json:"inside_addr"`
 }
 
 type ServerConf struct {
