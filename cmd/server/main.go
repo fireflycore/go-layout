@@ -12,7 +12,7 @@ func main() {
 
 	app, cleanup, err := wireApp(bootstrapConf)
 	if err != nil {
-		app.Logger.Error(err.Error())
+		panic(err)
 		return
 	}
 
@@ -20,6 +20,7 @@ func main() {
 
 	app.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
 	process.Watcher(func() {
+		app.Logger.Info("uninstall all service for this node from the register")
 		cleanup()
 	})
 }
