@@ -12,13 +12,13 @@ func main() {
 
 	app, cleanup, err := wireApp(bootstrapConf)
 	if err != nil {
-		fmt.Println(err)
+		app.Logger.Error(err.Error())
 		return
 	}
 
 	go app.Start()
 
-	fmt.Println(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
+	app.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
 	process.Watcher(func() {
 		cleanup()
 	})
