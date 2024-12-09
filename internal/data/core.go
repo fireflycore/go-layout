@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"github.com/google/wire"
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	gorme "github.com/lhdhtrc/gorm/pkg"
@@ -28,20 +27,16 @@ func NewMysql(console bool, mc *gorme.Config, logger biz.OperationLogger) (*gorm
 	})
 }
 
-func NewData(bc *conf.BootstrapConf, dc *conf.DataConf, logger biz.OperationLogger) (*Data, func(), error) {
-	cleanup := func() {
-		fmt.Println("closing the data resources")
-	}
-
+func NewData(bc *conf.BootstrapConf, dc *conf.DataConf, logger biz.OperationLogger) (*Data, error) {
 	result := &Data{}
 	if cli, err := etcd.New(dc.Etcd); err != nil {
 		result.Etcd = cli
-		return nil, nil, err
+		return nil, err
 	}
 	if orm, err := NewMysql(bc.Logger.Console, dc.Mysql, logger); err != nil {
 		result.Mysql = orm
-		return nil, nil, err
+		return nil, err
 	}
 
-	return result, cleanup, nil
+	return result, nil
 }
