@@ -2,6 +2,7 @@ package conf
 
 import (
 	"encoding/json"
+	logger "github.com/lhdhtrc/logger-go/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg"
 	task "github.com/lhdhtrc/task-go/pkg"
 	"os"
@@ -10,11 +11,11 @@ import (
 
 type BootstrapConf struct {
 	Server  *ServerConf
-	Logger  *LoggerConf
 	Gateway *GatewayConf
 
-	Micro *micro.ServiceConfig
-	Task  *task.Config
+	Logger *logger.Config
+	Micro  *micro.ServiceConfig
+	Task   *task.Config
 }
 
 type GatewayConf struct {

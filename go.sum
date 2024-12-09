@@ -45,6 +45,8 @@ github.com/lhdhtrc/func-go v0.2.4 h1:jbFgXzDw9lGPtB9CKB6EX9+l5aqJ9VD+edOTbcAlgL8
 github.com/lhdhtrc/func-go v0.2.4/go.mod h1:7ipMminEb+FfG1h4GJreJiKkzYe7hV06xGuE8bZCu/A=
 github.com/lhdhtrc/gorm v0.3.1 h1:jGl+DYNaOjKzJuTRya1QDU8enO1COJimp/Q1JtvNcXU=
 github.com/lhdhtrc/gorm v0.3.1/go.mod h1:44GmTEiQ4njLviG18lnxKz275Uvath90TskGZsnhkNU=
+github.com/lhdhtrc/logger-go v0.1.1 h1:dBYD7a4rRgLA1bGAbXiV9FBD30HEOwPmDmJ8Zo8qVG8=
+github.com/lhdhtrc/logger-go v0.1.1/go.mod h1:2/vBrDMXaXUq7yKq8wMRevVpFOx6Hdu1Ahx/MetNvEA=
 github.com/lhdhtrc/micro-go v0.1.8 h1:3AvPO+4lvHB5bOh6tM2lMWGcFHuTCKvPLExHAe6SNNw=
 github.com/lhdhtrc/micro-go v0.1.8/go.mod h1:9UtwB8WOM6irTa4fpOtChNonrALOv1fnj7AWYdrbHzg=
 github.com/lhdhtrc/task-go v0.0.9 h1:vlPifhKZibMOMyvexIOiSxNHBhpmUc9XDxowkOamXg4=
