@@ -13,7 +13,7 @@ import (
 	"go-layout/internal/service"
 )
 
-func wireApp(bc *conf.BootstrapConf) (*App, func(), error) {
+func wireApp(bc *conf.BootstrapConf) (*App, error) {
 	panic(wire.Build(
 		plugin.ProviderSet,
 		conf.ProviderSet,
