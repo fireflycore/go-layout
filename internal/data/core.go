@@ -18,10 +18,10 @@ type Data struct {
 	Mysql *gorm.DB
 }
 
-func NewMysql(lc *conf.LoggerConf, mc *gorme.Config, logger biz.OperationLogger) (*gorm.DB, error) {
+func NewMysql(console bool, mc *gorme.Config, logger biz.OperationLogger) (*gorm.DB, error) {
 	//mc.WithAutoMigrate(true)
 	mc.WithLoggerHandle(logger)
-	mc.WithLoggerConsole(lc.Console)
+	mc.WithLoggerConsole(console)
 
 	return gorme.NewMysql(mc, []interface{}{
 		&biz.Demo{},
@@ -38,7 +38,7 @@ func NewData(bc *conf.BootstrapConf, dc *conf.DataConf, logger biz.OperationLogg
 		result.Etcd = cli
 		return nil, nil, err
 	}
-	if orm, err := NewMysql(bc.Logger, dc.Mysql, logger); err != nil {
+	if orm, err := NewMysql(bc.Logger.Console, dc.Mysql, logger); err != nil {
 		result.Mysql = orm
 		return nil, nil, err
 	}
