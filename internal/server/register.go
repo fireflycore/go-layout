@@ -10,12 +10,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewRegisterServer(bc *conf.BootstrapConf, d *data.Data) (micro.Register, func(), error) {
-	register, err := etcd.NewRegister(d.Etcd, bc.Micro)
-	return register, func() {
-		register.Uninstall()
-		fmt.Println("uninstall all service for this node from the register")
-	}, err
+func NewRegisterServer(bc *conf.BootstrapConf, d *data.Data) (micro.Register, error) {
+	return etcd.NewRegister(d.Etcd, bc.Micro)
 }
 
 func NewRegisterCenterRepo(mr micro.Register) []*grpc.ServiceDesc {
