@@ -17,7 +17,7 @@ func NewDataConf(ist *task.Instance) *DataConf {
 		Etcd:  &etcd.Config{},
 		Mysql: &gorm.Config{},
 	}
-	micro.InitConfigTask(ist, []string{
+	micro.ReadConfigTask(ist, []string{
 		"https://demo.com/config/etcd.config.json",
 		"https://demo.com/config/mysql.config.json",
 	}, []interface{}{
@@ -25,8 +25,8 @@ func NewDataConf(ist *task.Instance) *DataConf {
 		&result.Mysql,
 	})
 	ist.Await()
-	micro.InitCertTask(ist, "etcd", &result.Etcd.Tls)
-	micro.InitCertTask(ist, "mysql", &result.Mysql.Tls)
+	micro.ReadCertAndWriteLocalTask(ist, "etcd", &result.Etcd.Tls)
+	micro.ReadCertAndWriteLocalTask(ist, "mysql", &result.Mysql.Tls)
 	ist.Await()
 
 	return result
