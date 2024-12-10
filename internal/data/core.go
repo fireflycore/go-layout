@@ -28,15 +28,18 @@ func NewMysql(console bool, mc *gorme.Config, logger biz.OperationLogger) (*gorm
 }
 
 func NewData(bc *conf.BootstrapConf, dc *conf.DataConf, logger biz.OperationLogger) (*Data, error) {
-	result := &Data{}
-	if cli, err := etcd.New(dc.Etcd); err != nil {
-		result.Etcd = cli
-		return nil, err
-	}
-	if orm, err := NewMysql(bc.Logger.Console, dc.Mysql, logger); err != nil {
-		result.Mysql = orm
-		return nil, err
+	etcdCli, ee := etcd.New(dc.Etcd)
+	if ee != nil {
+		return nil, ee
 	}
 
-	return result, nil
+	mysqlCli, oe := NewMysql(bc.Logger.Console, dc.Mysql, logger)
+	if oe != nil {
+		return nil, oe
+	}
+
+	return &Data{
+		Etcd:  etcdCli,
+		Mysql: mysqlCli,
+	}, nil
 }
