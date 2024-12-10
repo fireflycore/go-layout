@@ -33,9 +33,9 @@ func NewLogger(bc *conf.BootstrapConf, handle biz.ServerLogger) *zap.Logger {
 func NewGrpcClient(bc *conf.BootstrapConf) (*grpc.ClientConn, error) {
 	var addr string
 	if bc.Gateway.Network == bc.Micro.Network {
-		addr = bc.Gateway.InsideAddr
+		addr = bc.Gateway.InternalNetAddr
 	} else {
-		addr = bc.Gateway.OuterAddr
+		addr = bc.Gateway.OuterNetAddr
 	}
 	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }
