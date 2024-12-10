@@ -6,4 +6,4 @@ A minimalist microservices framework based on micro-go
 - `go mod tidy`
 - `buf generate`
 - `wire ./cmd/server`
-- `go run main.go`
+- `go run ./cmd/server/main.go`
