@@ -19,13 +19,13 @@ type BootstrapConf struct {
 }
 
 type GatewayConf struct {
-	Network    string `json:"network"`
-	OuterAddr  string `json:"outer_addr"`
-	InsideAddr string `json:"inside_addr"`
+	Network         string `json:"network"`
+	OuterNetAddr    string `json:"outer_net_addr"`
+	InternalNetAddr string `json:"internal_net_addr"`
 }
 
 type ServerConf struct {
-	GrpcPort string `json:"grpc_port"`
+	GrpcPort uint `json:"grpc_port"`
 }
 
 type LoggerConf struct {
