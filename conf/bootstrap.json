@@ -7,8 +7,8 @@
     "ttl": 5,
 
     "network": "main-network",
-    "outer_addr": "113.112.111.110",
-    "internal_addr": "192.168.1.100"
+    "outer_net_addr": "113.112.111.110",
+    "internal_net_addr": "192.168.1.100"
   },
   "gateway": {
     "network": "main-network",
@@ -17,6 +17,10 @@
   },
   "server": {
     "grpc_port": 10000
+  },
+  "logger": {
+    "console": true,
+    "remote": false
   },
   "task": {
     "max_cache": 100,
