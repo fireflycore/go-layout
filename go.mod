@@ -9,7 +9,7 @@ require (
 	github.com/lhdhtrc/func-go v0.2.4
 	github.com/lhdhtrc/gorm v0.3.1
 	github.com/lhdhtrc/logger-go v0.1.1
-	github.com/lhdhtrc/micro-go v0.1.8
+	github.com/lhdhtrc/micro-go v0.2.2
 	github.com/lhdhtrc/task-go v0.0.9
 	go.etcd.io/etcd/client/v3 v3.5.17
 	go.uber.org/zap v1.27.0
