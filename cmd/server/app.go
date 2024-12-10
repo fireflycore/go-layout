@@ -26,7 +26,15 @@ func (ist *App) Stop() {
 	ist.GrpcServer.Stop()
 }
 
-func NewApp(nl net.Listener, gs *grpc.Server, register micro.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
+func NewApp(nl net.Listener, gs *grpc.Server, register micro.Register, services []*grpc.ServiceDesc) *App {
+	register.WithRetryBefore(func() {
+		fmt.Println("重试之前的函数")
+	})
+	register.WithRetryAfter(func() {
+		fmt.Println("重试之后的函数")
+	})
+	go register.SustainLease()
+
 	return &App{
 		Listener:   nl,
 		GrpcServer: gs,
