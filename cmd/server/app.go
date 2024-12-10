@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	micro "github.com/lhdhtrc/micro-go/pkg"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -26,7 +27,7 @@ func (ist *App) Stop() {
 	ist.GrpcServer.Stop()
 }
 
-func NewApp(nl net.Listener, gs *grpc.Server, register micro.Register, services []*grpc.ServiceDesc) *App {
+func NewApp(nl net.Listener, gs *grpc.Server, register micro.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
 	register.WithRetryBefore(func() {
 		fmt.Println("重试之前的函数")
 	})
