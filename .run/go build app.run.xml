@@ -2,7 +2,6 @@
   <configuration default="false" name="go build app" type="GoApplicationRunConfiguration" factoryName="Go Application">
     <module name="go-layout" />
     <working_directory value="$PROJECT_DIR$" />
-    <go_parameters value="-i" />
     <kind value="DIRECTORY" />
     <package value="go-layout" />
     <directory value="$PROJECT_DIR$/cmd/server" />
