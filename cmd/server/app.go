@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	micro "github.com/lhdhtrc/micro-go/pkg"
+	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"net"

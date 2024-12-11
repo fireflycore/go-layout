@@ -3,7 +3,7 @@ package conf
 import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	gorm "github.com/lhdhtrc/gorm/pkg"
-	micro "github.com/lhdhtrc/micro-go/pkg"
+	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	task "github.com/lhdhtrc/task-go/pkg"
 )
 

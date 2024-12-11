@@ -3,7 +3,7 @@ package conf
 import (
 	"encoding/json"
 	logger "github.com/lhdhtrc/logger-go/pkg"
-	micro "github.com/lhdhtrc/micro-go/pkg"
+	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	task "github.com/lhdhtrc/task-go/pkg"
 	"os"
 	"path/filepath"
