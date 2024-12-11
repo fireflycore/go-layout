@@ -32,6 +32,8 @@ func NewApp(nl net.Listener, gs *grpc.Server, register micro.Register, services 
 		fmt.Println("重试之前的函数")
 	})
 	register.WithRetryAfter(func() {
+		micro.NewRegisterService(services, register)
+		go register.SustainLease()
 		fmt.Println("重试之后的函数")
 	})
 	go register.SustainLease()
