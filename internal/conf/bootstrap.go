@@ -10,12 +10,14 @@ import (
 )
 
 type BootstrapConf struct {
-	Server  *ServerConf
-	Gateway *GatewayConf
+	Server  *ServerConf  `json:"server"`
+	Gateway *GatewayConf `json:"gateway"`
 
-	Logger *logger.Config
-	Micro  *micro.ServiceConfig
-	Task   *task.Config
+	Logger *logger.Config       `json:"logger"`
+	Micro  *micro.ServiceConfig `json:"micro"`
+	Task   *task.Config         `json:"task"`
+
+	DataConfFile []string `json:"data_conf_file"`
 }
 
 type GatewayConf struct {

@@ -25,5 +25,9 @@
     "max_cache": 100,
     "max_concurrency": 1,
     "min_concurrency": 0
-  }
+  },
+  "data_conf_file": [
+    "https://demo.com/config/etcd.config.json",
+    "https://demo.com/config/mysql.config.json"
+  ]
 }

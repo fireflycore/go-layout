@@ -12,15 +12,12 @@ type DataConf struct {
 	Mysql *gorm.Config
 }
 
-func NewDataConf(ist *task.Instance) *DataConf {
+func NewDataConf(bc *BootstrapConf, ist *task.Instance) *DataConf {
 	result := &DataConf{
 		Etcd:  &etcd.Config{},
 		Mysql: &gorm.Config{},
 	}
-	micro.ReadConfigTask(ist, []string{
-		"https://demo.com/config/etcd.config.json",
-		"https://demo.com/config/mysql.config.json",
-	}, []interface{}{
+	micro.ReadConfigTask(ist, bc.DataConfFile, []interface{}{
 		&result.Etcd,
 		&result.Mysql,
 	})
