@@ -6,13 +6,13 @@
     "ttl": 5,
 
     "network": "main-network",
-    "outer_net_addr": "113.112.111.110",
-    "internal_net_addr": "192.168.1.100"
+    "outer_net_addr": "113.112.111.110:10000",
+    "internal_net_addr": "192.168.1.100:10000"
   },
   "gateway": {
     "network": "main-network",
-    "outer_addr": "113.112.111.110",
-    "internal_addr": "192.168.1.100"
+    "outer_net_addr": "113.112.111.110:10001",
+    "internal_net_addr": "192.168.1.101:10001"
   },
   "server": {
     "grpc_port": 10000
