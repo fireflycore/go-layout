@@ -1,6 +1,5 @@
 {
   "micro": {
-    "mode": true,
     "app_id": "00000000-0000-0000-0000-00000000000",
     "namespace": "/microservice",
     "max_retry": 5,
