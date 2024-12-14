@@ -1,4 +1,4 @@
-package plugin
+package dep
 
 import (
 	"github.com/google/wire"
