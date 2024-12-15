@@ -2,11 +2,8 @@ package dep
 
 import (
 	"github.com/google/wire"
-	logger "github.com/lhdhtrc/logger-go/pkg"
 	task "github.com/lhdhtrc/task-go/pkg"
-	"go-layout/internal/biz"
 	"go-layout/internal/conf"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -24,10 +21,6 @@ var ProviderSet = wire.NewSet(
 
 func NewTask(bc *conf.BootstrapConf) *task.Instance {
 	return task.New(bc.Task)
-}
-
-func NewLogger(bc *conf.BootstrapConf, handle biz.ServerLogger) *zap.Logger {
-	return logger.New(bc.Logger, handle)
 }
 
 func NewGrpcClient(bc *conf.BootstrapConf) (*grpc.ClientConn, error) {

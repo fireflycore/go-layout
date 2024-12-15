@@ -4,13 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	logger "github.com/lhdhtrc/logger-go/pkg"
 	accessLogger "go-layout/dep/protobuf/gen/acme/logger/access/v1"
 	operationLogger "go-layout/dep/protobuf/gen/acme/logger/operation/v1"
 	serverLogger "go-layout/dep/protobuf/gen/acme/logger/server/v1"
 	"go-layout/internal/biz"
 	"go-layout/internal/conf"
+	"go.uber.org/zap"
 	"time"
 )
+
+func NewLogger(bc *conf.BootstrapConf, handle biz.ServerLogger) *zap.Logger {
+	return logger.New(bc.Logger, handle)
+}
 
 func NewAccessLogger(bc *conf.BootstrapConf, service accessLogger.AccessLoggerServiceClient) biz.AccessLogger {
 	return func(b []byte, msg string) {
