@@ -28,3 +28,11 @@ func NewDataConf(bc *BootstrapConf, ist *task.Instance) *DataConf {
 
 	return result
 }
+
+func NewMysqlConf(dc *DataConf) *gorm.Config {
+	return dc.Mysql
+}
+
+func NewEtcdConf(dc *DataConf) *etcd.Config {
+	return dc.Etcd
+}

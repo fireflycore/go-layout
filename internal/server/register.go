@@ -6,12 +6,12 @@ import (
 	"github.com/lhdhtrc/micro-go/pkg/etcd"
 	demo "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/conf"
-	"go-layout/internal/data"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 )
 
-func NewRegisterServer(bc *conf.BootstrapConf, d *data.Data) (micro.Register, error) {
-	return etcd.NewRegister(d.Etcd, bc.Micro)
+func NewRegisterServer(bc *conf.BootstrapConf, cli *clientv3.Client) (micro.Register, error) {
+	return etcd.NewRegister(cli, bc.Micro)
 }
 
 func NewRegisterCenterRepo(mr micro.Register) []*grpc.ServiceDesc {
