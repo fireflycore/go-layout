@@ -20,10 +20,10 @@ func NewDemoService(uc *biz.DemoUseCase) *DemoService {
 	return &DemoService{uc: uc}
 }
 
-func (s *DemoService) Save(ctx context.Context, request *pb.SaveRequest) (*pb.SaveResponse, error) {
-	result := &pb.SaveResponse{
+func (s *DemoService) Create(ctx context.Context, request *pb.CreateRequest) (*pb.CreateResponse, error) {
+	result := &pb.CreateResponse{
 		Code:    200,
-		Message: "save demo success",
+		Message: "create demo success",
 	}
 
 	md, _ := metadata.FromIncomingContext(ctx)
@@ -37,11 +37,11 @@ func (s *DemoService) Save(ctx context.Context, request *pb.SaveRequest) (*pb.Sa
 		return result, err
 	}
 
-	row := SaveDTO(request)
+	row := CreateDTO(request)
 	row.AppId = appId[0]
 	row.AccountId = accountId[0]
 
-	err := s.uc.Save(ctx, row)
+	err := s.uc.Create(ctx, row)
 
 	return result, err
 }
@@ -67,8 +67,8 @@ func (s *DemoService) Update(ctx context.Context, request *pb.UpdateRequest) (*p
 	return result, nil
 }
 
-func (s *DemoService) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
-	result := &pb.GetResponse{
+func (s *DemoService) FindById(ctx context.Context, request *pb.FindByIdRequest) (*pb.FindByIdResponse, error) {
+	result := &pb.FindByIdResponse{
 		Code:    200,
 		Message: "get demo success",
 	}
@@ -85,29 +85,24 @@ func (s *DemoService) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetR
 		result.Message = "resource not found"
 		return result, err
 	}
-	result.Data = GetDTO(row)
+	result.Data = row
 
 	return result, nil
 }
 
-func (s *DemoService) GetList(ctx context.Context, request *pb.GetListRequest) (*pb.GetListResponse, error) {
-	result := &pb.GetListResponse{
+func (s *DemoService) FindList(ctx context.Context, request *pb.FindListRequest) (*pb.FindListResponse, error) {
+	result := &pb.FindListResponse{
 		Code:    200,
 		Message: "get demo list success",
-		Data:    &pb.GetList{},
 	}
 
-	total, list := s.uc.FindList(ctx, request)
-	result.Data = &pb.GetList{
-		Total: total,
-		List:  list,
-	}
+	result.Data = s.uc.FindList(ctx, request)
 
 	return result, nil
 }
 
-func (s *DemoService) Delete(ctx context.Context, request *pb.DeleteRequest) (*pb.DeleteResponse, error) {
-	result := &pb.DeleteResponse{
+func (s *DemoService) DeleteById(ctx context.Context, request *pb.DeleteByIdRequest) (*pb.DeleteByIdResponse, error) {
+	result := &pb.DeleteByIdResponse{
 		Code:    200,
 		Message: "delete demo success",
 	}
@@ -118,7 +113,7 @@ func (s *DemoService) Delete(ctx context.Context, request *pb.DeleteRequest) (*p
 		return result, err
 	}
 
-	err := s.uc.DeleteById(ctx, request.Id)
+	s.uc.DeleteById(ctx, request.Id)
 
-	return result, err
+	return result, nil
 }

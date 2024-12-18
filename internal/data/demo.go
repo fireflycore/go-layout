@@ -18,45 +18,57 @@ func NewDemoRepo(data *Data) biz.DemoRepo {
 	}
 }
 
-func (uc *demoRepo) Save(ctx context.Context, row *biz.Demo) error {
-	uc.data.Mysql.WithContext(ctx).Create(&row)
+func (uc *demoRepo) Create(ctx context.Context, row *biz.Demo) error {
+	uc.data.db.WithContext(ctx).Create(&row)
 	return nil
 }
 
 func (uc *demoRepo) Update(ctx context.Context, request *pb.UpdateRequest) error {
 	var row biz.Demo
-	if res := uc.data.Mysql.WithContext(ctx).Find(&row); res.Error != nil {
+	if res := uc.data.db.WithContext(ctx).Find(&row); res.Error != nil {
 		return res.Error
 	}
 
 	update := object.FilterChangeValue(&row, request, []string{"Id", "Type"})
 	if len(update) != 0 {
-		uc.data.Mysql.WithContext(ctx).Updates(&row)
+		uc.data.db.WithContext(ctx).Updates(&row)
 	}
 
 	return nil
 }
 
-func (uc *demoRepo) FindById(ctx context.Context, id string) (*biz.Demo, error) {
-	var row biz.Demo
-	uc.data.Mysql.WithContext(ctx).Where("id = ?", id).Find(&row)
-	return &row, nil
+func (uc *demoRepo) FindById(ctx context.Context, id string) (*pb.Demo, error) {
+	var row *pb.Demo
+	if res := uc.data.db.WithContext(ctx).Model(&biz.Demo{}).Where("id = ?", id).Find(&row); res.Error != nil {
+		return nil, res.Error
+	}
+	return row, nil
 }
 
-func (uc *demoRepo) FindList(ctx context.Context, query *pb.GetListRequest) (int64, []*pb.Demo) {
-	sql := uc.data.Mysql.WithContext(ctx).Model(&biz.Demo{})
+func (uc *demoRepo) FindList(ctx context.Context, request *pb.FindListRequest) *pb.List {
+	var raw *pb.List
 
-	var total int64
-	var list []*pb.Demo
-	sql.Count(&total)
+	sql := uc.data.db.WithContext(ctx).Model(&biz.Demo{})
+	sql.Count(&raw.Total)
 
-	gorm.WithPagingFilter(sql, query.Page, query.PageSize)
-	sql.Find(&list)
+	gorm.WithPagingFilter(sql, request.Page, request.PageSize)
+	sql.Find(&raw.List)
 
-	return total, list
+	return raw
 }
 
-func (uc *demoRepo) DeleteById(ctx context.Context, id string) error {
-	uc.data.Mysql.WithContext(ctx).Where("id = ?", id).Delete(&biz.Demo{})
-	return nil
+func (uc *demoRepo) DeleteById(ctx context.Context, id string) {
+	uc.data.db.WithContext(ctx).Where("id = ?", id).Delete(&biz.Demo{})
+}
+
+func (uc *demoRepo) DeleteByIds(ctx context.Context, ids []string) {
+	uc.data.db.WithContext(ctx).Where("id IN ?", ids).Delete(&biz.Demo{})
+}
+
+func (uc *demoRepo) DeleteByAppId(ctx context.Context, appId string) {
+	uc.data.db.WithContext(ctx).Where("app_id = ?", appId).Delete(&biz.Demo{})
+}
+
+func (uc *demoRepo) DeleteByAccountId(ctx context.Context, accountId string) {
+	uc.data.db.WithContext(ctx).Where("account_id = ?", accountId).Delete(&biz.Demo{})
 }
