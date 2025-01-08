@@ -5,9 +5,9 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	NewAccessLoggerOuterService,
-	NewServerLoggerOuterService,
-	NewOperationLoggerOuterService,
+	NewAccessLoggerRemoteService,
+	NewServerLoggerRemoteService,
+	NewOperationLoggerRemoteService,
 
 	NewDemoService,
 )

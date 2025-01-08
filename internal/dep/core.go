@@ -4,7 +4,6 @@ import (
 	"github.com/google/wire"
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	task "github.com/lhdhtrc/task-go/pkg"
-	"go-layout/internal/biz"
 	"go-layout/internal/conf"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
@@ -15,8 +14,7 @@ var ProviderSet = wire.NewSet(
 	NewTask,
 	NewEtcd,
 
-	NewOuterGrpcClient,
-	NewInternalGrpcClient,
+	NewRemoteServiceGrpcClient,
 
 	NewLogger,
 	NewAccessLogger,
@@ -32,7 +30,7 @@ func NewEtcd(ec *etcd.Config) (*clientv3.Client, error) {
 	return etcd.New(ec)
 }
 
-func NewOuterGrpcClient(bc *conf.BootstrapConf) (biz.OuterGrpcClient, error) {
+func NewRemoteServiceGrpcClient(bc *conf.BootstrapConf) (*grpc.ClientConn, error) {
 	var addr string
 	if bc.Gateway.Network == bc.Micro.Network {
 		addr = bc.Gateway.InternalNetAddr
@@ -40,8 +38,4 @@ func NewOuterGrpcClient(bc *conf.BootstrapConf) (biz.OuterGrpcClient, error) {
 		addr = bc.Gateway.OuterNetAddr
 	}
 	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-}
-
-func NewInternalGrpcClient(bc *conf.BootstrapConf) (biz.InternalGrpcClient, error) {
-	return grpc.NewClient(bc.Micro.InternalNetAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }

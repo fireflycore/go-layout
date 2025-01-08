@@ -4,17 +4,17 @@ import (
 	accessLogger "go-layout/dep/protobuf/gen/acme/logger/access/v1"
 	operationLogger "go-layout/dep/protobuf/gen/acme/logger/operation/v1"
 	serverLogger "go-layout/dep/protobuf/gen/acme/logger/server/v1"
-	"go-layout/internal/biz"
+	"google.golang.org/grpc"
 )
 
-func NewAccessLoggerOuterService(client biz.OuterGrpcClient) accessLogger.AccessLoggerServiceClient {
+func NewAccessLoggerRemoteService(client *grpc.ClientConn) accessLogger.AccessLoggerServiceClient {
 	return accessLogger.NewAccessLoggerServiceClient(client)
 }
 
-func NewOperationLoggerOuterService(client biz.OuterGrpcClient) operationLogger.OperationLoggerServiceClient {
+func NewOperationLoggerRemoteService(client *grpc.ClientConn) operationLogger.OperationLoggerServiceClient {
 	return operationLogger.NewOperationLoggerServiceClient(client)
 }
 
-func NewServerLoggerOuterService(client biz.OuterGrpcClient) serverLogger.ServerLoggerServiceClient {
+func NewServerLoggerRemoteService(client *grpc.ClientConn) serverLogger.ServerLoggerServiceClient {
 	return serverLogger.NewServerLoggerServiceClient(client)
 }
