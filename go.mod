@@ -5,6 +5,7 @@ go 1.23.1
 require (
 	github.com/bufbuild/protovalidate-go v0.7.3
 	github.com/google/wire v0.6.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.0
 	github.com/lhdhtrc/etcd-go v0.1.9
 	github.com/lhdhtrc/func-go v0.2.4
 	github.com/lhdhtrc/gorm v0.3.1
@@ -13,9 +14,9 @@ require (
 	github.com/lhdhtrc/task-go v0.0.9
 	go.etcd.io/etcd/client/v3 v3.5.17
 	go.uber.org/zap v1.27.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240903143218-8af14fe29dc1
-	google.golang.org/grpc v1.68.0
-	google.golang.org/protobuf v1.35.2
+	google.golang.org/genproto/googleapis/api v0.0.0-20250115164207-1a7da9e5054f
+	google.golang.org/grpc v1.69.4
+	google.golang.org/protobuf v1.36.3
 	gorm.io/gorm v1.25.9
 )
 
@@ -39,9 +40,9 @@ require (
 	go.etcd.io/etcd/client/pkg/v3 v3.5.17 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20240525044651-4c93da0ed11d // indirect
-	golang.org/x/net v0.31.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1 // indirect
+	golang.org/x/net v0.33.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 	gorm.io/driver/mysql v1.5.6 // indirect
 )
