@@ -70,7 +70,7 @@ func NewOperationLogger(bc *conf.BootstrapConf, service operationLogger.Operatio
 
 		var row operationLogger.CreateRequest
 		if err := json.Unmarshal(b, &row); err == nil {
-			row.OwnerAppId = bc.Micro.AppId
+			row.InvokeAppId = bc.Micro.AppId
 			_, _ = service.Create(ctx, &row)
 		} else {
 			fmt.Println(err)
