@@ -10,29 +10,22 @@ import (
 )
 
 type BootstrapConf struct {
-	Server  *ServerConf  `json:"server"`
-	Gateway *GatewayConf `json:"gateway"`
+	// 运行端口
+	Port uint `json:"port"`
 
-	Logger *logger.Config       `json:"logger"`
-	Micro  *micro.ServiceConfig `json:"micro"`
-	Task   *task.Config         `json:"task"`
+	// 应用id
+	AppId string `json:"app_id"`
+	// 应用密钥
+	AppSecret string `json:"app_secret"`
 
-	DataConfFile []string `json:"data_conf_file"`
-}
-
-type GatewayConf struct {
-	Network         string `json:"network"`
-	OuterNetAddr    string `json:"outer_net_addr"`
-	InternalNetAddr string `json:"internal_net_addr"`
-}
-
-type ServerConf struct {
-	GrpcPort uint `json:"grpc_port"`
-}
-
-type LoggerConf struct {
-	Remote  bool `json:"remote"`
-	Console bool `json:"console"`
+	// 微服务核心组件配置
+	Micro *micro.ServiceConf `json:"micro"`
+	// 网关配置
+	Gateway *micro.GatewayConf `json:"gateway"`
+	// 日志组件配置
+	Logger *logger.Config `json:"logger"`
+	// 任务组件配置
+	Task *task.Config `json:"task"`
 }
 
 func NewBootstrapConf() *BootstrapConf {
