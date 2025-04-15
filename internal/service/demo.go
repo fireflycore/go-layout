@@ -6,6 +6,7 @@ import (
 	"github.com/bufbuild/protovalidate-go"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz"
+	"go-layout/internal/dto"
 	"google.golang.org/grpc/metadata"
 	"gorm.io/gorm"
 )
@@ -37,7 +38,7 @@ func (s *DemoService) Create(ctx context.Context, request *pb.CreateRequest) (*p
 		return result, err
 	}
 
-	row := CreateDTO(request)
+	row := dto.CreateDTO(request)
 	row.AppId = appId[0]
 	row.AccountId = accountId[0]
 

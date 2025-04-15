@@ -1,4 +1,4 @@
-package service
+package dto
 
 import (
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
