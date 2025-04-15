@@ -51,7 +51,7 @@ func NewServerLogger(bc *conf.BootstrapConf, service serverLogger.ServerLoggerSe
 
 		var row serverLogger.CreateRequest
 		if err := json.Unmarshal(b, &row); err == nil {
-			row.AppId = bc.Micro.AppId
+			row.AppId = bc.AppId
 			_, _ = service.Create(ctx, &row)
 		} else {
 			fmt.Println(err)
@@ -70,7 +70,7 @@ func NewOperationLogger(bc *conf.BootstrapConf, service operationLogger.Operatio
 
 		var row operationLogger.CreateRequest
 		if err := json.Unmarshal(b, &row); err == nil {
-			row.InvokeAppId = bc.Micro.AppId
+			row.InvokeAppId = bc.AppId
 			_, _ = service.Create(ctx, &row)
 		} else {
 			fmt.Println(err)
