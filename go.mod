@@ -6,23 +6,23 @@ require (
 	github.com/bufbuild/protovalidate-go v0.7.3
 	github.com/google/wire v0.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
-	github.com/lhdhtrc/etcd-go v0.1.9
+	github.com/lhdhtrc/etcd-go v0.2.0
 	github.com/lhdhtrc/func-go v0.2.4
-	github.com/lhdhtrc/gorm v0.3.1
-	github.com/lhdhtrc/logger-go v0.1.2
-	github.com/lhdhtrc/micro-go v0.2.3
+	github.com/lhdhtrc/gorm v0.3.2
+	github.com/lhdhtrc/logger-go v0.1.3
+	github.com/lhdhtrc/micro-go v0.2.5
 	github.com/lhdhtrc/task-go v0.0.9
 	go.etcd.io/etcd/client/v3 v3.5.17
 	go.uber.org/zap v1.27.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250303144028-a0af3efb3deb
-	google.golang.org/grpc v1.70.0
+	google.golang.org/grpc v1.71.1
 	google.golang.org/protobuf v1.36.5
 	gorm.io/gorm v1.25.9
 )
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.35.2-20240920164238-5a7b106cbb87.1 // indirect
-	cel.dev/expr v0.19.0 // indirect
+	cel.dev/expr v0.19.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
