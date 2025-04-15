@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	logger "github.com/lhdhtrc/logger-go/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
-	task "github.com/lhdhtrc/task-go/pkg"
 	"os"
 	"path/filepath"
 )
@@ -24,8 +23,6 @@ type BootstrapConf struct {
 	Gateway *micro.GatewayConf `json:"gateway"`
 	// 日志组件配置
 	Logger *logger.Config `json:"logger"`
-	// 任务组件配置
-	Task *task.Config `json:"task"`
 }
 
 func NewBootstrapConf() *BootstrapConf {

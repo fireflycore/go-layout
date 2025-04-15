@@ -3,7 +3,6 @@ package conf
 import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	gorm "github.com/lhdhtrc/gorm/pkg"
-	task "github.com/lhdhtrc/task-go/pkg"
 )
 
 type DataConf struct {
@@ -11,7 +10,7 @@ type DataConf struct {
 	Mysql *gorm.Config
 }
 
-func NewDataConf(bc *BootstrapConf, ist *task.Instance) *DataConf {
+func NewDataConf(bc *BootstrapConf) *DataConf {
 	result := new(DataConf)
 	return result
 }

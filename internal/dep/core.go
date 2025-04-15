@@ -3,7 +3,6 @@ package dep
 import (
 	"github.com/google/wire"
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
-	task "github.com/lhdhtrc/task-go/pkg"
 	"go-layout/internal/conf"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
@@ -11,7 +10,6 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	NewTask,
 	NewEtcd,
 
 	NewRemoteServiceGrpcClient,
@@ -21,10 +19,6 @@ var ProviderSet = wire.NewSet(
 	NewServerLogger,
 	NewOperationLogger,
 )
-
-func NewTask(bc *conf.BootstrapConf) *task.Instance {
-	return task.New(bc.Task)
-}
 
 func NewEtcd(ec *etcd.Config) (*clientv3.Client, error) {
 	return etcd.New(ec)
