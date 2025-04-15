@@ -7,7 +7,8 @@ import (
 )
 
 func NewServer(bc *conf.BootstrapConf) net.Listener {
-	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", bc.Server.GrpcPort))
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", bc.Port))
+
 	if err != nil {
 		panic(err)
 	}
