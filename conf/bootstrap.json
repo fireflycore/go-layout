@@ -1,33 +1,21 @@
 {
+  "port": 10500,
+  "app_id": "00000000-0000-0000-0000-00000000000",
   "micro": {
-    "app_id": "00000000-0000-0000-0000-00000000000",
     "namespace": "/microservice",
-    "max_retry": 5,
-    "ttl": 5,
-
-    "network": "main-network",
+    "internal_net_addr": "192.168.1.100:10000",
     "outer_net_addr": "113.112.111.110:10000",
-    "internal_net_addr": "192.168.1.100:10000"
+    "network": "main-network",
+    "max_retry": 5,
+    "ttl": 5
   },
   "gateway": {
     "network": "main-network",
     "outer_net_addr": "113.112.111.110:10001",
     "internal_net_addr": "192.168.1.101:10001"
   },
-  "server": {
-    "grpc_port": 10000
-  },
   "logger": {
     "console": true,
     "remote": false
-  },
-  "task": {
-    "max_cache": 100,
-    "max_concurrency": 1,
-    "min_concurrency": 0
-  },
-  "data_conf_file": [
-    "https://demo.com/config/etcd.config.json",
-    "https://demo.com/config/mysql.config.json"
-  ]
+  }
 }
