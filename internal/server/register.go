@@ -11,7 +11,7 @@ import (
 )
 
 func NewRegisterServer(bc *conf.BootstrapConf, cli *clientv3.Client) (micro.Register, error) {
-	return etcd.NewRegister(cli, bc.Micro)
+	return etcd.NewRegister(bc.AppId, cli, bc.Micro)
 }
 
 func NewRegisterCenterRepo(mr micro.Register) []*grpc.ServiceDesc {
