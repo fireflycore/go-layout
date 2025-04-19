@@ -10,7 +10,7 @@ managed:
       module: buf.build/grpc-ecosystem/grpc-gateway
   override:
     - file_option: go_package_prefix
-      value: go-layout
+      value: go-layout/dep/protobuf/gen
 plugins:
   - remote: buf.build/grpc/go
     out: dep/protobuf/gen
@@ -21,6 +21,7 @@ plugins:
 inputs:
   - module: buf.build/firefly/demo:main
     types:
+      - acme.config.v1
       - acme.logger.access.v1
       - acme.logger.server.v1
       - acme.logger.operation.v1
