@@ -1,14 +1,14 @@
 package conf
 
 import (
-	"encoding/json"
+	"fmt"
 	logger "github.com/lhdhtrc/logger-go/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
-	"os"
-	"path/filepath"
 )
 
 type BootstrapConf struct {
+	// 环境
+	Env string `json:"env"`
 	// 运行端口
 	Port uint `json:"port"`
 
@@ -16,6 +16,12 @@ type BootstrapConf struct {
 	AppId string `json:"app_id"`
 	// 应用密钥
 	AppSecret string `json:"app_secret"`
+
+	// 版本号
+	Version string `json:"version"`
+
+	// 加载配置模式: local 为本地加载 remote 为远程加载
+	LoadConfMode string `json:"load_conf_mode"`
 
 	// 微服务核心组件配置
 	Micro *micro.ServiceConf `json:"micro"`
@@ -28,21 +34,13 @@ type BootstrapConf struct {
 func NewBootstrapConf() *BootstrapConf {
 	var bc BootstrapConf
 
-	cur, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	file := filepath.Join(cur, "conf", "bootstrap.json")
+	filePath := getConfigFilePath("bootstrap.json")
 
-	var b []byte
-	b, err = os.ReadFile(file)
-	if err != nil {
+	if err := loadJSONConfig(filePath, &bc); err != nil {
 		panic(err)
 	}
 
-	if err = json.Unmarshal(b, &bc); err != nil {
-		panic(err)
-	}
+	bc.Micro.Network.Internal = fmt.Sprintf("%s:%d", micro.GetInternalNetworkIp(), bc.Port)
 
 	return &bc
 }

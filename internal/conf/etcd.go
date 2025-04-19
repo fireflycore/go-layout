@@ -1,0 +1,41 @@
+package conf
+
+import (
+	etcd "github.com/lhdhtrc/etcd-go/pkg"
+	configCenter "go-layout/dep/protobuf/gen/acme/config/v1"
+)
+
+// EtcdLoader 实现 ConfigLoader 接口
+type EtcdLoader struct{}
+
+func NewEtcdConf(dc *DataConf) *etcd.Config {
+	return dc.Etcd
+}
+
+func (ist *EtcdLoader) LoadLocal(dc *DataConf) error {
+	filePath := getConfigFilePath("etcd.json")
+
+	if err := loadJSONConfig(filePath, &dc.Etcd); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ist *EtcdLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) error {
+	content, err := fetchRemoteConfig(bc, cc, "database", "etcd")
+
+	if err != nil {
+		return err
+	}
+
+	if err = analyzeData(content, []byte(bc.AppSecret), &dc.Etcd); err != nil {
+		return err
+	}
+
+	if err = analyzeTlsData("etcd", &dc.Etcd.Tls); err != nil {
+		return err
+	}
+
+	return nil
+}

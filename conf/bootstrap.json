@@ -1,21 +1,30 @@
 {
+  "env": "prod",
   "port": 10500,
   "app_id": "00000000-0000-0000-0000-00000000000",
+  "app_secret": "UnkK/F+1+6aFV9Gz4lCX1se05+jpmueX",
+  "version": "v0.0.1",
+  "load_conf_mode": "local",
   "micro": {
-    "namespace": "/microservice",
-    "internal_net_addr": "192.168.1.100:10000",
-    "outer_net_addr": "113.112.111.110:10000",
-    "network": "main-network",
+    "namespace": "/microservice/firefly",
+    "network": {
+      "sn": "main-network",
+      "internal": "192.168.1.100:10600",
+      "external": "112.112.112.112:10600"
+    },
+    "kernel": {
+      "version": "v0.1.8"
+    },
     "max_retry": 5,
     "ttl": 5
   },
   "gateway": {
     "network": "main-network",
-    "outer_net_addr": "113.112.111.110:10001",
-    "internal_net_addr": "192.168.1.101:10001"
+    "outer_net_addr": "192.168.1.101:10600",
+    "internal_net_addr": "112.112.112.112:10600"
   },
   "logger": {
     "console": true,
-    "remote": false
+    "remote": true
   }
 }
