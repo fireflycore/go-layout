@@ -45,7 +45,7 @@ func NewDataConf(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) *
 
 	// 环境特定覆盖
 	if bc.Env == "dev" {
-		dc.Etcd.Endpoint = []string{"119.45.227.16:10106"}
+		dc.Etcd.Endpoint = []string{"112.112.112.112:10106"}
 	}
 
 	return dc
