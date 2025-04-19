@@ -26,10 +26,10 @@ func NewEtcd(ec *etcd.Config) (*clientv3.Client, error) {
 
 func NewRemoteServiceGrpcClient(bc *conf.BootstrapConf) (*grpc.ClientConn, error) {
 	var addr string
-	if bc.Gateway.Network == bc.Micro.Network {
-		addr = bc.Gateway.InternalNetAddr
+	if bc.Gateway.Network.SN == bc.Micro.Network.SN {
+		addr = bc.Gateway.Network.Internal
 	} else {
-		addr = bc.Gateway.OuterNetAddr
+		addr = bc.Gateway.Network.External
 	}
 	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }

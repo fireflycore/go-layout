@@ -6,7 +6,7 @@ import (
 	"github.com/bufbuild/protovalidate-go"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz"
-	"go-layout/internal/dto"
+	"go-layout/internal/service/dto"
 	"google.golang.org/grpc/metadata"
 	"gorm.io/gorm"
 )
