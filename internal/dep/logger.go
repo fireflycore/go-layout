@@ -19,15 +19,7 @@ func NewLogger(bc *conf.BootstrapConf, handle biz.ServerLogger) *zap.Logger {
 }
 
 func NewAccessLogger(bc *conf.BootstrapConf, service accessLogger.AccessLoggerServiceClient) biz.AccessLogger {
-	return func(b []byte, msg string) {
-		if bc.Logger.Console {
-			fmt.Print(msg)
-		}
-
-		if !bc.Logger.Remote {
-			return
-		}
-
+	async := logger.NewAsyncLogger(1000, func(b []byte) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 
@@ -37,15 +29,23 @@ func NewAccessLogger(bc *conf.BootstrapConf, service accessLogger.AccessLoggerSe
 		} else {
 			fmt.Println(err)
 		}
-	}
-}
+	})
 
-func NewServerLogger(bc *conf.BootstrapConf, service serverLogger.ServerLoggerServiceClient) biz.ServerLogger {
-	return func(b []byte) {
+	return func(b []byte, msg string) {
+		if bc.Logger.Console {
+			fmt.Print(msg)
+		}
+
 		if !bc.Logger.Remote {
 			return
 		}
 
+		async.Logger(b)
+	}
+}
+
+func NewServerLogger(bc *conf.BootstrapConf, service serverLogger.ServerLoggerServiceClient) biz.ServerLogger {
+	async := logger.NewAsyncLogger(1000, func(b []byte) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 
@@ -56,15 +56,18 @@ func NewServerLogger(bc *conf.BootstrapConf, service serverLogger.ServerLoggerSe
 		} else {
 			fmt.Println(err)
 		}
-	}
-}
+	})
 
-func NewOperationLogger(bc *conf.BootstrapConf, service operationLogger.OperationLoggerServiceClient) biz.OperationLogger {
 	return func(b []byte) {
 		if !bc.Logger.Remote {
 			return
 		}
+		async.Logger(b)
+	}
+}
 
+func NewOperationLogger(bc *conf.BootstrapConf, service operationLogger.OperationLoggerServiceClient) biz.OperationLogger {
+	async := logger.NewAsyncLogger(1000, func(b []byte) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 
@@ -75,5 +78,12 @@ func NewOperationLogger(bc *conf.BootstrapConf, service operationLogger.Operatio
 		} else {
 			fmt.Println(err)
 		}
+	})
+
+	return func(b []byte) {
+		if !bc.Logger.Remote {
+			return
+		}
+		async.Logger(b)
 	}
 }
