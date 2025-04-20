@@ -10,7 +10,7 @@ require (
 	github.com/lhdhtrc/crypto-go v0.0.2
 	github.com/lhdhtrc/etcd-go v0.2.1
 	github.com/lhdhtrc/func-go v0.2.4
-	github.com/lhdhtrc/gorm v0.3.2
+	github.com/lhdhtrc/gorm v0.3.5
 	github.com/lhdhtrc/logger-go v0.1.6
 	github.com/lhdhtrc/micro-go v0.3.9
 	go.etcd.io/etcd/client/v3 v3.5.17
