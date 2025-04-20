@@ -2,6 +2,7 @@ package conf
 
 import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
+	gorm "github.com/lhdhtrc/gorm/pkg"
 	configCenter "go-layout/dep/protobuf/gen/acme/config/v1"
 )
 
@@ -14,7 +15,8 @@ type Loader interface {
 }
 
 type DataConf struct {
-	Etcd *etcd.Config // Etcd连接配置
+	Etcd  *etcd.Config    // Etcd连接配置
+	Mysql *gorm.MysqlConf // Mysql连接配置
 }
 
 func NewDataConf(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) *DataConf {
@@ -46,6 +48,7 @@ func NewDataConf(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) *
 	// 环境特定覆盖
 	if bc.Env == "dev" {
 		dc.Etcd.Endpoint = []string{"112.112.112.112:10106"}
+		dc.Mysql.Conf.Address = "112.112.112.112:10106"
 	}
 
 	return dc
