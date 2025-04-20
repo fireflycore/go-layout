@@ -14,17 +14,18 @@ type Data struct {
 	db *gorm.DB
 }
 
-func NewMysql(bc *conf.BootstrapConf, mc *gorme.Config, logger biz.OperationLogger) (*gorm.DB, error) {
-	//mc.WithAutoMigrate(true)
-	mc.WithLoggerHandle(logger)
-	mc.WithLoggerConsole(bc.Logger.Console)
+func NewMysql(bc *conf.BootstrapConf, mc *gorme.MysqlConf, logger biz.OperationLogger) (*gorme.MysqlDB, error) {
+	//mc.Conf.WithAutoMigrate(true)
+	mc.Conf.WithLoggerHandle(logger)
+	mc.Conf.WithLoggerConsole(bc.Logger.Console)
 
 	return gorme.NewMysql(mc, []interface{}{
 		&biz.Demo{},
 	})
 }
-func NewData(db *gorm.DB) (*Data, error) {
+
+func NewData(mysql *gorme.MysqlDB) (*Data, error) {
 	return &Data{
-		db: db,
+		db: mysql.DB,
 	}, nil
 }
