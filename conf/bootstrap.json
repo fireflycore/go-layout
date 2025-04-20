@@ -19,9 +19,11 @@
     "ttl": 5
   },
   "gateway": {
-    "network": "main-network",
-    "outer_net_addr": "192.168.1.101:10600",
-    "internal_net_addr": "112.112.112.112:10600"
+    "network": {
+      "sn": "main-network",
+      "internal": "192.168.1.100:10600",
+      "external": "112.112.112.112:10600"
+    }
   },
   "logger": {
     "console": true,
