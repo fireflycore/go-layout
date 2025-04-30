@@ -33,7 +33,7 @@ func (ist *MysqlLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc configCen
 		return err
 	}
 
-	if err = analyzeTlsData("mysql", &dc.Mysql.Conf.Tls); err != nil {
+	if err = analyzeTlsData("mysql", dc.Mysql.Conf.Tls); err != nil {
 		return err
 	}
 

@@ -20,7 +20,10 @@ type DataConf struct {
 }
 
 func NewDataConf(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) *DataConf {
-	dc := new(DataConf)
+	dc := &DataConf{
+		Etcd:  &etcd.Config{},
+		Mysql: &gorm.MysqlConf{},
+	}
 
 	// 注册配置加载器
 	loaders := []Loader{

@@ -85,8 +85,12 @@ func analyzeTlsData(dir string, tls interface{}) error {
 	dirPath := filepath.Join("dep", "cert", dir)
 
 	// 遍历config的字段
-	valueOfConfig := reflect.ValueOf(tls).Elem()
+	valueOfConfig := reflect.ValueOf(tls)
+	if valueOfConfig.Kind() == reflect.Ptr {
+		valueOfConfig = valueOfConfig.Elem()
+	}
 	typeOfConfig := valueOfConfig.Type()
+
 	for i := 0; i < valueOfConfig.NumField(); i++ {
 		fieldValue := valueOfConfig.Field(i)
 		fieldType := typeOfConfig.Field(i)

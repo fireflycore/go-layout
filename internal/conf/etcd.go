@@ -33,7 +33,7 @@ func (ist *EtcdLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc configCent
 		return err
 	}
 
-	if err = analyzeTlsData("etcd", &dc.Etcd.Tls); err != nil {
+	if err = analyzeTlsData("etcd", dc.Etcd.Tls); err != nil {
 		return err
 	}
 
