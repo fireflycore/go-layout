@@ -1,9 +1,9 @@
 package service
 
 import (
+	"buf.build/go/protovalidate"
 	"context"
 	"errors"
-	"github.com/bufbuild/protovalidate-go"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz"
 	"go-layout/internal/service/dto"
