@@ -51,7 +51,7 @@ func (uc *demoRepo) FindList(ctx context.Context, request *pb.FindListRequest) *
 	sql := uc.data.db.WithContext(ctx).Model(&biz.Demo{})
 	sql.Count(&raw.Total)
 
-	gorm.WithPagingFilter(sql, request.Page, request.PageSize)
+	gorm.UsePaging(sql, request.Page, request.PageSize)
 	sql.Find(&raw.List)
 
 	return raw
