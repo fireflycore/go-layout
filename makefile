@@ -16,6 +16,12 @@ init:
 	wire ./cmd/server
 	go mod tidy
 
+# 运行项目
+.PHONY: run
+run:
+	make init
+	go run ./cmd/server/main.go
+
 # 构建项目
 .PHONY: build
 build:
