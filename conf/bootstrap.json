@@ -27,6 +27,6 @@
   },
   "logger": {
     "console": true,
-    "remote": true
+    "remote": false
   }
 }
