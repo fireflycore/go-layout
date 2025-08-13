@@ -3,7 +3,7 @@ package conf
 import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	gorm "github.com/lhdhtrc/gorm/pkg"
-	configCenter "go-layout/dep/protobuf/gen/acme/config/v1"
+	config "go-layout/dep/protobuf/gen/acme/config/v1"
 )
 
 // Loader 定义配置加载的统一接口
@@ -11,7 +11,7 @@ type Loader interface {
 	// LoadLocal 从本地文件系统加载配置
 	LoadLocal(dc *DataConf) error
 	// LoadRemote 从远程配置中心加载配置
-	LoadRemote(dc *DataConf, bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) error
+	LoadRemote(dc *DataConf, bc *BootstrapConf, cc config.ConfigServiceClient) error
 }
 
 type DataConf struct {
@@ -19,7 +19,7 @@ type DataConf struct {
 	Mysql *gorm.MysqlConf // Mysql连接配置
 }
 
-func NewDataConf(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) *DataConf {
+func NewDataConf(bc *BootstrapConf, cc config.ConfigServiceClient) *DataConf {
 	dc := &DataConf{
 		Etcd:  &etcd.Config{},
 		Mysql: &gorm.MysqlConf{},
@@ -28,6 +28,7 @@ func NewDataConf(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) *
 	// 注册配置加载器
 	loaders := []Loader{
 		&EtcdLoader{},
+		&MysqlLoader{},
 	}
 
 	// 执行所有配置加载
@@ -50,8 +51,8 @@ func NewDataConf(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) *
 
 	// 环境特定覆盖
 	if bc.Env == "dev" {
-		dc.Etcd.Endpoint = []string{"112.112.112.112:10106"}
-		dc.Mysql.Conf.Address = "112.112.112.112:10106"
+		dc.Etcd.Endpoint = []string{"111.111.111.111:10106"}
+		dc.Mysql.Conf.Address = "111.111.111.111:10100"
 	}
 
 	return dc

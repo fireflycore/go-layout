@@ -8,7 +8,8 @@ import (
 	compress "github.com/lhdhtrc/compress-go/pkg"
 	crypto "github.com/lhdhtrc/crypto-go/pkg"
 	"github.com/lhdhtrc/func-go/file"
-	configCenter "go-layout/dep/protobuf/gen/acme/config/v1"
+	micro "github.com/lhdhtrc/micro-go/pkg/core"
+	config "go-layout/dep/protobuf/gen/acme/config/v1"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -39,21 +40,23 @@ func loadJSONConfig(file string, target interface{}) error {
 }
 
 // fetchRemoteConfig 获取远程配置
-func fetchRemoteConfig(bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient, group, key string) (string, error) {
+func fetchRemoteConfig(bc *BootstrapConf, cc config.ConfigServiceClient, group, key string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	resp, err := cc.Get(ctx, &configCenter.GetRequest{
-		Env:   bc.Env,
-		AppId: bc.AppId,
-		Group: group,
-		Key:   key,
+	data, err := micro.WithRemoteInvoke[*config.Config, *config.GetResponse](func() (*config.GetResponse, error) {
+		return cc.Get(ctx, &config.GetRequest{
+			Env:   bc.Env,
+			AppId: bc.AppId,
+			Group: group,
+			Key:   key,
+		})
 	})
 	if err != nil {
-		return "", fmt.Errorf("config center request failed: %w", err)
+		return "", err
 	}
 
-	return resp.Data.Content, nil
+	return data.Content, nil
 }
 
 // analyzeData 解析数据

@@ -2,7 +2,7 @@ package conf
 
 import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
-	configCenter "go-layout/dep/protobuf/gen/acme/config/v1"
+	config "go-layout/dep/protobuf/gen/acme/config/v1"
 )
 
 // EtcdLoader 实现 ConfigLoader 接口
@@ -22,7 +22,7 @@ func (ist *EtcdLoader) LoadLocal(dc *DataConf) error {
 	return nil
 }
 
-func (ist *EtcdLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) error {
+func (ist *EtcdLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc config.ConfigServiceClient) error {
 	content, err := fetchRemoteConfig(bc, cc, "database", "etcd")
 
 	if err != nil {

@@ -2,7 +2,7 @@ package conf
 
 import (
 	gorm "github.com/lhdhtrc/gorm/pkg"
-	configCenter "go-layout/dep/protobuf/gen/acme/config/v1"
+	config "go-layout/dep/protobuf/gen/acme/config/v1"
 )
 
 // MysqlLoader 实现 ConfigLoader 接口
@@ -22,7 +22,7 @@ func (ist *MysqlLoader) LoadLocal(dc *DataConf) error {
 	return nil
 }
 
-func (ist *MysqlLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc configCenter.ConfigCenterServiceClient) error {
+func (ist *MysqlLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc config.ConfigServiceClient) error {
 	content, err := fetchRemoteConfig(bc, cc, "database", "mysql")
 
 	if err != nil {
