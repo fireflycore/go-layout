@@ -1,15 +1,15 @@
 package service
 
 import (
-	configCenter "go-layout/dep/protobuf/gen/acme/config/v1"
+	config "go-layout/dep/protobuf/gen/acme/config/v1"
 	accessLogger "go-layout/dep/protobuf/gen/acme/logger/access/v1"
 	operationLogger "go-layout/dep/protobuf/gen/acme/logger/operation/v1"
 	serverLogger "go-layout/dep/protobuf/gen/acme/logger/server/v1"
 	"google.golang.org/grpc"
 )
 
-func NewConfigCenterRemoteService(client *grpc.ClientConn) configCenter.ConfigCenterServiceClient {
-	return configCenter.NewConfigCenterServiceClient(client)
+func NewConfigCenterRemoteService(client *grpc.ClientConn) config.ConfigServiceClient {
+	return config.NewConfigServiceClient(client)
 }
 
 func NewAccessLoggerRemoteService(client *grpc.ClientConn) accessLogger.AccessLoggerServiceClient {
