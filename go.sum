@@ -56,8 +56,8 @@ github.com/lhdhtrc/crypto-go v0.0.3 h1:vthXy5anzF+n4y8ILqnN9OS9Wit3dhvNGGquKjVU9
 github.com/lhdhtrc/crypto-go v0.0.3/go.mod h1:hVy1YNpwNW4CXE9MBy1sAmM0bAaLwTVSSDDbGLdsjbI=
 github.com/lhdhtrc/etcd-go v0.2.3 h1:krywzdlULWlOXqCR2GZRdC6ssC+nAK9wF4cQg9HvYoM=
 github.com/lhdhtrc/etcd-go v0.2.3/go.mod h1:HxWSWL2LdI5sNbrWacm9NWpa+TklnHlKNc8dYE6AvRs=
-github.com/lhdhtrc/func-go v0.3.0 h1:x9lCG5uAIi7jz82t6+UXcT/lc/HuhzH12M5nBmDbmmw=
-github.com/lhdhtrc/func-go v0.3.0/go.mod h1:472eOcYx+2hBxQIiDEX85Jj+jUVynmu8116AFVvYZZU=
+github.com/lhdhtrc/func-go v0.3.1 h1:fgP2OWtzZuhU+dlFemLKucy++ZnFQN/IgHCSwObb6wQ=
+github.com/lhdhtrc/func-go v0.3.1/go.mod h1:472eOcYx+2hBxQIiDEX85Jj+jUVynmu8116AFVvYZZU=
 github.com/lhdhtrc/gorm v0.6.3 h1:7I+u6pX3bLYL//o25mVM4zT7CCDc7Lho2hZuo2NPeLI=
 github.com/lhdhtrc/gorm v0.6.3/go.mod h1:0fhuC0JPJ05Vlx725+mo6yVs/zAiK0hUc2iOCYZpVWY=
 github.com/lhdhtrc/logger-go v0.1.7 h1:6pyvRwozVWfMRtSmP/RGtMaj78flJfURtZR3pW2mJqM=
