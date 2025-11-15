@@ -52,3 +52,7 @@ func (uc *demoRepo) GetDemoInfo(ctx context.Context, id string) (*entity.Demo, e
 	}
 	return &row, nil
 }
+
+func (uc *demoRepo) UpdateDemo(ctx context.Context, id string, row map[string]interface{}) error {
+	return uc.data.db.WithContext(ctx).Model(&entity.Demo{}).Where("id = ?", id).Updates(&row).Error
+}
