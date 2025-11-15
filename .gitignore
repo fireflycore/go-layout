@@ -19,5 +19,5 @@
 .log/*
 
 .DS_Store
-dep/*
+depend/*
 *_gen.go
