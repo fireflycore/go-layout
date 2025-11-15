@@ -39,3 +39,11 @@ func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *micro.UserContextMet
 		List:  uc.dto.ToRaw(list),
 	}
 }
+
+func (uc *DemoUseCase) GetDemoInfo(ctx context.Context, id string) (*pb.Demo, error) {
+	row, err := uc.repo.GetDemoInfo(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return uc.dto.ToRow(row), nil
+}
