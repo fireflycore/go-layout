@@ -25,32 +25,10 @@ func (uc *demoRepo) CreateDemo(ctx context.Context, row *entity.Demo) error {
 	return uc.data.db.WithContext(ctx).Create(row).Error
 }
 
-	row := demoDTO.ToUpdate(request)
-
-	updates := object.FilterChangeValue(old, row, []string{})
-	if len(updates) == 0 {
-		return nil
-	}
-
-	if res := uc.data.db.WithContext(ctx).Model(&entity.Demo{}).Where("id = ?", request.Id).Updates(&updates); res.Error != nil {
-		return errors.New("更新失败")
-	}
-
-	return nil
-}
-
-func (uc *demoRepo) FindById(ctx context.Context, id string) (*pb.Demo, error) {
-	var row entity.Demo
-	if res := uc.data.db.WithContext(ctx).Where("id = ?", id).Find(&row); res.Error != nil {
-		return nil, res.Error
-	}
-	return demoDTO.ToRow(&row), nil
-}
-
-func (uc *demoRepo) FindList(ctx context.Context, um *micro.UserContextMeta, request *pb.FindListRequest) *pb.List {
+func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) ([]*entity.Demo, int64) {
 	var (
-		raw  *pb.List
-		list []*entity.Demo
+		list  []*entity.Demo
+		total int64
 	)
 
 	sql := uc.data.db.WithContext(ctx).Model(&entity.Demo{})
