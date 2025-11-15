@@ -9,7 +9,7 @@ import (
 	crypto "github.com/lhdhtrc/crypto-go/pkg"
 	"github.com/lhdhtrc/func-go/file"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
-	config "go-layout/dep/protobuf/gen/acme/config/v1"
+	config "go-layout/depend/protobuf/gen/acme/config/v1"
 	"os"
 	"path/filepath"
 	"reflect"

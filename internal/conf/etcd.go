@@ -2,7 +2,7 @@ package conf
 
 import (
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
-	config "go-layout/dep/protobuf/gen/acme/config/v1"
+	config "go-layout/depend/protobuf/gen/acme/config/v1"
 )
 
 // EtcdLoader 实现 ConfigLoader 接口
