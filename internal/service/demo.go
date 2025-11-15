@@ -114,8 +114,6 @@ func (srv *DemoService) UpdateDemo(ctx context.Context, request *pb.UpdateDemoRe
 	um, err := micro.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
-		result.Message = "查询失败"
-		return result, err
 		result.Message = err.Error()
 		return result, nil
 	}
