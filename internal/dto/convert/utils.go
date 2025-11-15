@@ -2,7 +2,7 @@ package convert
 
 import (
 	"github.com/google/uuid"
-	gorm "github.com/lhdhtrc/gorm/pkg"
+	"gorm.io/datatypes"
 	"time"
 )
 
@@ -10,22 +10,22 @@ func TimeToString(t time.Time) string {
 	return t.Format(time.DateTime)
 }
 
-func StringToUUID(s string) gorm.BinUUID {
+func StringToUUID(s string) datatypes.UUID {
 	u, e := uuid.Parse(s)
 	if e != nil {
-		return gorm.BinUUID(uuid.Nil)
+		return datatypes.UUID(uuid.Nil)
 	}
-	return gorm.BinUUID(u)
+	return datatypes.UUID(u)
 }
 
-func UUIDToString(u gorm.BinUUID) string {
+func UUIDToString(u datatypes.UUID) string {
 	if uuid.UUID(u) == uuid.Nil {
 		return ""
 	}
 	return u.String()
 }
 
-func UUIDPtrToString(u *gorm.BinUUID) string {
+func UUIDPtrToString(u *datatypes.UUID) string {
 	if u != nil {
 		return u.String()
 	}
