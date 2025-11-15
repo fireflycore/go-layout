@@ -1,4 +1,4 @@
-package dep
+package depend
 
 import (
 	"github.com/google/wire"
