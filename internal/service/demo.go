@@ -98,16 +98,16 @@ func (srv *DemoService) GetDemoInfo(ctx context.Context, request *pb.GetDemoInfo
 	return result, nil
 }
 
-func (srv *DemoService) FindList(ctx context.Context, request *pb.FindListRequest) (*pb.FindListResponse, error) {
-	result := &pb.FindListResponse{
+func (srv *DemoService) UpdateDemo(ctx context.Context, request *pb.UpdateDemoRequest) (*pb.UpdateDemoResponse, error) {
+	result := &pb.UpdateDemoResponse{
 		Code:    200,
-		Message: "get demo list success",
+		Message: "success",
 	}
 
 	if err := protovalidate.Validate(request); err != nil {
 		result.Code = 400
-		result.Message = "missing necessary params"
-		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
 	md, _ := metadata.FromIncomingContext(ctx)
@@ -116,9 +116,15 @@ func (srv *DemoService) FindList(ctx context.Context, request *pb.FindListReques
 		result.Code = 400
 		result.Message = "查询失败"
 		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
-	result.Data = srv.uc.FindList(ctx, um, request)
+	if err = srv.uc.UpdateDemo(ctx, um, request); err != nil {
+		result.Code = 400
+		result.Message = err.Error()
+		return result, nil
+	}
 
 	return result, nil
 }
