@@ -21,27 +21,27 @@ func NewDemoService(uc *biz.DemoUseCase) *DemoService {
 	return &DemoService{uc: uc}
 }
 
-func (srv *DemoService) Create(ctx context.Context, request *pb.CreateRequest) (*pb.CreateResponse, error) {
-	result := &pb.CreateResponse{
+func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRequest) (*pb.CreateDemoResponse, error) {
+	result := &pb.CreateDemoResponse{
 		Code:    200,
-		Message: "create demo success",
+		Message: "success",
 	}
 
 	if err := protovalidate.Validate(request); err != nil {
 		result.Code = 400
-		result.Message = "missing necessary params"
-		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
 	md, _ := metadata.FromIncomingContext(ctx)
 	um, err := micro.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
-		result.Message = "查询失败"
+		result.Message = err.Error()
 		return result, err
 	}
 
-	if err = srv.uc.Create(ctx, um, request); err != nil {
+	if err = srv.uc.CreateDemo(ctx, um, request); err != nil {
 		result.Code = 400
 		result.Message = err.Error()
 		return result, nil
