@@ -1,4 +1,4 @@
-package dto
+package convert
 
 import (
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
@@ -6,8 +6,8 @@ import (
 )
 
 // goverter:converter
-// goverter:output:package :data
-// goverter:output:file @cwd/dep/goverter/data/demo.dto.go
+// goverter:output:package :biz
+// goverter:output:file @cwd/dep/goverter/biz/demo.dto.go
 // goverter:extend StringToUUID UUIDToString UUIDPtrToString TimeToString
 type DemoConverter interface {
 	// goverter:ignore TableUUID UserId AppId
