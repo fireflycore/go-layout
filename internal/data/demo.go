@@ -45,7 +45,10 @@ func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, 
 	return list, total
 }
 
-func (uc *demoRepo) DeleteById(ctx context.Context, id string) error {
-	uc.data.db.WithContext(ctx).Where("id = UUID_TO_BIN(?)", id).Delete(&entity.Demo{})
-	return nil
+func (uc *demoRepo) GetDemoInfo(ctx context.Context, id string) (*entity.Demo, error) {
+	var row entity.Demo
+	if res := uc.data.db.WithContext(ctx).Where("id = ?", id).Find(&row); res.Error != nil {
+		return nil, res.Error
+	}
+	return &row, nil
 }
