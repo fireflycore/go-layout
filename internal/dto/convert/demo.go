@@ -11,9 +11,9 @@ import (
 // goverter:extend StringToUUID UUIDToString UUIDPtrToString TimeToString
 type DemoConverter interface {
 	// goverter:ignore TableUUID UserId AppId
-	ToCreate(row *pb.CreateRequest) *entity.Demo
+	ToCreate(row *pb.CreateDemoRequest) *entity.Demo
 	// goverter:ignore TableUUID UserId AppId
-	ToUpdate(row *pb.UpdateRequest) *entity.Demo
+	ToUpdate(row *pb.UpdateDemoRequest) *entity.Demo
 
 	// goverter:ignore state unknownFields sizeCache Author
 	// goverter:map TableUUID.ID Id
