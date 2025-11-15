@@ -62,3 +62,7 @@ func (uc *DemoUseCase) UpdateDemo(ctx context.Context, _ *micro.UserContextMeta,
 
 	return uc.repo.UpdateDemo(ctx, request.Id, updates)
 }
+
+func (uc *DemoUseCase) DeleteDemo(ctx context.Context, id string) error {
+	return uc.repo.DeleteDemo(ctx, id)
+}
