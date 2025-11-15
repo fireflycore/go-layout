@@ -28,6 +28,7 @@ func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta
 	row := uc.dto.ToCreate(request)
 	row.AppId = gorme.ParseUUID(um.AppId)
 	row.UserId = gorme.ParseUUID(um.UserId)
+	row.TenantId = gorme.ParseUUID(um.TenantId)
 
 	return uc.repo.CreateDemo(ctx, row)
 }
