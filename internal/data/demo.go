@@ -2,12 +2,10 @@ package data
 
 import (
 	"context"
-	"errors"
-	"github.com/lhdhtrc/func-go/object"
 	"github.com/lhdhtrc/gorm/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
-	"go-layout/internal/biz"
+	"go-layout/internal/biz/repo"
 	"go-layout/internal/data/entity"
 )
 
@@ -15,7 +13,7 @@ type demoRepo struct {
 	data *Data
 }
 
-func NewDemoRepo(data *Data) biz.DemoRepo {
+func NewDemoRepo(data *Data) repo.DemoRepo {
 	return &demoRepo{
 		data: data,
 	}
@@ -55,4 +53,9 @@ func (uc *demoRepo) GetDemoInfo(ctx context.Context, id string) (*entity.Demo, e
 
 func (uc *demoRepo) UpdateDemo(ctx context.Context, id string, row map[string]interface{}) error {
 	return uc.data.db.WithContext(ctx).Model(&entity.Demo{}).Where("id = ?", id).Updates(&row).Error
+}
+
+func (uc *demoRepo) DeleteDemo(ctx context.Context, id string) error {
+	uc.data.db.WithContext(ctx).Where("id = ?", id).Delete(&entity.Demo{})
+	return nil
 }
