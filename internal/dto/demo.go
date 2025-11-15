@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"go-layout/dep/goverter/biz"
+	"go-layout/depend/goverter/biz"
 	"go-layout/internal/dto/convert"
 )
 
