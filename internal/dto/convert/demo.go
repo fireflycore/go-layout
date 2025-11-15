@@ -7,12 +7,12 @@ import (
 
 // goverter:converter
 // goverter:output:package :biz
-// goverter:output:file @cwd/dep/goverter/biz/demo.dto.go
+// goverter:output:file @cwd/depend/goverter/biz/demo.go
 // goverter:extend StringToUUID UUIDToString UUIDPtrToString TimeToString
 type DemoConverter interface {
-	// goverter:ignore TableUUID UserId AppId
+	// goverter:ignore TableUUID UserId AppId TenantId
 	ToCreate(row *pb.CreateDemoRequest) *entity.Demo
-	// goverter:ignore TableUUID UserId AppId
+	// goverter:ignore TableUUID UserId AppId TenantId
 	ToUpdate(row *pb.UpdateDemoRequest) *entity.Demo
 
 	// goverter:ignore state unknownFields sizeCache Author
