@@ -38,13 +38,11 @@ func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, 
 		sk := "%" + request.SearchKey + "%"
 		sql.Where("name LIKE ?", sk)
 	}
-	sql.Count(&raw.Total)
-	gorm.UsePaging(sql, request.Page, request.PageSize)
-
+	sql.Count(&total)
+	gorm.WithPaging(sql, request.Page, request.PageSize)
 	sql.Find(&list)
-	raw.List = demoDTO.ToRaw(list)
 
-	return raw
+	return list, total
 }
 
 func (uc *demoRepo) DeleteById(ctx context.Context, id string) error {
