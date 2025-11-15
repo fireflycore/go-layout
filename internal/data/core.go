@@ -2,11 +2,11 @@ package data
 
 import (
 	"github.com/google/wire"
-	"go-layout/dep/goverter/data"
 )
 
-var ProviderSet = wire.NewSet(NewMysql, NewData, NewDemoRepo)
+var ProviderSet = wire.NewSet(
+	NewMysql,
+	NewData,
 
-var (
-	demoDTO = new(data.DemoConverterImpl)
+	NewDemoRepo,
 )
