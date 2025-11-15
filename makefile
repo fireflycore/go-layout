@@ -1,7 +1,7 @@
 # 生成dto
 .PHONY: dto
 dto:
-	goverter gen ./internal/data/dto
+	goverter gen ./internal/dto/convert
 
 # 生成代码
 .PHONY: generate
