@@ -30,3 +30,12 @@ func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta
 
 	return uc.repo.CreateDemo(ctx, row)
 }
+
+func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+	list, total := uc.repo.GetDemoList(ctx, um, request)
+
+	return &pb.DemoList{
+		Total: total,
+		List:  uc.dto.ToRaw(list),
+	}
+}
