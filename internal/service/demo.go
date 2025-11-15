@@ -75,23 +75,23 @@ func (srv *DemoService) GetDemoList(ctx context.Context, request *pb.GetDemoList
 	return result, nil
 }
 
-func (srv *DemoService) FindById(ctx context.Context, request *pb.FindByIdRequest) (*pb.FindByIdResponse, error) {
-	result := &pb.FindByIdResponse{
+func (srv *DemoService) GetDemoInfo(ctx context.Context, request *pb.GetDemoInfoRequest) (*pb.GetDemoInfoResponse, error) {
+	result := &pb.GetDemoInfoResponse{
 		Code:    200,
-		Message: "get demo success",
+		Message: "success",
 	}
 
 	if err := protovalidate.Validate(request); err != nil {
 		result.Code = 400
-		result.Message = "missing necessary params"
-		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
-	row, err := srv.uc.FindById(ctx, request.Id)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		result.Code = 404
-		result.Message = "resource not found"
-		return result, err
+	row, err := srv.uc.GetDemoInfo(ctx, request.Id)
+	if err != nil {
+		result.Code = 400
+		result.Message = err.Error()
+		return result, nil
 	}
 	result.Data = row
 
