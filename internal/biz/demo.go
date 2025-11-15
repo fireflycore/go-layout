@@ -6,16 +6,10 @@ import (
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 )
 
-type DemoRepo interface {
-	Create(ctx context.Context, um *micro.UserContextMeta, request *pb.CreateRequest) error
-	FindList(ctx context.Context, um *micro.UserContextMeta, request *pb.FindListRequest) *pb.List
-	FindById(ctx context.Context, id string) (*pb.Demo, error)
-	Update(ctx context.Context, um *micro.UserContextMeta, request *pb.UpdateRequest) error
-	DeleteById(ctx context.Context, id string) error
-}
-
 type DemoUseCase struct {
-	repo DemoRepo
+	repo repo.DemoRepo
+
+	dto convert.DemoConverter
 }
 
 func NewDemoUseCase(repo DemoRepo) *DemoUseCase {
