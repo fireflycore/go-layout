@@ -127,22 +127,22 @@ func (srv *DemoService) UpdateDemo(ctx context.Context, request *pb.UpdateDemoRe
 	return result, nil
 }
 
-func (srv *DemoService) DeleteById(ctx context.Context, request *pb.DeleteByIdRequest) (*pb.DeleteByIdResponse, error) {
-	result := &pb.DeleteByIdResponse{
+func (srv *DemoService) DeleteDemo(ctx context.Context, request *pb.DeleteDemoRequest) (*pb.DeleteDemoResponse, error) {
+	result := &pb.DeleteDemoResponse{
 		Code:    200,
-		Message: "delete demo success",
+		Message: "success",
 	}
 
 	if err := protovalidate.Validate(request); err != nil {
 		result.Code = 400
-		result.Message = "missing necessary params"
-		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
-	if err := srv.uc.DeleteById(ctx, request.Id); err != nil {
+	if err := srv.uc.DeleteDemo(ctx, request.Id); err != nil {
 		result.Code = 400
-		result.Message = "删除失败"
-		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
 	return result, nil
