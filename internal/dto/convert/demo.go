@@ -6,8 +6,8 @@ import (
 )
 
 // goverter:converter
-// goverter:output:package :biz
-// goverter:output:file @cwd/depend/goverter/biz/demo.go
+// goverter:output:package :dto
+// goverter:output:file @cwd/depend/dto/demo.go
 // goverter:extend StringToUUID UUIDToString UUIDPtrToString TimeToString
 type DemoConverter interface {
 	// goverter:ignore TableUUID UserId AppId TenantId
