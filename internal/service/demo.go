@@ -50,31 +50,27 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 	return result, nil
 }
 
-func (srv *DemoService) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-	result := &pb.UpdateResponse{
+func (srv *DemoService) GetDemoList(ctx context.Context, request *pb.GetDemoListRequest) (*pb.GetDemoListResponse, error) {
+	result := &pb.GetDemoListResponse{
 		Code:    200,
-		Message: "update demo success",
+		Message: "success",
 	}
 
 	if err := protovalidate.Validate(request); err != nil {
 		result.Code = 400
-		result.Message = "missing necessary params"
-		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
 	md, _ := metadata.FromIncomingContext(ctx)
 	um, err := micro.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
-		result.Message = "查询失败"
-		return result, err
+		result.Message = err.Error()
+		return result, nil
 	}
 
-	if err = srv.uc.Update(ctx, um, request); err != nil {
-		result.Code = 400
-		result.Message = "更新失败"
-		return result, err
-	}
+	result.Data = srv.uc.GetDemoList(ctx, um, request)
 
 	return result, nil
 }
