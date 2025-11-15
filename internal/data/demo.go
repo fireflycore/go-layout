@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"github.com/lhdhtrc/gorm/pkg"
+	"github.com/lhdhtrc/gorm/pkg/scope"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	pb "go-layout/depend/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz/repo"
@@ -37,7 +37,7 @@ func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, 
 		sql.Where("name LIKE ?", sk)
 	}
 	sql.Count(&total)
-	gorm.WithPaging(sql, request.Page, request.PageSize)
+	sql.Scopes(scope.WithPagination(request.Page, request.PageSize))
 	sql.Find(&list)
 
 	return list, total
