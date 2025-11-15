@@ -1,4 +1,4 @@
-package dep
+package depend
 
 import (
 	"context"
@@ -8,17 +8,20 @@ import (
 	accessLogger "go-layout/dep/protobuf/gen/acme/logger/access/v1"
 	operationLogger "go-layout/dep/protobuf/gen/acme/logger/operation/v1"
 	serverLogger "go-layout/dep/protobuf/gen/acme/logger/server/v1"
-	"go-layout/internal/biz"
 	"go-layout/internal/conf"
 	"go.uber.org/zap"
 	"time"
 )
 
-func NewLogger(bc *conf.BootstrapConf, handle biz.ServerLogger) *zap.Logger {
+type AccessLogger func(b []byte, msg string)
+type ServerLogger func(b []byte)
+type OperationLogger func(b []byte)
+
+func NewLogger(bc *conf.BootstrapConf, handle ServerLogger) *zap.Logger {
 	return logger.New(bc.Logger, handle)
 }
 
-func NewAccessLogger(bc *conf.BootstrapConf, service accessLogger.AccessLoggerServiceClient) biz.AccessLogger {
+func NewAccessLogger(bc *conf.BootstrapConf, service accessLogger.AccessLoggerServiceClient) AccessLogger {
 	async := logger.NewAsyncLogger(1000, func(b []byte) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
@@ -44,7 +47,7 @@ func NewAccessLogger(bc *conf.BootstrapConf, service accessLogger.AccessLoggerSe
 	}
 }
 
-func NewServerLogger(bc *conf.BootstrapConf, service serverLogger.ServerLoggerServiceClient) biz.ServerLogger {
+func NewServerLogger(bc *conf.BootstrapConf, service serverLogger.ServerLoggerServiceClient) ServerLogger {
 	async := logger.NewAsyncLogger(1000, func(b []byte) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
@@ -66,7 +69,7 @@ func NewServerLogger(bc *conf.BootstrapConf, service serverLogger.ServerLoggerSe
 	}
 }
 
-func NewOperationLogger(bc *conf.BootstrapConf, service operationLogger.OperationLoggerServiceClient) biz.OperationLogger {
+func NewOperationLogger(bc *conf.BootstrapConf, service operationLogger.OperationLoggerServiceClient) OperationLogger {
 	async := logger.NewAsyncLogger(1000, func(b []byte) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
