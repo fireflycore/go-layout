@@ -21,21 +21,9 @@ func NewDemoRepo(data *Data) biz.DemoRepo {
 	}
 }
 
-func (uc *demoRepo) Create(ctx context.Context, um *micro.UserContextMeta, request *pb.CreateRequest) error {
-	row := demoDTO.ToCreate(request)
-	row.AppId = gorm.BinUUID(um.AppId)
-	row.UserId = gorm.BinUUID(um.UserId)
-	if res := uc.data.db.WithContext(ctx).Create(row); res.Error != nil {
-		return res.Error
-	}
-	return nil
+func (uc *demoRepo) CreateDemo(ctx context.Context, row *entity.Demo) error {
+	return uc.data.db.WithContext(ctx).Create(row).Error
 }
-
-func (uc *demoRepo) Update(ctx context.Context, _ *micro.UserContextMeta, request *pb.UpdateRequest) error {
-	old, err := uc.FindById(ctx, request.Id)
-	if err != nil {
-		return err
-	}
 
 	row := demoDTO.ToUpdate(request)
 
