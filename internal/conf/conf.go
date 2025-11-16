@@ -6,21 +6,13 @@ import (
 	config "go-layout/depend/protobuf/gen/acme/config/v1"
 )
 
-// Loader 定义配置加载的统一接口
-type Loader interface {
-	// LoadLocal 从本地文件系统加载配置
-	LoadLocal(dc *DataConf) error
-	// LoadRemote 从远程配置中心加载配置
-	LoadRemote(dc *DataConf, bc *BootstrapConf, cc config.ConfigServiceClient) error
-}
-
-type DataConf struct {
+type Conf struct {
 	Etcd  *etcd.Config    // Etcd连接配置
 	Mysql *gorm.MysqlConf // Mysql连接配置
 }
 
-func NewDataConf(bc *BootstrapConf, cc config.ConfigServiceClient) *DataConf {
-	dc := &DataConf{
+func NewConf(bc *BootstrapConf, cc config.ConfigServiceClient) *Conf {
+	dc := &Conf{
 		Etcd:  &etcd.Config{},
 		Mysql: &gorm.MysqlConf{},
 	}
@@ -36,12 +28,12 @@ func NewDataConf(bc *BootstrapConf, cc config.ConfigServiceClient) *DataConf {
 		switch bc.LoadConfMode {
 		case "local":
 			// 从本地加载
-			if err := loader.LoadLocal(dc); err != nil {
+			if err := loader.Local(dc); err != nil {
 				panic(err)
 			}
 		case "remote":
 			// 从配置中心加载
-			if err := loader.LoadRemote(dc, bc, cc); err != nil {
+			if err := loader.Remote(dc, bc, cc); err != nil {
 				panic(err)
 			}
 		default:
