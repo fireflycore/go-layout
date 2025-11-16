@@ -1,7 +1,10 @@
 package conf
 
-import (
-	"github.com/google/wire"
-)
+import "github.com/google/wire"
 
-var ProviderSet = wire.NewSet(NewDataConf, NewEtcdConf, NewMysqlConf)
+var ProviderSet = wire.NewSet(
+	NewConf,
+
+	NewEtcdConf,
+	NewMysqlConf,
+)
