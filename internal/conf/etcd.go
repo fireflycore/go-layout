@@ -8,11 +8,11 @@ import (
 // EtcdLoader 实现 ConfigLoader 接口
 type EtcdLoader struct{}
 
-func NewEtcdConf(dc *DataConf) *etcd.Config {
+func NewEtcdConf(dc *Conf) *etcd.Config {
 	return dc.Etcd
 }
 
-func (ist *EtcdLoader) LoadLocal(dc *DataConf) error {
+func (ist *EtcdLoader) Local(dc *Conf) error {
 	filePath := getConfigFilePath("etcd.json")
 
 	if err := loadJSONConfig(filePath, &dc.Etcd); err != nil {
@@ -22,7 +22,7 @@ func (ist *EtcdLoader) LoadLocal(dc *DataConf) error {
 	return nil
 }
 
-func (ist *EtcdLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc config.ConfigServiceClient) error {
+func (ist *EtcdLoader) Remote(dc *Conf, bc *BootstrapConf, cc config.ConfigServiceClient) error {
 	content, err := fetchRemoteConfig(bc, cc, "database", "etcd")
 
 	if err != nil {

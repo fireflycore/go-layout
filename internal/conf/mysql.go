@@ -8,11 +8,11 @@ import (
 // MysqlLoader 实现 ConfigLoader 接口
 type MysqlLoader struct{}
 
-func NewMysqlConf(dc *DataConf) *gorm.MysqlConf {
+func NewMysqlConf(dc *Conf) *gorm.MysqlConf {
 	return dc.Mysql
 }
 
-func (ist *MysqlLoader) LoadLocal(dc *DataConf) error {
+func (ist *MysqlLoader) Local(dc *Conf) error {
 	filePath := getConfigFilePath("mysql.json")
 
 	if err := loadJSONConfig(filePath, &dc.Mysql.Conf); err != nil {
@@ -22,7 +22,7 @@ func (ist *MysqlLoader) LoadLocal(dc *DataConf) error {
 	return nil
 }
 
-func (ist *MysqlLoader) LoadRemote(dc *DataConf, bc *BootstrapConf, cc config.ConfigServiceClient) error {
+func (ist *MysqlLoader) Remote(dc *Conf, bc *BootstrapConf, cc config.ConfigServiceClient) error {
 	content, err := fetchRemoteConfig(bc, cc, "database", "mysql")
 
 	if err != nil {
