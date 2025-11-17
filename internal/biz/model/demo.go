@@ -1,4 +1,4 @@
-package biz
+package model
 
 type UpdateDemo struct {
 	Title       string `json:"title"`
