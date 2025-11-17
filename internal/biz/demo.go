@@ -5,9 +5,10 @@ import (
 	"github.com/lhdhtrc/func-go/object"
 	gorme "github.com/lhdhtrc/gorm/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
+	"go-layout/depend/dto"
 	pb "go-layout/depend/protobuf/gen/acme/demo/v1"
+	"go-layout/internal/biz/convert"
 	"go-layout/internal/biz/repo"
-	"go-layout/internal/dto/convert"
 )
 
 type DemoUseCase struct {
@@ -22,6 +23,10 @@ func NewDemoUseCase(repo repo.DemoRepo, dto convert.DemoConverter) *DemoUseCase 
 
 		dto: dto,
 	}
+}
+
+func NewDemoConvert() convert.DemoConverter {
+	return &dto.DemoConverterImpl{}
 }
 
 func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta, request *pb.CreateDemoRequest) error {
