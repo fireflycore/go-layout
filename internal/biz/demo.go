@@ -17,16 +17,16 @@ type DemoUseCase struct {
 	dto convert.DemoConverter
 }
 
+func NewDemoConvert() convert.DemoConverter {
+	return &dto.DemoConverterImpl{}
+}
+
 func NewDemoUseCase(repo repo.DemoRepo, dto convert.DemoConverter) *DemoUseCase {
 	return &DemoUseCase{
 		repo: repo,
 
 		dto: dto,
 	}
-}
-
-func NewDemoConvert() convert.DemoConverter {
-	return &dto.DemoConverterImpl{}
 }
 
 func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta, request *pb.CreateDemoRequest) error {
