@@ -9,7 +9,6 @@ import (
 	"go-layout/internal/conf"
 	"go-layout/internal/data"
 	"go-layout/internal/depend"
-	"go-layout/internal/dto"
 	"go-layout/internal/server"
 	"go-layout/internal/service"
 )
@@ -19,7 +18,6 @@ func wireApp(bc *conf.BootstrapConf) (*App, error) {
 		depend.ProviderSet,
 		conf.ProviderSet,
 		data.ProviderSet,
-		dto.ProviderSet,
 		biz.ProviderSet,
 		service.ProviderSet,
 		server.ProviderSet,
