@@ -2,6 +2,7 @@ package convert
 
 import (
 	pb "go-layout/depend/protobuf/gen/acme/demo/v1"
+	"go-layout/internal/biz/model"
 	"go-layout/internal/data/entity"
 )
 
@@ -12,8 +13,7 @@ import (
 type DemoConverter interface {
 	// goverter:ignore TableUUID UserId AppId TenantId
 	ToCreate(row *pb.CreateDemoRequest) *entity.Demo
-	// goverter:ignore TableUUID UserId AppId TenantId
-	ToUpdate(row *pb.UpdateDemoRequest) *entity.Demo
+	ToUpdate(row *pb.UpdateDemoRequest) *model.UpdateDemo
 
 	// goverter:ignore state unknownFields sizeCache Author
 	// goverter:map TableUUID.ID Id
