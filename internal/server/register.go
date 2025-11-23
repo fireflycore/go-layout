@@ -4,7 +4,7 @@ import (
 	"fmt"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	"github.com/lhdhtrc/micro-go/pkg/etcd"
-	demo "go-layout/depend/protobuf/gen/acme/demo/v1"
+	demo "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/conf"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
