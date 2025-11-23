@@ -9,12 +9,16 @@ import (
 )
 
 type Data struct {
-	db *gorm.DB
+	etcd *clientv3.Client
+	rdb  *redis.Client
+	db   *gorm.DB
 }
 
-func NewData(mysql *gorme.MysqlDB) (*Data, error) {
+func NewData(etcd *clientv3.Client, rdb *redis.Client, db *gorme.MysqlDB) (*Data, error) {
 	return &Data{
-		db: mysql.DB,
+		etcd: etcd,
+		rdb:  rdb,
+		db:   db.DB,
 	}, nil
 }
 
