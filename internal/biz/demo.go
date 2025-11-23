@@ -5,8 +5,7 @@ import (
 	"github.com/lhdhtrc/func-go/object"
 	gorme "github.com/lhdhtrc/gorm/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
-	"go-layout/depend/dto"
-	pb "go-layout/depend/protobuf/gen/acme/demo/v1"
+	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz/convert"
 	"go-layout/internal/biz/repo"
 )
