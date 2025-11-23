@@ -1,24 +1,26 @@
 package conf
 
 import (
-	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	compress "github.com/lhdhtrc/compress-go/pkg"
 	crypto "github.com/lhdhtrc/crypto-go/pkg"
 	"github.com/lhdhtrc/func-go/file"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
-	config "go-layout/depend/protobuf/gen/acme/config/v1"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
-	"time"
 )
 
-// getConfigFilePath 获取配置路径
-func getConfigFilePath(filename string) string {
+type Utils struct{}
+
+func NewConfUtils() *Utils {
+	return &Utils{}
+}
+
+// GetConfigFilePath 获取配置路径
+func (ist *Utils) GetConfigFilePath(filename string) string {
 	cur, err := os.Getwd()
 	if err != nil {
 		panic("failed to get working directory: " + err.Error())
@@ -26,8 +28,8 @@ func getConfigFilePath(filename string) string {
 	return filepath.Join(cur, "conf", filename)
 }
 
-// loadJSONConfig 获取本地配置
-func loadJSONConfig(file string, target interface{}) error {
+// LoadJSONConfig 获取本地配置
+func (ist *Utils) LoadJSONConfig(file string, target interface{}) error {
 	b, err := os.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("failed to read config file %s: %w", file, err)
@@ -39,28 +41,8 @@ func loadJSONConfig(file string, target interface{}) error {
 	return nil
 }
 
-// fetchRemoteConfig 获取远程配置
-func fetchRemoteConfig(bc *BootstrapConf, cc config.ConfigServiceClient, group, key string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	data, err := micro.WithRemoteInvoke[*config.Config, *config.GetResponse](func() (*config.GetResponse, error) {
-		return cc.Get(ctx, &config.GetRequest{
-			Env:   bc.Env,
-			AppId: bc.AppId,
-			Group: group,
-			Key:   key,
-		})
-	})
-	if err != nil {
-		return "", err
-	}
-
-	return data.Content, nil
-}
-
-// analyzeData 解析数据
-func analyzeData(content string, key []byte, val any) error {
+// AnalyzeData 解析数据
+func (ist *Utils) AnalyzeData(content string, key []byte, val any) error {
 	decode, err := base64.StdEncoding.DecodeString(content)
 	if err != nil {
 		return err
@@ -79,8 +61,8 @@ func analyzeData(content string, key []byte, val any) error {
 	return json.Unmarshal(decompress, &val)
 }
 
-// analyzeTlsData 解析tls数据
-func analyzeTlsData(dir string, tls interface{}) error {
+// AnalyzeTlsData 解析tls数据
+func (ist *Utils) AnalyzeTlsData(dir string, tls interface{}) error {
 	if tls == nil {
 		return nil
 	}
