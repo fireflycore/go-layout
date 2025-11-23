@@ -3,8 +3,14 @@ package conf
 import "github.com/google/wire"
 
 var ProviderSet = wire.NewSet(
-	NewConf,
+	NewConfUtils,
+	NewBootstrapConf,
+
+	NewEtcdConfLoader,
+	NewRedisConfLoader,
+	NewMysqlConfLoader,
 
 	NewEtcdConf,
-	NewMysqlConf,
+	NewRedisConf,
+	NewPostgresConf,
 )
