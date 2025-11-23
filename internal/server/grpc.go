@@ -1,15 +1,16 @@
 package server
 
 import (
+	ggm "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/lhdhtrc/micro-go/pkg/middleware"
-	demo "go-layout/depend/protobuf/gen/acme/demo/v1"
-	"go-layout/internal/depend"
+	demo "go-layout/dep/protobuf/gen/acme/demo/v1"
+	"go-layout/internal/dep"
 	"go-layout/internal/service"
 	"google.golang.org/grpc"
 )
 
 func NewGrpcServer(
-	logger depend.AccessLogger,
+	logger dep.AccessLogger,
 
 	demoService *service.DemoService,
 ) *grpc.Server {
