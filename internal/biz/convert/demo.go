@@ -10,7 +10,7 @@ import (
 // goverter:output:package :dto
 // goverter:output:file @cwd/dep/dto/demo.go
 // goverter:extend StringToUUID UUIDToString UUIDPtrToString TimeToString
-type DemoConverter interface {
+type DemoConvert interface {
 	// goverter:ignore TableUUID UserId AppId TenantId
 	ToCreate(row *pb.CreateDemoRequest) *entity.Demo
 	ToUpdate(row *pb.UpdateDemoRequest) *model.UpdateDemo
