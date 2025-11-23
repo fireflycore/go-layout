@@ -1,10 +1,10 @@
 package service
 
 import (
-	config "go-layout/depend/protobuf/gen/acme/config/v1"
-	accessLogger "go-layout/depend/protobuf/gen/acme/logger/access/v1"
-	operationLogger "go-layout/depend/protobuf/gen/acme/logger/operation/v1"
-	serverLogger "go-layout/depend/protobuf/gen/acme/logger/server/v1"
+	config "go-layout/dep/protobuf/gen/acme/config/v1"
+	accessLogger "go-layout/dep/protobuf/gen/acme/logger/access/v1"
+	operationLogger "go-layout/dep/protobuf/gen/acme/logger/operation/v1"
+	serverLogger "go-layout/dep/protobuf/gen/acme/logger/server/v1"
 	"google.golang.org/grpc"
 )
 
