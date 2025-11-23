@@ -13,9 +13,10 @@ func NewGrpcServer(
 
 	Demo *service.DemoService,
 ) *grpc.Server {
-	srv := grpc.NewServer(grpc.UnaryInterceptor(
+	srv := grpc.NewServer(grpc.UnaryInterceptor(ggm.ChainUnaryServer(
+		middleware.PropagateIncomingMetadata,
 		middleware.GrpcAccessLogger(logger),
-	))
+	)))
 
 	demo.RegisterDemoServiceServer(srv, Demo)
 
