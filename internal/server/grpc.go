@@ -11,14 +11,14 @@ import (
 func NewGrpcServer(
 	logger depend.AccessLogger,
 
-	Demo *service.DemoService,
+	demoService *service.DemoService,
 ) *grpc.Server {
 	srv := grpc.NewServer(grpc.UnaryInterceptor(ggm.ChainUnaryServer(
 		middleware.PropagateIncomingMetadata,
 		middleware.GrpcAccessLogger(logger),
 	)))
 
-	demo.RegisterDemoServiceServer(srv, Demo)
+	demo.RegisterDemoServiceServer(srv, demoService)
 
 	return srv
 }
