@@ -28,7 +28,7 @@ type BootstrapConf struct {
 	// 网关配置
 	Gateway *micro.GatewayConf `json:"gateway"`
 	// 日志组件配置
-	Logger *logger.Config `json:"logger"`
+	Logger *logger.Conf `json:"logger"`
 }
 
 func NewBootstrapConf(utils *Utils) *BootstrapConf {
