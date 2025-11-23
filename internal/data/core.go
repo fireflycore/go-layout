@@ -5,8 +5,14 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
+	NewEtcd,
+	NewRedis,
 	NewMysql,
+
 	NewData,
+
+	NewConfigRepo,
+	NewLoggerRepo,
 
 	NewDemoRepo,
 )
