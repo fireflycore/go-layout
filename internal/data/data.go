@@ -18,10 +18,13 @@ func NewData(mysql *gorme.MysqlDB) (*Data, error) {
 	}, nil
 }
 
-func NewMysql(bc *conf.BootstrapConf, mc *gorme.MysqlConf, logger depend.OperationLogger) (*gorme.MysqlDB, error) {
-	mc.Conf.WithAutoMigrate(false)
-	mc.Conf.WithLoggerHandle(logger)
-	mc.Conf.WithLoggerConsole(bc.Logger.Console)
+func NewEtcd(etcdConf *etcd.Conf) (*clientv3.Client, error) {
+	return etcd.New(etcdConf)
+}
+
+func NewRedis(redisConf *redise.Conf) (*redis.Client, error) {
+	return redise.New(redisConf)
+}
 
 func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf, logger dep.OperationLogger) (*gorme.MysqlDB, error) {
 	mysqlConf.WithAutoMigrate(false)
