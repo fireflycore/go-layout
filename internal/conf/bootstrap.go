@@ -31,12 +31,12 @@ type BootstrapConf struct {
 	Logger *logger.Config `json:"logger"`
 }
 
-func NewBootstrapConf() *BootstrapConf {
+func NewBootstrapConf(utils *Utils) *BootstrapConf {
 	var bc BootstrapConf
 
-	filePath := getConfigFilePath("bootstrap.json")
+	filePath := utils.GetConfigFilePath("bootstrap.json")
 
-	if err := loadJSONConfig(filePath, &bc); err != nil {
+	if err := utils.LoadJSONConfig(filePath, &bc); err != nil {
 		panic(err)
 	}
 
