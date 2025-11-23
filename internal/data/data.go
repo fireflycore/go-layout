@@ -23,7 +23,12 @@ func NewMysql(bc *conf.BootstrapConf, mc *gorme.MysqlConf, logger depend.Operati
 	mc.Conf.WithLoggerHandle(logger)
 	mc.Conf.WithLoggerConsole(bc.Logger.Console)
 
-	return gorme.NewMysql(mc, []interface{}{
+func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf, logger dep.OperationLogger) (*gorme.MysqlDB, error) {
+	mysqlConf.WithAutoMigrate(false)
+	mysqlConf.WithLoggerHandle(logger)
+	mysqlConf.WithLoggerConsole(bootstrapConf.Logger.Console)
+
+	return gorme.NewMysql(mysqlConf, []interface{}{
 		&entity.Demo{},
 	})
 }
