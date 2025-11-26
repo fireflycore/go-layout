@@ -30,7 +30,7 @@ func (ist *App) Stop() {
 	ist.GrpcServer.Stop()
 }
 
-func NewApp(bc *conf.BootstrapConf, nl net.Listener, gs *grpc.Server, register micro.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
+func NewApp(bootstrapConf *conf.BootstrapConf, netListener net.Listener, grpcServer *grpc.Server, register micro.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
 	register.WithRetryBefore(func() {
 		fmt.Println("重试之前的函数")
 	})
@@ -42,10 +42,10 @@ func NewApp(bc *conf.BootstrapConf, nl net.Listener, gs *grpc.Server, register m
 	go register.SustainLease()
 
 	return &App{
-		BootstrapConf: bc,
+		BootstrapConf: bootstrapConf,
 
-		Listener:   nl,
-		GrpcServer: gs,
+		Listener:   netListener,
+		GrpcServer: grpcServer,
 		Register:   register,
 		Services:   services,
 		Logger:     logger,
