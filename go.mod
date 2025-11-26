@@ -12,14 +12,14 @@ require (
 	github.com/lhdhtrc/crypto-go v0.0.3
 	github.com/lhdhtrc/etcd-go v0.2.4
 	github.com/lhdhtrc/func-go v0.3.1
-	github.com/lhdhtrc/gorm v0.7.3
+	github.com/lhdhtrc/gorm v0.7.6
 	github.com/lhdhtrc/logger-go v0.1.8
 	github.com/lhdhtrc/micro-go v0.6.5
 	github.com/lhdhtrc/redis-go v0.0.9
-	github.com/redis/go-redis/v9 v9.17.0
+	github.com/redis/go-redis/v9 v9.17.1
 	go.etcd.io/etcd/client/v3 v3.6.6
 	go.uber.org/zap v1.27.1
-	google.golang.org/genproto/googleapis/api v0.0.0-20251111163417-95abcf5c77ba
+	google.golang.org/genproto/googleapis/api v0.0.0-20251124214823-79d6a2a48846
 	google.golang.org/grpc v1.77.0
 	google.golang.org/protobuf v1.36.10
 	gorm.io/datatypes v1.2.7
@@ -55,7 +55,7 @@ require (
 	golang.org/x/sync v0.18.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251111163417-95abcf5c77ba // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251124214823-79d6a2a48846 // indirect
 	gorm.io/driver/mysql v1.6.0 // indirect
 	gorm.io/driver/postgres v1.6.0 // indirect
 	gorm.io/plugin/soft_delete v1.2.1 // indirect
