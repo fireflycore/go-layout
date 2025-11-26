@@ -23,11 +23,8 @@ func (uc *demoRepo) CreateDemo(ctx context.Context, row *entity.Demo) error {
 	return uc.data.db.WithContext(ctx).Create(row).Error
 }
 
-func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) ([]*entity.Demo, int64) {
-	var (
-		list  []*entity.Demo
-		total int64
-	)
+func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+	var raw pb.DemoList
 
 	sql := uc.data.db.WithContext(ctx).Model(&entity.Demo{})
 	sql.Where("user_id = ?", um.UserId)
@@ -36,16 +33,16 @@ func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, 
 		sk := "%" + request.SearchKey + "%"
 		sql.Where("name LIKE ?", sk)
 	}
-	sql.Count(&total)
+	sql.Count(&raw.Total)
 	sql.Scopes(scope.WithPagination(request.Page, request.PageSize))
-	sql.Find(&list)
+	sql.Find(&raw.List)
 
-	return list, total
+	return &raw
 }
 
-func (uc *demoRepo) GetDemoInfo(ctx context.Context, id string) (*entity.Demo, error) {
-	var row entity.Demo
-	if res := uc.data.db.WithContext(ctx).Where("id = ?", id).Find(&row); res.Error != nil {
+func (uc *demoRepo) GetDemoInfo(ctx context.Context, id string) (*pb.Demo, error) {
+	var row pb.Demo
+	if res := uc.data.db.WithContext(ctx).Model(&entity.Demo{}).Where("id = ?", id).Find(&row); res.Error != nil {
 		return nil, res.Error
 	}
 	return &row, nil
