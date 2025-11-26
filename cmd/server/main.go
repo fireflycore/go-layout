@@ -3,22 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/lhdhtrc/func-go/process"
-	"os"
 	"runtime"
 	"time"
 )
 
 func init() {
-	// 1. 设置环境变量（影响系统组件）
-	_ = os.Setenv("TZ", "UTC")
-
-	// 2. 设置 Go 运行时（影响标准库）
 	time.Local = time.UTC
-
-	// 3. 重新加载确保一致性
-	if loc, err := time.LoadLocation(""); err == nil {
-		time.Local = loc
-	}
 }
 
 func main() {
