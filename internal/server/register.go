@@ -10,22 +10,22 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewRegisterServer(bc *conf.BootstrapConf, cli *clientv3.Client) (micro.Register, error) {
+func NewRegisterServer(bootstrapConf *conf.BootstrapConf, cli *clientv3.Client) (micro.Register, error) {
 	meta := micro.Meta{
-		Env:     bc.Env,
-		AppId:   bc.AppId,
-		Version: bc.Version,
+		Env:     bootstrapConf.Env,
+		AppId:   bootstrapConf.AppId,
+		Version: bootstrapConf.Version,
 	}
 
-	return etcd.NewRegister(cli, &meta, bc.Micro)
+	return etcd.NewRegister(cli, &meta, bootstrapConf.Micro)
 }
 
-func NewRegisterCenterRepo(mr micro.Register) []*grpc.ServiceDesc {
+func NewRegisterCenterRepo(register micro.Register) []*grpc.ServiceDesc {
 	raw := []*grpc.ServiceDesc{
 		&demo.DemoService_ServiceDesc,
 	}
 
-	if errs := micro.NewRegisterService(raw, mr); len(errs) != 0 {
+	if errs := micro.NewRegisterService(raw, register); len(errs) != 0 {
 		fmt.Println(errs)
 	}
 
