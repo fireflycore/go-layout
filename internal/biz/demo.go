@@ -34,20 +34,11 @@ func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta
 }
 
 func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
-	list, total := uc.repo.GetDemoList(ctx, um, request)
-
-	return &pb.DemoList{
-		Total: total,
-		List:  uc.dto.ToRaw(list),
-	}
+	return uc.repo.GetDemoList(ctx, um, request)
 }
 
 func (uc *DemoUseCase) GetDemoInfo(ctx context.Context, id string) (*pb.Demo, error) {
-	row, err := uc.repo.GetDemoInfo(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return uc.dto.ToRow(row), nil
+	return uc.repo.GetDemoInfo(ctx, id)
 }
 
 func (uc *DemoUseCase) UpdateDemo(ctx context.Context, _ *micro.UserContextMeta, request *pb.UpdateDemoRequest) error {
