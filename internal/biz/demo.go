@@ -3,7 +3,6 @@ package biz
 import (
 	"context"
 	"github.com/lhdhtrc/func-go/object"
-	gorme "github.com/lhdhtrc/gorm/pkg"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz/convert"
@@ -26,9 +25,9 @@ func NewDemoUseCase(repo repo.DemoRepo, dto convert.DemoConvert) *DemoUseCase {
 
 func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta, request *pb.CreateDemoRequest) error {
 	row := uc.dto.ToCreate(request)
-	row.AppId = gorme.ParseUUID(um.AppId)
-	row.UserId = gorme.ParseUUID(um.UserId)
-	row.TenantId = gorme.ParseUUID(um.TenantId)
+	row.AppId = um.AppId
+	row.UserId = um.UserId
+	row.TenantId = um.TenantId
 
 	return uc.repo.CreateDemo(ctx, row)
 }

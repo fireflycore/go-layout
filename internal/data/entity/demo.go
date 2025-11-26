@@ -2,7 +2,6 @@ package entity
 
 import (
 	gorm "github.com/lhdhtrc/gorm/pkg"
-	"gorm.io/datatypes"
 )
 
 type Demo struct {
@@ -14,9 +13,9 @@ type Demo struct {
 	Status      uint32 `json:"status"`
 	Sort        uint32 `json:"sort"`
 
-	UserId   datatypes.UUID `json:"user_id" gorm:"index;"`
-	AppId    datatypes.UUID `json:"app_id" gorm:"index;"`
-	TenantId datatypes.UUID `json:"tenant_id" gorm:"index"`
+	UserId   string `json:"user_id" gorm:"type:uuid;index;"`
+	AppId    string `json:"app_id" gorm:"type:uuid;index;"`
+	TenantId string `json:"tenant_id" gorm:"type:uuid;index"`
 }
 
 func (Demo) Table() string {
