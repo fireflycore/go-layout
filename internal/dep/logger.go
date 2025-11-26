@@ -14,8 +14,8 @@ type AccessLogger func(b []byte, msg string)
 type ServerLogger func(b []byte)
 type OperationLogger func(b []byte)
 
-func NewLogger(bc *conf.BootstrapConf, handle ServerLogger) *zap.Logger {
-	return logger.New(bc.Logger, handle)
+func NewLogger(bootstrapConf *conf.BootstrapConf, handle ServerLogger) *zap.Logger {
+	return logger.New(bootstrapConf.Logger, handle)
 }
 
 func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo) AccessLogger {

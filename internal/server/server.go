@@ -6,8 +6,8 @@ import (
 	"net"
 )
 
-func NewServer(bc *conf.BootstrapConf) net.Listener {
-	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", bc.Port))
+func NewServer(bootstrapConf *conf.BootstrapConf) net.Listener {
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", bootstrapConf.Port))
 
 	if err != nil {
 		panic(err)
