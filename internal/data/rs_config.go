@@ -6,30 +6,26 @@ import (
 	config "go-layout/dep/protobuf/gen/acme/config/v1"
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/conf"
-	"sync"
 )
 
 type configRepo struct {
 	configService config.ConfigServiceClient
 
-	bc *conf.BootstrapConf
-	cu *conf.Utils
-
-	// 缓存配置
-	tokenCache sync.Map
+	bootstrapConf *conf.BootstrapConf
+	confUtils     *conf.Utils
 }
 
 func NewConfigRepo(
 	configService config.ConfigServiceClient,
 
-	bc *conf.BootstrapConf,
-	cu *conf.Utils,
+	bootstrapConf *conf.BootstrapConf,
+	confUtils *conf.Utils,
 ) repo.ConfigRepo {
 	return &configRepo{
 		configService: configService,
 
-		bc: bc,
-		cu: cu,
+		bootstrapConf: bootstrapConf,
+		confUtils:     confUtils,
 	}
 }
 
@@ -38,7 +34,7 @@ func (repo *configRepo) GetConfig(ctx context.Context, appId, group, key string)
 		return repo.configService.Get(ctx, &config.GetRequest{
 			AppId: appId,
 			Group: group,
-			Env:   repo.bc.Env,
+			Env:   repo.bootstrapConf.Env,
 			Key:   key,
 		})
 	})
