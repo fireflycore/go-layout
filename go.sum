@@ -99,8 +99,8 @@ github.com/lhdhtrc/etcd-go v0.2.4 h1:Rz0TaLkMnDLMyhWlU6QdpQgVKaFBv9i5Ah4Wk7Z6+/g
 github.com/lhdhtrc/etcd-go v0.2.4/go.mod h1:S8mSMocsQCvM7RgoAr0MdjK+jytsGwftx1jnzb745Ts=
 github.com/lhdhtrc/func-go v0.3.1 h1:fgP2OWtzZuhU+dlFemLKucy++ZnFQN/IgHCSwObb6wQ=
 github.com/lhdhtrc/func-go v0.3.1/go.mod h1:472eOcYx+2hBxQIiDEX85Jj+jUVynmu8116AFVvYZZU=
-github.com/lhdhtrc/gorm v0.7.6 h1:yeY/Q9oJ/RtHJVzZyF/gVQEJIdcytGQ+neVijW6I0Fg=
-github.com/lhdhtrc/gorm v0.7.6/go.mod h1:POF7iqL1tImQlWUim1IWEymBW0NhvV4D3EtnFYZyN/8=
+github.com/lhdhtrc/gorm v0.7.7 h1:bdbfULE/ivLE85v91doZraelx6k1TEDwmum1hBtWa8s=
+github.com/lhdhtrc/gorm v0.7.7/go.mod h1:POF7iqL1tImQlWUim1IWEymBW0NhvV4D3EtnFYZyN/8=
 github.com/lhdhtrc/logger-go v0.1.8 h1:tNh5POiwr3P+7t9W++uXNA3J4k+qZjwRBhGy2znFHBo=
 github.com/lhdhtrc/logger-go v0.1.8/go.mod h1:0RphKgeoaAaidL7xV29ypFVDvYcvHaKz1O29m2zb1u8=
 github.com/lhdhtrc/micro-go v0.6.5 h1:DZAH0yR4mAp8MtyZelYI/1J3Rd54s61N9FT8b8y2wfs=
