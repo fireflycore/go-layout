@@ -17,17 +17,3 @@ func StringToUUID(s string) datatypes.UUID {
 	}
 	return datatypes.UUID(u)
 }
-
-func UUIDToString(u datatypes.UUID) string {
-	if uuid.UUID(u) == uuid.Nil {
-		return ""
-	}
-	return u.String()
-}
-
-func UUIDPtrToString(u *datatypes.UUID) string {
-	if u != nil {
-		return u.String()
-	}
-	return ""
-}
