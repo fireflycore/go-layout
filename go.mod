@@ -8,13 +8,13 @@ require (
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
-	github.com/lhdhtrc/compress-go v0.0.3
-	github.com/lhdhtrc/crypto-go v0.0.3
+	github.com/lhdhtrc/compress-go v0.0.4
+	github.com/lhdhtrc/crypto-go v0.0.4
 	github.com/lhdhtrc/etcd-go v0.2.4
-	github.com/lhdhtrc/func-go v0.3.1
-	github.com/lhdhtrc/gorm v0.7.6
+	github.com/lhdhtrc/func-go v0.3.2
+	github.com/lhdhtrc/gorm v0.7.7
 	github.com/lhdhtrc/logger-go v0.1.8
-	github.com/lhdhtrc/micro-go v0.6.5
+	github.com/lhdhtrc/micro-go v0.6.7
 	github.com/lhdhtrc/redis-go v0.0.9
 	github.com/redis/go-redis/v9 v9.17.1
 	go.etcd.io/etcd/client/v3 v3.6.6
