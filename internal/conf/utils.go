@@ -13,10 +13,16 @@ import (
 	"strings"
 )
 
-type Utils struct{}
+type Utils struct {
+	crypto   crypto.Crypto
+	compress compress.Compress
+}
 
-func NewConfUtils() *Utils {
-	return &Utils{}
+func NewConfUtils(crypto crypto.Crypto, compress compress.Compress) *Utils {
+	return &Utils{
+		crypto:   crypto,
+		compress: compress,
+	}
 }
 
 // GetConfigFilePath 获取配置路径
@@ -48,12 +54,12 @@ func (ist *Utils) AnalyzeData(content string, key []byte, val any) error {
 		return err
 	}
 
-	decrypt, de := crypto.UseAES.Decrypt(decode, key)
+	decrypt, de := ist.crypto.Decrypt(decode, key)
 	if de != nil {
 		return de
 	}
 
-	decompress, err := compress.UseGZIP.Decompress(decrypt)
+	decompress, err := ist.compress.Decompress(decrypt)
 	if err != nil {
 		return err
 	}
