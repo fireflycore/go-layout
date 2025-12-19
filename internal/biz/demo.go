@@ -10,16 +10,14 @@ import (
 )
 
 type DemoUseCase struct {
+	dto  convert.DemoConvert
 	repo repo.DemoRepo
-
-	dto convert.DemoConvert
 }
 
-func NewDemoUseCase(repo repo.DemoRepo, dto convert.DemoConvert) *DemoUseCase {
+func NewDemoUseCase(dto convert.DemoConvert, repo repo.DemoRepo) *DemoUseCase {
 	return &DemoUseCase{
+		dto:  dto,
 		repo: repo,
-
-		dto: dto,
 	}
 }
 
