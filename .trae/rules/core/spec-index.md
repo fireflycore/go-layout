@@ -6,6 +6,22 @@ trigger: manual
 
 GLOBAL:
   DEFAULT_PROFILE: GoService
+  RULE_PRECEDENCE:
+    - core/requirements-spec.md
+    - core/workflow-spec.md
+    - core/naming-conventions.md
+    - architecture/api-design-spec.md
+    - quality/error-handling-spec.md
+    - quality/security-spec.md
+    - quality/testing-spec.md
+  REALITY_SOURCES:
+    - makefile
+    - go.mod
+    - internal/**
+    - dep/**
+  DELIVERY_CHECKS:
+    - go test ./...
+    - go vet ./...
   ENABLE_MODULES:
     core/requirements-spec.md: ENABLED
     core/workflow-spec.md: ENABLED

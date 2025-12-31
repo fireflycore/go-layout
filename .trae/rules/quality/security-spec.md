@@ -26,7 +26,7 @@ PRIORITY: CRITICAL
 LANGUAGE: Go
 说明：
 - 日志/错误/响应体不得包含密钥、令牌、密码、个人敏感信息
-- 当前模板远程 gRPC 客户端示例使用 `insecure`；生产环境必须改为 TLS
+- 当前模板远程 gRPC 客户端示例使用 `insecure`；生产环境启用 TLS 时需同时对齐 Client/Server 与配置加载方式，避免“只改一侧”导致误连或降级
 
 ## [规则 4] 防注入 [ENABLED]
 STATUS: ENABLED
@@ -56,3 +56,11 @@ LANGUAGE: All
 说明：
 - `conf/bootstrap.json` 与文档中出现的密钥/令牌/地址必须是示例值
 - 真实密钥只能通过本地私有配置或远程配置服务注入
+
+## [规则 8] 远程调用与超时 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 业务链路的远程调用优先沿用入参 `ctx`，必要时基于它派生超时
+- 非业务链路的后台任务允许使用 `context.Background()`，但必须设置合理超时与取消

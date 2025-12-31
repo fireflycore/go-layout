@@ -90,3 +90,11 @@ LANGUAGE: Go
 说明：
 - 运行配置来自 `conf/bootstrap.json` 或远程配置服务加载结果
 - 禁止在代码中写死密钥/令牌/密码；日志与响应体不得输出敏感信息
+
+## [规则 12] 以仓库现状为准，避免虚构路径/命令 [ENABLED]
+STATUS: ENABLED
+PRIORITY: CRITICAL
+LANGUAGE: All
+说明：
+- 涉及目录、导入路径、生成产物位置、命令链路时，先核对仓库现状（`makefile`、`go.mod`、现有代码与 `dep/`）。
+- 若规则文字与仓库现状冲突，优先遵循仓库现状并保持整体一致。

@@ -41,3 +41,11 @@ PRIORITY: MEDIUM
 LANGUAGE: Go
 说明：
 - 新增 utils/中间件/通用转换等公共逻辑时，必须补充单元测试覆盖边界条件
+
+## [规则 6] 交付前至少跑通最小回归集 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 必须通过 `go test ./...`
+- 建议同时通过 `go vet ./...`

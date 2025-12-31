@@ -11,6 +11,12 @@ LANGUAGE: Go
 说明：
 - 以根目录 `makefile` 为准，优先使用 `make init`
 - 等价链路：`buf generate` → `goverter gen ./internal/biz/convert` → `wire ./cmd/server` → `go mod tidy`
+- 若本机环境无 `make`，按 `makefile` 的目标内容逐条执行等价命令
+- 常用目标语义：
+  - `make dto`：仅生成转换代码（goverter）
+  - `make generate`：生成 Proto 代码（buf）并生成 DTO（goverter）
+  - `make init`：generate + wire + go mod tidy
+  - `make run`：init + go run
 
 ## [规则 2] 改动 Proto 必须同步生成产物 [ENABLED]
 STATUS: ENABLED

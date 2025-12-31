@@ -20,7 +20,8 @@ PRIORITY: CRITICAL
 LANGUAGE: Go
 说明：
 - Biz/Data 返回 Go error
-- Service 将 error 映射为响应体 `Code/Message` 并返回 `nil` error（模板风格）
+- Service 默认将 error 映射为响应体 `Code/Message` 并返回 `nil` error（模板风格）
+- 若采用 gRPC status/拦截器统一错误语义，则保持一致，避免同一服务内混用
 
 ## [规则 3] 错误包装与判断 [ENABLED]
 STATUS: ENABLED
@@ -44,3 +45,12 @@ LANGUAGE: Go
 说明：
 - 业务链路（Service/Biz/Data）禁止 `panic`
 - 仅允许在启动/装配失败且无法继续运行时 `panic`（例如配置加载失败）
+
+## [规则 6] 对外错误信息可控 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 可预期的业务错误可对外透出简明信息
+- 系统/第三方错误优先记录日志，对外返回通用信息，避免把内部细节透出到 `Message`
+- 不确定错误内容是否安全时，优先使用通用 `Message`
