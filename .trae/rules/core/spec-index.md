@@ -8,6 +8,17 @@ GLOBAL:
   DEFAULT_PROFILE: GoService
   LOADING_POLICY:
     - 规则按 PROFILE 加载；GoService 仅加载 CORE，按需加载 OPTIONAL
+  PROTO_REPO:
+    SOURCE_OF_TRUTH: proto_repo
+    REQUIRED_FOR_PROTO_CHANGES: true
+    AUTO_DISCOVERY:
+      ENABLED: true
+      SEARCH_MARKERS:
+        - buf.yaml
+        - buf.work.yaml
+      PREFERRED_DIR_NAMES:
+        - demo-proto
+    LOCAL_PATH_FALLBACK: D:\\goproject\\src\\demo-proto
   RULE_PRECEDENCE:
     - core/requirements-spec.md
     - core/workflow-spec.md
@@ -21,6 +32,10 @@ GLOBAL:
     - go.mod
     - internal/**
     - dep/**
+  PROTO_COLLAB_FLOW:
+    - 修改 Proto：优先从工作区自动发现 Proto 仓库（marker：`buf.yaml`/`buf.work.yaml`），必要时使用 `LOCAL_PATH_FALLBACK`
+    - 校验并发布：在 Proto 仓库执行 `buf lint` 与 `buf push`
+    - 同步生成：在本仓库执行 `buf generate`（或 `make generate`/`make init`）
   DELIVERY_CHECKS:
     - go test ./...
     - go vet ./...

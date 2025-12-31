@@ -80,3 +80,12 @@ LANGUAGE: All
 - 运行的验证命令与结果（至少 `go test ./...`、`go vet ./...`）
 - 若未运行命令，必须说明原因与建议运行方式
 - 必要的假设与风险提示（如环境差异、工具缺失、外部依赖不可用）
+
+## [规则 10] Buf-CLI 协同管理 Proto [ENABLED]
+STATUS: ENABLED
+PRIORITY: CRITICAL
+LANGUAGE: All
+说明：
+- Proto 的修改/新增/删除在独立 Proto 仓库完成（优先从工作区自动发现），本仓库只通过 `buf generate` 同步生成代码到 `dep/protobuf/gen`
+- 在 Proto 仓库变更后依次执行：`buf lint` → `buf push`
+- Proto 仓库推送成功后，在本仓库执行 `buf generate`（或 `make generate`/`make init`）同步生成代码，并运行 `go test ./...`、`go vet ./...`
