@@ -8,6 +8,7 @@ trigger: manual
 STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
+说明：
 - 参数/校验错误（入口优先 protovalidate）
 - 业务错误（可提示、可恢复）
 - 系统错误（DB/Redis/网络/配置）
@@ -17,6 +18,7 @@ LANGUAGE: Go
 STATUS: ENABLED
 PRIORITY: CRITICAL
 LANGUAGE: Go
+说明：
 - Biz/Data 返回 Go error
 - Service 将 error 映射为响应体 `Code/Message` 并返回 `nil` error（模板风格）
 
@@ -24,12 +26,14 @@ LANGUAGE: Go
 STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
+说明：
 - 包装用 `%w`；判断用 `errors.Is/As`
 
 ## [规则 4] 日志与对外信息 [ENABLED]
 STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
+说明：
 - 日志带上下文但不泄露敏感信息
 - 对外 `Message` 不暴露内部细节
 
@@ -37,5 +41,6 @@ LANGUAGE: Go
 STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
+说明：
 - 业务链路（Service/Biz/Data）禁止 `panic`
 - 仅允许在启动/装配失败且无法继续运行时 `panic`（例如配置加载失败）
