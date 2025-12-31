@@ -64,3 +64,11 @@ LANGUAGE: Go
 说明：
 - 业务链路的远程调用优先沿用入参 `ctx`，必要时基于它派生超时
 - 非业务链路的后台任务允许使用 `context.Background()`，但必须设置合理超时与取消
+
+## [规则 9] 新增代码避免标准输出 [ENABLED]
+STATUS: ENABLED
+PRIORITY: MEDIUM
+LANGUAGE: Go
+说明：
+- 新增代码避免使用 `fmt.Println/println` 输出日志或错误
+- 统一使用注入的 Logger，确保日志可控且可观测

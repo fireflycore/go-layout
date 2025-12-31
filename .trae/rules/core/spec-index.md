@@ -22,6 +22,10 @@ GLOBAL:
   DELIVERY_CHECKS:
     - go test ./...
     - go vet ./...
+  OUTPUT_REQUIREMENTS:
+    - 变更文件清单
+    - 验证命令与结果
+    - 假设与风险提示
   ENABLE_MODULES:
     core/requirements-spec.md: ENABLED
     core/workflow-spec.md: ENABLED
@@ -82,4 +86,5 @@ PROFILE: GoServiceStrict
 
 USAGE:
   - 优先引用：@.trae/rules/core/spec-index.md
+  - 默认按 PROFILE: GoService 执行，仅在需要时加载 OPTIONAL 模块
   - 需要更严格时使用 PROFILE: GoServiceStrict

@@ -70,3 +70,13 @@ LANGUAGE: Go
 说明：
 - 必须通过 `go test ./...` 与 `go vet ./...`
 - 改动涉及生成链路时，必须保证生成产物与引用路径一致（`dep/protobuf/gen`、`dep/dto`、`wire_gen.go`）
+
+## [规则 9] 交付输出必须包含固定要素 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: All
+说明：
+- 变更文件清单（路径 + 简述）
+- 运行的验证命令与结果（至少 `go test ./...`、`go vet ./...`）
+- 若未运行命令，必须说明原因与建议运行方式
+- 必要的假设与风险提示（如环境差异、工具缺失、外部依赖不可用）
