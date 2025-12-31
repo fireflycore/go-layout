@@ -15,7 +15,6 @@ func main() {
 	app, err := wireApp()
 	if err != nil {
 		panic(err)
-		return
 	}
 
 	go app.Start()
