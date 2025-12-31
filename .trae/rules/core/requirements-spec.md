@@ -50,3 +50,20 @@ PRIORITY: HIGH
 LANGUAGE: All
 说明：
 - 只改与需求直接相关的文件与逻辑，避免顺手重构
+
+## [规则 7] DTO/PO/DO 字段类型必须一致 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 同一业务字段在 `pb`（DTO）、`internal/data/entity`（PO）、`internal/biz/model`（DO）中的类型必须对齐
+- 允许 Data 直接返回 `pb` 以优化读性能，但要保证字段映射可控且可验证
+- 涉及指针/零值语义差异时，必须显式处理 `nil` 与默认值，避免隐式丢失信息
+
+## [规则 8] 依赖注入必须通过 Wire ProviderSet [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 各层依赖以 `internal/*/core.go` 的 `ProviderSet` 暴露与装配为准
+- 禁止通过包级全局变量持有 DB/Redis/Etcd/Logger/ClientConn 等长生命周期资源

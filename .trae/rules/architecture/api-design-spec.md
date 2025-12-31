@@ -43,3 +43,10 @@ PRIORITY: HIGH
 LANGUAGE: Go
 - Biz/Data 返回 Go error
 - Service 用响应体 `Code/Message` 表达失败并返回 `nil` error
+
+## [规则 7] 请求/响应 DTO 只以 Proto 为准 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+- Service/Biz/Data 交互的 DTO 以 `dep/protobuf/gen` 生成类型为准
+- 禁止复制/手写“同名同义”的请求响应结构体，避免漂移与兼容性问题

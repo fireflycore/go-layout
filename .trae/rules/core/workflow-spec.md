@@ -40,3 +40,19 @@ PRIORITY: MEDIUM
 LANGUAGE: Go
 说明：
 - 需要对外发布时更新 `conf/bootstrap.json` 的 `version`
+
+## [规则 6] 新增功能按“协议→入口→业务→数据→装配”推进 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 先更新 Proto（通常在独立 Proto 仓库）并同步 `dep/protobuf/gen`
+- 再实现 `internal/service`（校验/metadata/调用 Biz）与 `internal/biz`（UseCase + repo 接口）
+- 最后实现 `internal/data`（repo 实现与持久化）并把构造函数加入对应层 `core.go` 的 `ProviderSet`
+
+## [规则 7] 新增构造函数必须注册并重新生成 Wire [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 新增/变更 Provider 后执行 `wire ./cmd/server`（或 `make init`）确保依赖图最新
