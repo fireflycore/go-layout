@@ -2,31 +2,30 @@
 trigger: manual
 ---
 
-# Workflow Specification v1.0
+# 工作流程规范 v1.0
 # ============================================
-# Development workflow and process rules for AI-assisted coding
-# Enable/disable rules by changing [ENABLED] to [DISABLED]
+# AI 辅助编码的开发工作流程和流程规则
+# 通过将 [ENABLED] 更改为 [DISABLED] 来启用/禁用规则
 #
-# Usage:
-# 1. Place this file in project root directory
-# 2. Enable/disable rules based on your project needs
-# 3. Reference with @workflow-spec.txt in AI conversations
-# 4. AI will follow only ENABLED rules
+# 使用方法：
+# 1. 在 AI 对话中引用此文件
+# 2. 根据项目需求启用/禁用规则
+# 3. AI 将只遵循 ENABLED 的规则
 #
-# Last updated: 2025-11-09
+# 最后更新：2025-12-31
 # ============================================
 
-## [RULE 1] Change Log Management [ENABLED]
-# Maintain update records in a changelog file
+## [规则 1] 变更日志管理 [ENABLED]
+# 在变更日志文件中维护更新记录
 
 STATUS: ENABLED
-DESCRIPTION:
-- Document all significant changes in CHANGELOG.md or similar file
-- Include version number, date, and description of changes
-- Update changelog before committing code changes
-- Follow "Keep a Changelog" format (Added/Changed/Deprecated/Removed/Fixed/Security)
+说明：
+- 在 CHANGELOG.md 或类似文件中记录所有重要变更
+- 包含版本号、日期和变更描述
+- 在提交代码变更前更新变更日志
+- 遵循 "Keep a Changelog" 格式（Added/Changed/Deprecated/Removed/Fixed/Security）
 
-Example Format:
+示例格式：
 ```
 ## [1.2.0] - 2025-11-09
 ### Added
@@ -37,231 +36,232 @@ Example Format:
 - Login form validation error
 ```
 
-WHY: Provides clear history of project evolution and helps team track what changed and when
+原因：提供清晰的项目演进历史，帮助团队追踪何时发生了什么变更
 
-CONSEQUENCES:
-- Missing changelog makes releases unreliable and hard to audit
-- Team loses visibility; support cannot track changes
-- Compliance and postmortems become error-prone
+后果：
+- 缺失变更日志使发布不可审计、难以追踪
+- 团队失去可见性；支持无法定位变更
+- 合规与复盘变得容易出错
 
 
 
-## [RULE 2] Version Number Management [ENABLED]
-# Update version numbers consistently across project
+## [规则 2] 版本号管理 [ENABLED]
+# 在项目中一致地更新版本号
 
 STATUS: ENABLED
-DESCRIPTION:
-- Follow Semantic Versioning (MAJOR.MINOR.PATCH)
-- Update version in package.json/version files when making releases
-- MAJOR: Breaking changes
-- MINOR: New features (backward compatible)
-- PATCH: Bug fixes (backward compatible)
-- Update version in all relevant files (package.json, setup.py, build.gradle, etc.)
+说明：
+- 遵循语义化版本控制（MAJOR.MINOR.PATCH）
+- 发布时更新项目中承载版本信息的配置或构建产物（本项目默认在 `conf/bootstrap.json` 的 `version` 字段）
+- MAJOR：破坏性变更
+- MINOR：新功能（向后兼容）
+- PATCH：错误修复（向后兼容）
+- 若项目存在发布脚本/镜像标签/Helm Chart 等，也应保持版本一致
 
-Example:
-- 1.0.0 → 1.0.1 (bug fix)
-- 1.0.1 → 1.1.0 (new feature)
-- 1.1.0 → 2.0.0 (breaking change)
+示例：
+- 1.0.0 → 1.0.1（错误修复）
+- 1.0.1 → 1.1.0（新功能）
+- 1.1.0 → 2.0.0（破坏性变更）
 
-WHY: Ensures consistent version tracking and dependency management
+原因：确保一致的版本追踪和依赖管理
 
-CONSEQUENCES:
-- Incorrect versioning confuses consumers and breaks integrations
-- Untracked breaking changes cause widespread downstream failures
+后果：
+- 错误的版本管理会混淆使用方并破坏集成
+- 未记录的破坏性变更会导致下游大面积故障
 
 
 
-## [RULE 3] Git Commit Message Format [DISABLED]
-# Standardize commit message structure
+## [规则 3] Git 提交信息格式 [DISABLED]
+# 标准化提交信息结构
 
 STATUS: DISABLED
-DESCRIPTION:
-- Follow Conventional Commits specification
-- Format: <type>(<scope>): <subject>
-- Types: feat, fix, docs, style, refactor, test, chore
-- Example: "feat(auth): add JWT token validation"
-- Keep subject line under 72 characters
-- Use imperative mood ("add" not "added")
+说明：
+- 遵循 Conventional Commits 规范
+- 格式：<type>(<scope>): <subject>
+- 类型：feat、fix、docs、style、refactor、test、chore
+- 示例："feat(auth): add JWT token validation"
+- 主题行保持在 72 字符以下
+- 使用祈使语气（"add" 而不是 "added"）
 
-Example:
-✅ CORRECT:
+示例：
+✅ 正确：
   feat(login): add password reset functionality
   fix(api): resolve timeout issue in user endpoint
 
-❌ WRONG:
+❌ 错误：
   updated login
   fixed bugs
 
-WHY: Makes commit history searchable and enables automated changelog generation
+原因：使提交历史可搜索，并支持自动生成变更日志
 
 
-## [RULE 4] Branch Naming Convention [DISABLED]
-# Consistent branch naming strategy
+## [规则 4] 分支命名约定 [DISABLED]
+# 一致的分支命名策略
 
 STATUS: DISABLED
-DESCRIPTION:
-- Use prefix-based naming: <type>/<description>
-- Types: feature/, bugfix/, hotfix/, release/, docs/
-- Use kebab-case for description
-- Include ticket/issue number if applicable
+说明：
+- 使用基于前缀的命名：<type>/<description>
+- 类型：feature/、bugfix/、hotfix/、release/、docs/
+- 描述使用 kebab-case
+- 如果适用，包含工单/问题编号
 
-Example:
-✅ CORRECT:
+示例：
+✅ 正确：
   feature/user-authentication
   bugfix/login-validation-error
   hotfix/critical-security-patch
   feature/USER-123-payment-integration
 
-❌ WRONG:
+❌ 错误：
   new-feature
   fix
   john-changes
 
-WHY: Clarifies branch purpose and makes repository easier to navigate
+原因：明确分支目的，使仓库更易于导航
 
 
-## [RULE 5] Code Review Requirements [DISABLED]
-# Pull request and review guidelines
+## [规则 5] 代码审查要求 [DISABLED]
+# Pull Request 和审查指南
 
 STATUS: DISABLED
-DESCRIPTION:
-- All code changes require PR (Pull Request) review before merging
-- Minimum 1 reviewer approval required
-- Self-review checklist before creating PR:
-  * Code compiles/runs without errors
-  * Tests added/updated
-  * Documentation updated
-  * No debug code or console.logs
-- Address all review comments before merging
+说明：
+- 所有代码变更在合并前需要 PR（Pull Request）审查
+- 至少需要 1 位审查者批准
+- 创建 PR 前的自我审查清单：
+  * 代码能编译/运行且无错误
+  * 添加/更新了测试
+  * 更新了文档
+  * 没有调试代码或 console.logs
+- 合并前处理所有审查意见
 
-WHY: Maintains code quality and shares knowledge across team
+原因：保持代码质量并在团队间分享知识
 
 
-## [RULE 6] Documentation Sync [ENABLED]
-# Keep documentation in sync with code changes
+## [规则 6] 文档同步 [ENABLED]
+# 保持文档与代码变更同步
 
 STATUS: ENABLED
-DESCRIPTION:
-- Update relevant documentation when modifying code
-- Update API docs when changing endpoints/interfaces
-- Update README when adding new features or changing setup
-- Update inline comments when changing function behavior
-- Document breaking changes prominently
+说明：
+- 修改分层边界、依赖注入、配置加载方式、生成链路时更新相关文档
+- 更改 gRPC/Proto 接口时更新 Proto 定义（通常在独立 Proto 仓库），并同步生成产物（`buf generate` -> `dep/protobuf`）
+- 添加新功能或更改设置时更新 README
+- 更改函数行为且存在对外约定时更新注释或文档（优先 `docs/`）
+- 突出记录破坏性变更
 
-Files to check:
-- README.md (setup, features, usage)
-- API documentation
-- Inline code comments
-- Architecture diagrams (if applicable)
+需要检查的文件：
+- README.md（设置、功能、使用）
+- docs/（architecture、directory-structure、data-flow、best-practices 等）
+- Proto 定义与生成配置（如 `buf.gen.yaml`）
+- 内联代码注释（仅在存在明确约定且注释已被使用时）
+- 架构图（如适用）
 
-WHY: Prevents documentation drift and helps onboarding
+原因：防止文档漂移，帮助新人入职
 
-CONSEQUENCES:
-- Outdated docs lead to misuse, bugs, and onboarding delays
-- API consumers implement wrong contracts
-
-
-
-## [RULE 7] Test Coverage Requirements [DISABLED]
-# Testing standards for new code
-
-STATUS: DISABLED
-DESCRIPTION:
-- New features must include unit tests
-- Bug fixes must include regression tests
-- Maintain minimum 80% code coverage
-- Test edge cases and error scenarios
-- Mock external dependencies in tests
-
-Test Types:
-- Unit tests (individual functions/methods)
-- Integration tests (component interactions)
-- E2E tests (critical user flows)
-
-WHY: Ensures code reliability and prevents regressions
+后果：
+- 过时文档导致误用、缺陷与入职延误
+- API 使用方实现错误契约
 
 
-## [RULE 8] Pre-deployment Checklist [DISABLED]
-# Verification steps before deployment
+
+## [规则 7] 测试覆盖率要求 [DISABLED]
+# 新代码的测试标准
 
 STATUS: DISABLED
-DESCRIPTION:
-Before deploying to production:
-- [ ] All tests passing
-- [ ] Code reviewed and approved
-- [ ] Documentation updated
-- [ ] Changelog updated
-- [ ] Version number bumped
-- [ ] Database migrations tested
-- [ ] Environment variables configured
-- [ ] Rollback plan prepared
+说明：
+- 新功能必须包含单元测试
+- 错误修复必须包含回归测试
+- 保持至少 80% 的代码覆盖率
+- 测试边界情况和错误场景
+- 在测试中模拟外部依赖
 
-WHY: Reduces deployment failures and downtime
+测试类型：
+- 单元测试（单个函数/方法）
+- 集成测试（组件交互）
+- E2E 测试（关键用户流程）
+
+原因：确保代码可靠性并防止回归
 
 
-## [RULE 9] Breaking Changes Protocol [ENABLED]
-# How to handle breaking changes
+## [规则 8] 部署前检查清单 [DISABLED]
+# 部署前的验证步骤
+
+STATUS: DISABLED
+说明：
+部署到生产环境前：
+- [ ] 所有测试通过
+- [ ] 代码已审查并批准
+- [ ] 文档已更新
+- [ ] 变更日志已更新
+- [ ] 版本号已提升
+- [ ] 数据库迁移已测试
+- [ ] 环境变量已配置
+- [ ] 回滚计划已准备
+
+原因：减少部署失败和停机时间
+
+
+## [规则 9] 破坏性变更协议 [ENABLED]
+# 如何处理破坏性变更
 
 STATUS: ENABLED
-DESCRIPTION:
-- Clearly document all breaking changes
-- Provide migration guide for users
-- Bump MAJOR version number
-- Announce breaking changes in advance when possible
-- Maintain backward compatibility when feasible
-- Mark deprecated features before removal
+说明：
+- 清楚地记录所有破坏性变更
+- 为用户提供迁移指南
+- 提升 MAJOR 版本号
+- 如果可能，提前宣布破坏性变更
+- 在可行时保持向后兼容性
+- 在移除前标记已弃用的功能
 
-Documentation must include:
-- What changed
-- Why it changed
-- How to migrate (code examples)
-- Timeline for deprecation
+文档必须包含：
+- 什么变了
+- 为什么变
+- 如何迁移（代码示例）
+- 弃用时间表
 
-WHY: Minimizes disruption for users and maintainers
+原因：最小化对用户和维护者的干扰
 
-CONSEQUENCES:
-- Surprise breaking changes cause outages and trust erosion
-- Without migration guides, adoption stalls and issues spike
+后果：
+- 突然的破坏性变更引发故障与信任受损
+- 缺少迁移指南会阻碍采用、问题激增
 
 
 
-## [RULE 10] Dependency Update Policy [ENABLED]
-# Managing third-party dependencies
+## [规则 10] 依赖更新策略 [ENABLED]
+# 管理第三方依赖
 
 STATUS: ENABLED
-DESCRIPTION:
-- Review dependency updates regularly
-- Test thoroughly before updating major versions
-- Document dependency changes in changelog
-- Check for security vulnerabilities before adding new dependencies
-- Avoid deprecated or unmaintained packages
-- Pin exact versions in production (no ^ or ~)
+说明：
+- 定期审查依赖更新
+- 在更新主要版本前彻底测试
+- 在变更日志中记录依赖变更
+- 在添加新依赖前检查安全漏洞
+- 避免已弃用或无人维护的包
+- 避免在自动化脚本中使用浮动版本（例如对 Go 依赖不滥用 `@latest`）
 
-Security:
-- Run security audits (npm audit, pip-audit, etc.)
-- Update security-critical dependencies immediately
-- Subscribe to security advisories for key dependencies
+安全：
+- 运行依赖安全检查（例如 Go 的 `govulncheck`，若项目已安装/启用）
+- 立即更新安全关键依赖
+- 订阅关键依赖的安全公告
 
-WHY: Maintains security and stability while staying current
+原因：在保持最新的同时维护安全性和稳定性
 
-CONSEQUENCES:
-- Vulnerable or deprecated deps expose the system to attacks
-- Unpinned versions cause nondeterministic builds and production drift
+后果：
+- 漏洞或弃用依赖使系统暴露于攻击面
+- 未固定版本导致非确定性构建与生产漂移
 
 
 
-## [RULE 11] File Organization Standards [DISABLED]
-# Project structure and file placement
+## [规则 11] 文件组织标准 [DISABLED]
+# 项目结构和文件放置
 
 STATUS: DISABLED
-DESCRIPTION:
-- Follow established project structure
-- Group related files in appropriate directories
-- Keep files focused on single responsibility
-- Use index files for clean exports
-- Separate concerns (logic, UI, data, config)
+说明：
+- 遵循已建立的项目结构
+- 将相关文件分组到适当的目录
+- 保持文件专注于单一职责
+- 使用 index 文件进行清晰导出
+- 分离关注点（逻辑、UI、数据、配置）
 
-Common structure:
+常见结构：
 ```
 src/
 ├── components/    # UI components
@@ -272,87 +272,88 @@ src/
 └── tests/         # Test files
 ```
 
-WHY: Makes codebase easier to navigate and maintain
+原因：使代码库更易于导航和维护
 
 
-## [RULE 12] Error Handling Standards [ENABLED]
-# Consistent error handling approach
+## [规则 12] 错误处理标准 [ENABLED]
+# 一致的错误处理方法
 
 STATUS: ENABLED
-DESCRIPTION:
-- Always handle errors, never silently fail
-- Use try-catch for async operations
-- Log errors with sufficient context
-- Return meaningful error messages to users
-- Don't expose sensitive information in error messages
-- Use custom error classes for different error types
+说明：
+- 始终处理错误，绝不静默失败
+- 在外部边界（RPC/DB/Redis/IO）明确检查并返回 error
+- 使用足够的上下文记录错误
+- 向调用方返回有意义的错误语义（本项目 Service 层通常通过响应体 `Code/Message` 表达业务失败，返回 `nil` error）
+- 不要在错误消息中暴露敏感信息
+- 对不同错误类型使用 Go 的错误包装与类型断言（`errors.Is/As`），必要时定义轻量的错误类型
 
-Example:
-✅ CORRECT:
-  try {
-    await saveUser(data);
-  } catch (error) {
-    logger.error('Failed to save user', { userId: data.id, error });
-    throw new DatabaseError('Unable to save user data');
-  }
+示例：
+✅ 正确：
+```go
+if err := repo.CreateDemo(ctx, row); err != nil {
+	logger.Error("create demo failed", zap.Error(err))
+	return err
+}
+```
 
-❌ WRONG:
-  try {
-    await saveUser(data);
-  } catch (error) {
-    // Silent failure
-  }
+❌ 错误：
+忽略错误或吞掉错误，导致问题被隐藏且难以排查。
 
-WHY: Improves debugging and user experience
+原因：改善调试和用户体验
 
-CONSEQUENCES:
-- Silent failures hide defects and increase MTTR
-- Leaking sensitive data in errors creates security incidents
+后果：
+- 静默失败隐藏缺陷并增加平均修复时间（MTTR）
+- 错误信息泄露敏感数据引发安全事件
 
 
 
 # ============================================
-# SUMMARY - Enabled Rules Only
+# 摘要 - 仅启用的规则
 # ============================================
-# These rules are currently ACTIVE for your project:
+# 这些规则当前对您的项目是激活的：
 
-✅ [RULE 1]  Change Log Management - Document all changes
-✅ [RULE 2]  Version Number Management - Follow semantic versioning
-✅ [RULE 6]  Documentation Sync - Keep docs updated with code
-✅ [RULE 9]  Breaking Changes Protocol - Document breaking changes clearly
-✅ [RULE 10] Dependency Update Policy - Manage dependencies securely
-✅ [RULE 12] Error Handling Standards - Consistent error handling
+✅ [规则 1]  变更日志管理 - 记录所有变更
+✅ [规则 2]  版本号管理 - 遵循语义化版本控制
+✅ [规则 6]  文档同步 - 保持文档与代码同步
+✅ [规则 9]  破坏性变更协议 - 清楚地记录破坏性变更
+✅ [规则 10] 依赖更新策略 - 安全地管理依赖
+✅ [规则 12] 错误处理标准 - 一致的错误处理
 
 # ============================================
-# How to Enable/Disable Rules
+# 如何启用/禁用规则
 # ============================================
-# 1. Change STATUS from [ENABLED] to [DISABLED] or vice versa
-# 2. Update the SUMMARY section to reflect current state
-# 3. Commit changes to version control
-# 4. AI will automatically follow only ENABLED rules
+# 1. 将 STATUS 从 [ENABLED] 改为 [DISABLED]，或反之
+# 2. 更新 SUMMARY 部分以反映当前状态
+# 3. 将变更提交到版本控制
+# 4. AI 将自动只遵循 ENABLED 的规则
 #
 # ============================================
-# Project Profiles
+# 项目类型配置
 # ============================================
-# Recommended workflow rules to ENABLE per project type
+# 不同项目类型推荐启用的工作流规则
 
-Profile: Web Application
-- ENABLE: [RULE 1, 2, 6, 9, 10, 12]
-- OPTIONAL: [RULE 3, 4, 5, 7, 8, 11]
-- Notes: Web deployments benefit from strict docs sync, dependency hygiene, and clear error handling.
+Web 应用：
+- 启用： [规则 1, 2, 6, 9, 10, 12]
+- 可选： [规则 3, 4, 5, 7, 8, 11]
+- 说明：Web 部署需要严格的文档同步、依赖卫生与清晰的错误处理。
 
-Profile: CLI Tool
-- ENABLE: [RULE 1, 2, 6, 10, 12]
-- OPTIONAL: [RULE 3, 4, 5, 7, 8, 9, 11]
-- Notes: CLI focuses on reliability and minimal deps; breaking changes less frequent but documented when present.
+CLI 工具：
+- 启用： [规则 1, 2, 6, 10, 12]
+- 可选： [规则 3, 4, 5, 7, 8, 9, 11]
+- 说明：CLI 强调可靠性与最小依赖；破坏性变更较少但出现时需记录。
 
-Profile: Library/SDK
-- ENABLE: [RULE 1, 2, 9, 10, 12]
-- OPTIONAL: [RULE 3, 4, 5, 6, 7, 8, 11]
-- Notes: Libraries need rigorous versioning, changelogs, dependency policy, and robust error semantics.
+库/SDK：
+- 启用： [规则 1, 2, 9, 10, 12]
+- 可选： [规则 3, 4, 5, 6, 7, 8, 11]
+- 说明：库需要严格的版本管理、变更日志、依赖策略与健壮的错误语义。
+
+Go 微服务（推荐）：
+- 启用： [规则 2, 6, 9, 10, 12]
+- 可选： [规则 1, 3, 4, 5, 7, 8, 11]
+- 说明：以生成链路一致性（buf/goverter/wire）、分层边界与错误语义一致性为先。
 
 # ============================================
-# Version History
+# 版本历史
 # ============================================
-# v1.0 (2025-11-09) - Initial workflow specification with 12 rules
+# v1.0 (2025-11-09) - 初始工作流程规范，包含 12 条规则
 # ============================================

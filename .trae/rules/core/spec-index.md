@@ -2,54 +2,56 @@
 trigger: manual
 ---
 
-# Spec Index v1.0
+# 规范索引 v1.0
 # ============================================
-# Central control file for specification suite.
-# Single source of truth in .txt; optional .md mirrors can be auto-synced.
-# Manages modules, global switches, rule dependencies, conflicts, and project profiles.
+# 规范套件的中心控制文件。
+# 管理模块、全局开关、规则依赖、冲突与项目类型配置。
 #
-# Usage:
-# 1. Place this file in the project root.
-# 2. Reference it in AI conversations along with modules, e.g.:
-#    "@spec-index.txt @requirements-spec.txt @workflow-spec.txt @naming-conventions.txt"
-# 3. Set GLOBAL switches and PROFILE; AI applies module statuses and overrides.
+# 使用方法：
+# 1. 在 AI 对话中引用本索引，并按需引用具体模块。
+# 2. 在 AI 对话中与模块一起引用，例如：
+#    "@.trae/rules/core/spec-index.zh-CN.md @.trae/rules/core/requirements-spec.zh-CN.md @.trae/rules/core/workflow-spec.zh-CN.md"
+# 3. 设置 GLOBAL 开关与 PROFILE；用于说明在不同项目类型下推荐启用哪些规则。
 #
-# Last updated: 2025-11-09
+# 最后更新：2025-12-31
 # ============================================
 
 # ============================================
 # GLOBAL CONFIG
 # ============================================
 GLOBAL:
-  DEFAULT_PROFILE: Web            # Options: Web | CLI | Library
+  DEFAULT_PROFILE: GoService      # Options: GoService | CLI | Library
   ENABLE_MODULES:
-    requirements-spec.txt: ENABLED
-    workflow-spec.txt: ENABLED
-    naming-conventions.txt: ENABLED
-  MIRROR_MD: DISABLED             # If ENABLED, auto-generate .md mirrors from .txt
-  LANGUAGE_PAIRS: ENABLED         # Use .zh-CN files for human reading when needed
+    core/requirements-spec.zh-CN.md: ENABLED
+    core/workflow-spec.zh-CN.md: ENABLED
+    core/naming-conventions.zh-CN.md: ENABLED
+    architecture/api-design-spec.zh-CN.md: ENABLED
+    quality/security-spec.zh-CN.md: ENABLED
+    quality/error-handling-spec.zh-CN.md: ENABLED
+    quality/testing-spec.zh-CN.md: ENABLED
+  LANGUAGE_PAIRS: ENABLED         # 需要时同时参考英文版本
 
 # ============================================
 # MODULES
 # ============================================
-MODULE: requirements-spec.txt
+MODULE: core/requirements-spec.zh-CN.md
   STATUS: ENABLED
   VERSION: v1.1
   SUMMARY:
-    - 13 universal coding rules (CRITICAL/HIGH/MEDIUM)
-    - Focus: completeness, reuse, minimal deps, correctness, compile/run, consistency
+    - 13 条通用编码规则（CRITICAL/HIGH/MEDIUM）
+    - 关注点：完整性、复用、最小依赖、正确性、可构建、与项目现有结构一致
   TOP_PRIORITY:
     - RULE 1: Generate complete, runnable code (CRITICAL)
     - RULE 6: Verify all APIs exist (CRITICAL)
     - RULE 10: Ensure code compiles successfully (CRITICAL)
     - RULE 13: Use only real, existing libraries (CRITICAL)
 
-MODULE: workflow-spec.txt
+MODULE: core/workflow-spec.zh-CN.md
   STATUS: ENABLED
   VERSION: v1.0
   SUMMARY:
-    - 12 workflow rules with ENABLED/DISABLED toggles
-    - Focus: changelog, versioning, docs sync, breaking changes, dependency updates, error handling
+    - 12 条工作流规则，支持 ENABLED/DISABLED 切换
+    - 关注点：最小化改动、生成链路（buf/goverter/wire）、文档同步、依赖更新、错误处理
   TOP_PRIORITY:
     - RULE 1: Change Log Management (ENABLED)
     - RULE 2: Version Number Management (ENABLED)
@@ -58,57 +60,93 @@ MODULE: workflow-spec.txt
     - RULE 10: Dependency Update Policy (ENABLED)
     - RULE 12: Error Handling Standards (ENABLED)
 
-MODULE: naming-conventions.txt
+MODULE: core/naming-conventions.zh-CN.md
   STATUS: ENABLED
   VERSION: v1.0
   SUMMARY:
-    - 12 naming conventions with ENABLED/DISABLED toggles
-    - Default enabled: variables, functions, classes, constants, files, env vars
+    - 12 条命名约定，支持 ENABLED/DISABLED 切换
+    - 默认启用：变量、函数、类型、常量、文件、环境变量命名（含 Go 约定）
+
+MODULE: architecture/api-design-spec.zh-CN.md
+  STATUS: ENABLED
+  VERSION: v1.0
+  SUMMARY:
+    - Proto First 与 gRPC API 设计约束
+    - 关注点：protovalidate、分页与查询、向后兼容、响应风格一致性
+
+MODULE: quality/security-spec.zh-CN.md
+  STATUS: ENABLED
+  VERSION: v1.0
+  SUMMARY:
+    - 安全基线与敏感信息处理约束
+
+MODULE: quality/error-handling-spec.zh-CN.md
+  STATUS: ENABLED
+  VERSION: v1.0
+  SUMMARY:
+    - Go 错误建模、包装、日志与对外呈现策略
+
+MODULE: quality/testing-spec.zh-CN.md
+  STATUS: ENABLED
+  VERSION: v1.0
+  SUMMARY:
+    - Go 测试约束：单元/集成分层、表驱动、mock 边界、回归测试
 
 # ============================================
 # RULE DEPENDENCIES (auto-enable dependents)
 # ============================================
 DEPENDENCIES:
   # requirements-spec
-  requirements-spec.txt::RULE 1 -> requirements-spec.txt::RULE 10
-    note: completeness depends on successful compilation
-  requirements-spec.txt::RULE 6 -> workflow-spec.txt::RULE 2
-    note: API accuracy requires aligned versioning across releases
+  core/requirements-spec.zh-CN.md::RULE 1 -> core/requirements-spec.zh-CN.md::RULE 10
+    note: 完整性依赖于成功编译
+  core/requirements-spec.zh-CN.md::RULE 6 -> architecture/api-design-spec.zh-CN.md::RULE 1
+    note: API 设计需要与现有 Proto/生成产物一致
 
   # workflow-spec
-  workflow-spec.txt::RULE 9 -> workflow-spec.txt::RULE 2
-    note: breaking changes require proper version bumping (MAJOR)
-  workflow-spec.txt::RULE 9 -> workflow-spec.txt::RULE 1
-    note: breaking changes must be documented in changelog
+  core/workflow-spec.zh-CN.md::RULE 9 -> core/workflow-spec.zh-CN.md::RULE 2
+    note: 破坏性变更需正确提升 MAJOR 版本
+  core/workflow-spec.zh-CN.md::RULE 9 -> core/workflow-spec.zh-CN.md::RULE 1
+    note: 破坏性变更必须记录到变更日志
 
-  # naming-conventions (profile-gated)
-  naming-conventions.txt::CONVENTION 6 -> PROFILE(Web)
-    note: UI component naming applies to Web frontend projects
+  # quality
+  quality/error-handling-spec.zh-CN.md::RULE 3 -> quality/security-spec.zh-CN.md::RULE 6
+    note: 日志必须避免敏感信息泄露
 
 # ============================================
 # RULE CONFLICTS & RESOLUTION
 # ============================================
 CONFLICTS:
-  CASE: workflow-spec.txt::RULE 6 (Documentation Sync) vs requirements-spec.txt::RULE 5 (Only Requested Changes)
-  RISK: expanding scope to update docs may conflict with minimal change policy
+  CASE: core/workflow-spec.zh-CN.md::RULE 6 (Documentation Sync) vs core/requirements-spec.zh-CN.md::RULE 5 (Only Requested Changes)
+  RISK: 同步文档可能扩大修改范围，与最小化修改策略冲突
   RESOLUTION:
-    - If code change affects public API surface or user-facing behavior, Documentation Sync is MANDATORY.
-    - Otherwise, prefer minimal change; defer docs update to next scheduled docs task.
-    - Priority order: CRITICAL > HIGH > MEDIUM
+    - 若代码改动影响公共 API 面或用户可见行为，则 Documentation Sync 为必需。
+    - 其他情况优先最小化修改；文档更新安排到后续文档任务。
+    - 优先级顺序：CRITICAL > HIGH > MEDIUM
 
-  CASE: dependency updates (workflow-spec.txt::RULE 10) vs minimal deps (requirements-spec.txt::RULE 3)
+  CASE: dependency updates (core/workflow-spec.zh-CN.md::RULE 10) vs minimal deps (core/requirements-spec.zh-CN.md::RULE 3)
   RESOLUTION:
-    - Security patches and critical fixes override minimal-deps preference.
-    - Non-critical updates should favor minimal dependency impact.
+    - 安全补丁与关键修复优先于最小依赖策略。
+    - 非关键更新应尽量减少依赖影响。
 
 MODULE_PRECEDENCE:
-  - Code correctness and runability (requirements-spec) take precedence for generation outputs.
-  - Process compliance (workflow-spec) takes precedence for release governance.
-  - Naming (naming-conventions) applies unless overridden by code correctness.
+  - 代码正确性与可运行性（requirements-spec）在生成输出时优先。
+  - 流程合规（workflow-spec）在发布治理中优先。
+  - 命名（naming-conventions）在不影响代码正确性时适用。
 
 # ============================================
 # PROJECT PROFILES (recommended enables)
 # ============================================
+PROFILE: GoService
+  REQUIREMENTS:
+    ENABLE: [RULE 1, 2, 3, 5, 6, 7, 10, 12, 13]
+    OPTIONAL: [RULE 8, 9, 11]
+  WORKFLOW:
+    ENABLE: [RULE 2, 6, 9, 10, 12]
+    OPTIONAL: [RULE 1, 3, 4, 5, 7, 8, 11]
+  NAMING:
+    ENABLE: [CONVENTION 1, 2, 3, 4, 5, 9]
+    OPTIONAL: [CONVENTION 6, 7, 8, 10, 11, 12]
+
 PROFILE: Web
   REQUIREMENTS:
     ENABLE: [RULE 1, 2, 3, 5, 6, 7, 10, 11, 12, 13]
@@ -145,28 +183,27 @@ PROFILE: Library
 # ============================================
 # OVERRIDES (optional per-project switches)
 # ============================================
-# Use to override statuses inside module files without editing them.
-# Example syntax:
+# 用于在不编辑模块文件的情况下覆盖模块内状态。
+# 示例语法：
 OVERRIDES:
-  requirements-spec.txt:
-    DISABLE: [RULE 8]        # disable comment consistency when speed is critical
-    ENABLE:  [RULE 9]        # enforce functionality-first explicitly
-  workflow-spec.txt:
-    ENABLE:  [RULE 3]        # adopt Conventional Commits
-    DISABLE: [RULE 8]        # skip pre-deployment checklist for non-prod envs
-  naming-conventions.txt:
-    ENABLE:  [CONVENTION 7]  # turn on DB naming for backend services
+  core/requirements-spec.zh-CN.md:
+    DISABLE: [RULE 8]        # 速度优先时临时关闭注释一致性
+    ENABLE:  [RULE 9]        # 明确启用“功能优先”
+  core/workflow-spec.zh-CN.md:
+    ENABLE:  [RULE 3]        # 采用 Conventional Commits
+    DISABLE: [RULE 8]        # 非生产环境跳过部署前检查清单
+  core/naming-conventions.zh-CN.md:
+    ENABLE:  [CONVENTION 7]  # 后端服务开启数据库命名约定
 
 # ============================================
 # SUMMARY
 # ============================================
 ACTIVE:
-  PROFILE: Web
-  MODULES: requirements-spec.txt (ENABLED), workflow-spec.txt (ENABLED), naming-conventions.txt (ENABLED)
-  MIRROR_MD: DISABLED
+  PROFILE: GoService
+  MODULES: core/requirements-spec.zh-CN.md (ENABLED), core/workflow-spec.zh-CN.md (ENABLED), core/naming-conventions.zh-CN.md (ENABLED), architecture/api-design-spec.zh-CN.md (ENABLED), quality/security-spec.zh-CN.md (ENABLED), quality/error-handling-spec.zh-CN.md (ENABLED), quality/testing-spec.zh-CN.md (ENABLED)
 
 # ============================================
 # Version History
 # ============================================
-# v1.0 (2025-11-09) - Initial central index with global switches, dependencies, conflicts, and profiles
+# v1.0 (2025-11-09) - 首个中心索引：含全局开关、依赖、冲突与项目配置
 # ============================================

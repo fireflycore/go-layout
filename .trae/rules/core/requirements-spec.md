@@ -2,265 +2,278 @@
 trigger: manual
 ---
 
-# Development Requirements Specification v1.1
+# 开发需求规范 v1.1
 # ============================================
-# AI-assisted development coding rules and requirements
-# Follow these rules strictly when generating code
+# AI 辅助开发的编码规则和要求
+# 生成代码时严格遵循这些规则
 #
-# Usage:
-# 1. Place this file in project root directory
-# 2. Reference with @requirements-spec.txt in AI conversations
-# 3. AI will automatically follow these rules
+# 使用方法：
+# 1. 在 AI 对话中引用此文件
+# 2. 需要时同时引用对应的工作流/命名/质量规范
+# 3. AI 将自动遵循这些规则
 #
-# Scope: All programming languages and frameworks
-# Last updated: 2025-11-09
+# 适用范围：所有编程语言和框架
+# 最后更新：2025-11-09
 # ============================================
 
-## [RULE 1] Generate Complete, Runnable Code (Priority: CRITICAL)
-# Generate complete, executable code without placeholders
+## [规则 1] 生成完整可运行代码（优先级：关键）
+# 生成完整、可执行的代码，不使用占位符
 
-- Code must be immediately executable, no placeholders allowed
-- Include all necessary imports, dependencies, and configurations
-- Provide full implementation, not partial code snippets
-- No incomplete functions or missing logic
-- No TODO comments or "implement later" notes
+- 代码必须可立即执行，不允许使用占位符
+- 包含所有必要的 import、依赖和配置
+- 提供完整实现，不是部分代码片段
+- 不允许有不完整的函数或缺失的逻辑
+- 不允许 TODO 注释或"稍后实现"的说明
 
-Consequences:
-- Placeholder or partial code leads to runtime failures and rework
-- Missing imports/configurations cause build breaks and deployment delays
+后果：
+- 占位或部分代码导致运行时失败和返工
+- 缺少 import/配置会造成构建中断和部署延迟
 
-Example:
-❌ WRONG:
-  function processData() {
-    // TODO: implement this
-  }
+示例：
+❌ 错误：
+```go
+package example
 
-✅ CORRECT:
-  function processData(data: string[]): ProcessedData {
-    return data.map(item => ({
-      id: generateId(),
-      value: item.trim(),
-      timestamp: Date.now()
-    }));
-  }
+func processData(data []string) []string {
+	// TODO: implement this
+	return nil
+}
+```
 
-## [RULE 2] Reuse Existing Code and APIs (Priority: HIGH)
-# MUST reuse existing interfaces and APIs before creating new ones
+✅ 正确：
+```go
+package example
 
-- Check existing codebase before creating new interfaces
-- Do not reinvent existing functionality
-- Reference and utilize current API endpoints
-- Maintain compatibility with existing interfaces
-- Search for similar implementations first
+import "strings"
 
-Example:
-❌ WRONG:
-  // Creating new validation function
-  function validateUser(user) {
-    // custom validation logic
-  }
+func processData(data []string) []string {
+	out := make([]string, 0, len(data))
+	for _, item := range data {
+		item = strings.TrimSpace(item)
+		if item == "" {
+			continue
+		}
+		out = append(out, item)
+	}
+	return out
+}
+```
 
-✅ CORRECT:
-  // Use existing validation service
-  import { validateUser } from '@/services/auth';
-  validateUser(user);
+## [规则 2] 复用现有代码和 API（优先级：高）
+# 创建新接口前必须先复用现有接口和 API
 
-## [RULE 3] Minimize New Dependencies (Priority: HIGH)
-# Use existing project dependencies first
+- 创建新接口前检查现有代码库
+- 不要重复发明已有功能
+- 引用并使用当前的 API 端点
+- 保持与现有接口的兼容性
+- 首先搜索类似的实现
 
-- Prioritize existing project dependencies
-- Justify any new dependency additions
-- Check package.json/requirements.txt before adding
-- Prefer built-in libraries over external packages
-- Avoid heavy dependencies when simple native solutions exist
+示例：
+❌ 错误：
+在 Service 层手写一套与 Proto 验证规则重复的校验逻辑，导致规则漂移。
 
-Example:
-❌ WRONG:
-  import moment from 'moment';  // Heavy new dependency
-  moment(date).format('YYYY-MM-DD');
+✅ 正确：
+在 Service 层使用已集成的 `protovalidate` 做请求参数校验，并复用项目既有的分层与接口边界（Service -> Biz -> Repo）。
 
-✅ CORRECT:
-  // Use native API
-  new Date(date).toISOString().split('T')[0];
+## [规则 3] 最小化新增依赖（优先级：高）
+# 优先使用项目现有依赖
 
-## [RULE 4] Learn from Previous Mistakes (Priority: HIGH)
-# Do not repeat errors from conversation history
+- 优先使用项目现有依赖
+- 添加新依赖需要充分理由
+- 添加前检查 go.mod/go.sum
+- 优先使用内置库而非外部包
+- 当存在简单的原生解决方案时，避免使用重量级依赖
 
-- Reference conversation history before implementing
-- Avoid making the same mistake twice
-- Apply corrections consistently across all code
-- Remember user feedback and preferences
+示例：
+❌ 错误：
+为简单时间格式化引入新的第三方库。
 
-## [RULE 5] Make Only Requested Changes (Priority: HIGH)
-# Only modify what was explicitly requested - no unauthorized refactoring
+✅ 正确：
+优先使用标准库 `time` 或项目已存在依赖完成需求。
 
-- Do not refactor working code without permission
-- Keep original logic unless asked to improve
-- Stick to the specific task requirements
-- Minimize scope of changes
-- Preserve existing code structure
+## [规则 4] 从之前的错误中学习（优先级：高）
+# 不要重复对话历史中的错误
 
-Consequences:
-- Unrequested refactors introduce regressions and slow reviews
-- Scope creep increases cost and misses deadlines
+- 实现前参考对话历史
+- 避免犯同样的错误两次
+- 在所有代码中一致地应用修正
+- 记住用户反馈和偏好
 
-Example (User only asked to change button color):
-❌ WRONG:
+## [规则 5] 仅修改请求的内容（优先级：高）
+# 只修改明确要求的内容 - 不要未经授权重构
+
+- 未经许可不要重构可工作的代码
+- 除非被要求改进，否则保持原有逻辑
+- 严格遵守具体任务要求
+- 最小化修改范围
+- 保留现有代码结构
+
+后果：
+- 非请求的重构引入回归并拖慢评审
+- 修改范围膨胀增加成本且影响进度
+
+示例（用户只要求修改按钮颜色）：
+❌ 错误：
   // Refactoring entire component architecture
   // Switching to Context API
   // Adding performance optimizations
 
-✅ CORRECT:
+✅ 正确：
   // Only change button color
   <button style={{ backgroundColor: 'blue' }}>Submit</button>
 
-## [RULE 6] Verify All APIs Exist (Priority: CRITICAL)
-# Do not invent non-existent APIs or methods
+## [规则 6] 验证所有 API 是否存在（优先级：关键）
+# 不要发明不存在的 API 或方法
 
-- Verify APIs exist before using them
-- Check documentation for correct API signatures
-- Only use confirmed, available APIs
-- Do not make up fictional library methods
-- Test API compatibility with project version
+- 使用前验证 API 是否存在
+- 查阅文档确认正确的 API 签名
+- 只使用已确认可用的 API
+- 不要编造虚构的库方法
+- 测试 API 与项目版本的兼容性
 
-Consequences:
-- Using non-existent or incompatible APIs causes crashes and support burden
-- Incorrect signatures lead to silent data corruption
+后果：
+- 使用不存在或不兼容的 API 会导致崩溃与支持负担
+- 错误签名可能造成数据悄然损坏
 
-Example:
-❌ WRONG:
-  array.removeAt(index);  // Non-existent method
+示例：
+❌ 错误：
+调用不存在的方法、包或字段（未在代码库或文档中出现）。
 
-✅ CORRECT:
-  array.splice(index, 1);  // Standard method
+✅ 正确：
+在使用前通过代码库检索或文档确认符号与签名，并以当前项目版本为准。
 
-## [RULE 7] Fix Errors Completely on First Attempt (Priority: HIGH)
-# Address root cause, not symptoms
+## [规则 7] 第一次就完全修复错误（优先级：高）
+# 解决根本原因，而不是症状
 
-- Test solutions before presenting
-- Provide working fixes, not iterative attempts
-- Solve root cause, not just symptoms
-- Ensure code compiles and runs before delivery
+- 提交前测试解决方案
+- 提供可工作的修复，而不是迭代尝试
+- 解决根本原因，而不仅仅是症状
+- 确保代码在交付前能编译和运行
 
-## [RULE 8] Keep Comments Consistent with Code (Priority: MEDIUM)
-# Ensure comments match actual implementation
+## [规则 8] 保持注释与代码一致（优先级：中）
+# 确保注释与实际实现匹配
 
-- Update comments when code changes
-- Provide accurate, truthful documentation
-- No misleading or outdated comments
-- Comments should reflect actual behavior
+- 代码变更时更新注释
+- 提供准确、真实的文档
+- 不要有误导性或过时的注释
+- 注释应反映实际行为
 
-Example:
-❌ WRONG:
+示例：
+❌ 错误：
   // Get user list
   function deleteUser(id) { ... }  // Comment doesn't match
 
-✅ CORRECT:
+✅ 正确：
   // Delete specified user
   function deleteUser(id) { ... }
 
-## [RULE 9] Functionality Over Perfection (Priority: MEDIUM)
-# Prioritize getting code working first
+## [规则 9] 功能优先于完美（优先级：中）
+# 优先让代码运行起来
 
-- Working code > perfect code
-- Functionality before optimization
-- Deliver MVP before enhancements
-- Get it running, then make it better
+- 可工作的代码 > 完美的代码
+- 功能优先于优化
+- 先交付 MVP 再做增强
+- 先让它运行，然后再改进
 
-## [RULE 10] Ensure Code Compiles Successfully (Priority: CRITICAL)
-# All code must compile/run without errors
+## [规则 10] 确保代码成功编译（优先级：关键）
+# 所有代码必须能编译/运行且无错误
 
-- Check syntax before delivery
-- Resolve all compilation errors
-- Test build process
-- Verify imports and dependencies are correct
+- 交付前检查语法
+- 解决所有编译错误
+- 测试构建过程（例如 `go test ./...`，并确保生成链路 `buf/goverter/wire` 已同步）
+- 验证 import 和依赖是否正确
 
-Consequences:
-- Build failures block delivery pipelines
-- Runtime errors degrade user experience and trust
+后果：
+- 构建失败会阻塞交付流水线
+- 运行时错误会降低用户体验与信任
 
-## [RULE 11] Follow Provided Examples Exactly (Priority: MEDIUM)
-# When examples are given, match them precisely
+## [规则 11] 严格遵循提供的示例（优先级：中）
+# 当给出示例时，精确匹配它们
 
-- Match code style from examples
-- Use same patterns and structures
-- Maintain consistency with provided samples
-- Replicate structure and naming conventions
+- 匹配示例的代码风格
+- 使用相同的模式和结构
+- 与提供的样本保持一致
+- 复制结构和命名约定
 
-## [RULE 12] Respect Project Naming Conventions (Priority: MEDIUM)
-# Preserve existing naming patterns
+## [规则 12] 尊重项目命名约定（优先级：中）
+# 保留现有的命名模式
 
-- Do not rename variables/functions without permission
-- Follow project's naming style
-- Maintain consistency with codebase
-- Match existing patterns (camelCase, snake_case, etc.)
+- 未经许可不要重命名变量/函数
+- 遵循项目的命名风格
+- 与代码库保持一致
+- 匹配现有模式（camelCase、snake_case 等）
 
-## [RULE 13] Use Only Real, Existing Libraries (Priority: CRITICAL)
-# Only import actual, existing libraries
+## [规则 13] 只使用真实存在的库（优先级：关键）
+# 只导入实际存在的库
 
-- Verify package exists before importing
-- No fictional or made-up packages
-- Check npm/pip/package registry
-- Confirm library version compatibility
+- 导入前验证包是否存在
+- 不要使用虚构或编造的包
+- 检查 go.mod 是否已引入，或是否属于标准库
+- 确认库版本与项目约束兼容
 
-Consequences:
-- Importing fictional or wrong-version libraries breaks builds
-- Security exposure from unvetted packages
+后果：
+- 导入虚构或错误版本的库会导致构建失败
+- 未审查的包可能带来安全风险
 
-Example:
-❌ WRONG:
-  import { magicHelper } from 'super-magic-lib';  // Doesn't exist
+示例：
+❌ 错误：
+引用 go.mod 中不存在的模块或包路径。
 
-✅ CORRECT:
-  import { useState } from 'react';  // Real library
-
-# ============================================
-# SUMMARY - Critical Rules (Top Priority)
-# ============================================
-
-1. Generate COMPLETE, runnable code (no TODOs, no placeholders)
-2. Reuse existing interfaces/APIs - don't create new ones unnecessarily
-3. Minimize dependencies - use what already exists
-4. Make ONLY requested changes - no unauthorized refactoring
-5. Verify all APIs exist before using them
-6. Code must compile and run immediately
-7. Learn from previous errors in conversation
-8. Use only real, existing libraries
-9. Follow provided examples exactly
-10. Keep comments consistent with implementation
+✅ 正确：
+使用标准库或 go.mod 已声明的依赖。
 
 # ============================================
-# Usage
+# 摘要 - 关键规则（最高优先级）
 # ============================================
-# Reference this file in AI conversations:
-#   "@requirements-spec.txt implement user login"
+
+1. 生成完整、可运行的代码（无 TODO、无占位符）
+2. 复用现有接口/API - 不要不必要地创建新接口
+3. 最小化依赖 - 使用已有的
+4. 只修改请求的内容 - 不要未经授权重构
+5. 使用前验证所有 API 是否存在
+6. 代码必须能立即编译和运行
+7. 从对话中的错误中学习
+8. 只使用真实存在的库
+9. 严格遵循提供的示例
+10. 保持注释与实现一致
+
+# ============================================
+# 使用方法
+# ============================================
+# 在 AI 对话中引用此文件：
+#   "@.trae/rules/core/requirements-spec.zh-CN.md 实现订单模块"
 #
-# Or mention in project README:
-#   "This project uses requirements-spec.txt for AI code generation standards"
+# 或在项目 README 中说明：
+#   "本项目使用 requirements-spec.zh-CN.md 作为 AI 代码生成标准"
 #
 # ============================================
-# Project Profiles
+# 项目类型配置
 # ============================================
-# Recommended rule sets to enable per project type
+# 不同项目类型推荐启用的规则集合
 
-Profile: Web Application
-- ENABLE: [RULE 1, 2, 3, 5, 6, 7, 10, 11, 12, 13]
-- OPTIONAL: [RULE 8, 9]
-- Rationale: Web apps need completeness, API correctness, fast fixes, and compile/run guarantees. Comments and examples improve collaboration.
+Web 应用：
+- 启用： [规则 1, 2, 3, 5, 6, 7, 10, 11, 12, 13]
+- 可选： [规则 8, 9]
+- 说明：Web 应用需要完整性、API 准确性、快速修复，以及编译/运行保证；注释与示例提升协作效率。
 
-Profile: CLI Tool
-- ENABLE: [RULE 1, 2, 3, 5, 6, 7, 10, 12, 13]
-- OPTIONAL: [RULE 8, 9, 11]
-- Rationale: CLI focuses on reliability, minimal deps, error handling, and running clean in varied environments.
+CLI 工具：
+- 启用： [规则 1, 2, 3, 5, 6, 7, 10, 12, 13]
+- 可选： [规则 8, 9, 11]
+- 说明：CLI 更强调可靠性、最小依赖、稳定运行于多环境。
 
-Profile: Library/SDK
-- ENABLE: [RULE 1, 2, 3, 6, 7, 10, 12, 13]
-- OPTIONAL: [RULE 5, 8, 9, 11]
-- Rationale: Libraries emphasize API correctness, versioning discipline, completeness, and high-quality error handling with minimal dependencies.
+库/SDK：
+- 启用： [规则 1, 2, 3, 6, 7, 10, 12, 13]
+- 可选： [规则 5, 8, 9, 11]
+- 说明：库强调 API 正确性、版本纪律、完整性与高质量错误处理，同时尽量减少依赖。
+
+Go 微服务（推荐）：
+- 启用： [规则 1, 2, 3, 5, 6, 7, 10, 12, 13]
+- 可选： [规则 8, 9, 11]
+- 说明：以分层边界、可构建与生成链路一致性为先，减少新依赖，避免发明不存在的 API。
 
 # ============================================
-# Version History
+# 版本历史
 # ============================================
-# v1.1 (2025-11-09) - Refined to 13 essential rules, removed language-specific requirements
-# v1.0 (2025-11-09) - Initial version based on user feedback data
+# v1.1 (2025-11-09) - 精简至 13 条核心规则，移除语言特定要求
+# v1.0 (2025-11-09) - 基于用户反馈数据的初始版本
 # ============================================
