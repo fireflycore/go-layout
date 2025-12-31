@@ -12,5 +12,5 @@ var ProviderSet = wire.NewSet(
 
 	NewEtcdConf,
 	NewRedisConf,
-	NewPostgresConf,
+	NewMysqlConf,
 )

@@ -1,11 +1,12 @@
 package service
 
 import (
-	"buf.build/go/protovalidate"
 	"context"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz"
+
+	"buf.build/go/protovalidate"
+	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -36,7 +37,7 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 	if err != nil {
 		result.Code = 400
 		result.Message = err.Error()
-		return result, err
+		return result, nil
 	}
 
 	if err = srv.uc.CreateDemo(ctx, um, request); err != nil {

@@ -75,6 +75,6 @@ func (load *MysqlConfLoader) Remote() (*gorm.MysqlConf, error) {
 	return &dst, nil
 }
 
-func NewPostgresConf(loader *MysqlConfLoader) (*gorm.MysqlConf, error) {
+func NewMysqlConf(loader *MysqlConfLoader) (*gorm.MysqlConf, error) {
 	return loader.Load()
 }
