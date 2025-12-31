@@ -11,7 +11,7 @@
 │       ├── wire.go             # [核心] Wire 依赖注入定义文件
 │       └── wire_gen.go         # [生成] Wire 生成的代码，不要手动修改
 ├── conf/                       # 配置文件目录
-│   └── bootstrap.json          # [配置] 本地引导配置（开发环境使用，生产环境通常走配置中心）
+│   └── bootstrap.json          # [配置] 本地引导配置（开发环境使用，生产环境通常走配置服务）
 ├── dep/                        # [生成] 外部依赖/生成代码存放区
 │   ├── dto/                    # [生成] Goverter 生成的数据转换实现代码
 │   └── protobuf/               # [生成] Buf 生成的 gRPC/Proto 结构体代码
@@ -92,7 +92,7 @@
 | **新增业务逻辑** | `internal/biz/` | 在 `biz` 创建 UseCase，定义 Repo 接口。 |
 | **新增数据库表** | `internal/data/entity/` -> `internal/data/` | 定义 PO 结构体，实现 Repo 接口。 |
 | **新增配置项** | `internal/conf/` | 修改 `BootstrapConf` 或新增配置 Loader。 |
-| **依赖注入注册** | 各层的 `core.go` -> `cmd/server/wire.go` | 每次新增 struct 需在对应的 `core.go` 中注册，并运行 `wire`。 |
+| **依赖注入注册** | 各层的 `core.go` -> `cmd/server/wire.go` | 每次新增 struct 需在对应的 `core.go` 中注册，并执行 `wire ./cmd/server`（或 `make init`）。 |
 
 ## 示例文件说明
 项目中包含的 `demo.go` 文件（分布在各层）是**参考实现**。

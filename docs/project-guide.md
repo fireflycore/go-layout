@@ -43,25 +43,18 @@
 3. **清理示例代码**
    `Demo` 模块仅供参考。在熟悉架构后，你可以：
    - 删除 `internal/biz/demo.go`, `internal/biz/model/demo.go`, `internal/biz/repo/demo.go`
-   - 删除 `internal/data/demo.go`, `internal/data/entity/demo.go`
-   - 删除 `internal/service/demo.go`
-   - 删除 `internal/biz/convert/demo.go`
-   - **注意**：删除后需要重新运行 `wire` 生成依赖注入代码。
+- 删除 `internal/data/demo.go`, `internal/data/entity/demo.go`
+- 删除 `internal/service/demo.go`
+- 删除 `internal/biz/convert/demo.go`
+- **注意**：删除后需要重新运行 `wire ./cmd/server`（或执行 `make init`）生成依赖注入代码。
 
 ### 3. 运行服务
 ```bash
-# 下载依赖
-go mod tidy
-
-# 生成依赖注入代码 (每次修改 core.go 或 wire.go 后执行)
-cd cmd/server
-wire
-
-# 运行服务
-# 确保 conf/bootstrap.json 中的配置正确
-# 如果使用远程配置，需确保 Config Service 可用
-go run .
+# 最省心的方式（推荐）：一条命令完成生成与运行
+make run
 ```
+`make run` 会依次执行 `buf generate`、`goverter`、`wire ./cmd/server`、`go mod tidy`，然后运行 `cmd/server/main.go`。
+如果你需要分步执行，可参考 `makefile` 中的 `init/generate/dto` 目标。
 
 ## 工具链指南
 
@@ -73,7 +66,7 @@ go run .
 ### Wire (依赖注入)
 - **入口**：`cmd/server/wire.go`
 - **各层 Provider**：每个层级 (`internal/biz`, `internal/data`, `internal/service` 等) 都有一个 `core.go`，定义了该层的 `ProviderSet`。
-- **新增组件**：当你新增一个 Repo 或 Service 时，记得将其构造函数加入到对应层的 `core.go` 中，然后重新运行 `wire`。
+- **新增组件**：当你新增一个 Repo 或 Service 时，记得将其构造函数加入到对应层的 `core.go` 中，然后执行 `wire ./cmd/server`（或 `make init`）。
 
 ### Goverter (数据转换)
 - **定义**：在 `internal/biz/convert` 中定义接口。

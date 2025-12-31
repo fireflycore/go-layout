@@ -75,7 +75,7 @@ func wireApp() (*App, error) {
 1.  在 `internal/data/core.go` 中添加 `NewUserRepo`。
 2.  在 `internal/biz/core.go` 中添加 `NewUserUseCase`。
 3.  在 `internal/service/core.go` 中添加 `NewUserService`。
-4.  在 `cmd/server/` 目录下执行 `wire` 命令，重新生成 `wire_gen.go`。
+4.  执行 `wire ./cmd/server`（或 `make init`）重新生成 `wire_gen.go`。
 
 ## 配置管理实现
 
@@ -98,7 +98,7 @@ func wireApp() (*App, error) {
 ### 2. 配置加载器 (Conf Loader)
 位于 `internal/conf/`。
 例如 `mysql.go` 定义了如何加载 MySQL 配置：
-- **Local 模式**：读取 `conf/mysql.json`。
+- **Local 模式**：读取 `conf/mysql.json`（仓库默认仅提供 `bootstrap.json`，其余组件配置文件需要按需补齐）。
 - **Remote 模式**：根据 `bootstrap.json` 中的配置，调用远程 **Config Service** (gRPC) 获取 Key 为 `mysql` 的配置内容。
 - **注意**：目前配置仅在服务启动时加载，**不支持热更新**。
 

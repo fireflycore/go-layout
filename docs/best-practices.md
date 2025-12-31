@@ -30,11 +30,12 @@
 - [ ] **注册依赖**: 在 `internal/service/core.go` 的 `ProviderSet` 中添加 `NewOrderService`。
 
 ### 5. 服务注册与启动 (Server Layer)
-- [ ] **注册 gRPC**: 修改 `internal/server/register.go`，将 `OrderService` 注册到 gRPC Server。
-- [ ] **依赖注入**: 运行 `cd cmd/server && wire`，更新依赖注入代码。
+- [ ] **注册 gRPC**: 修改 `internal/server/grpc.go`，将 `OrderService` 注册到 gRPC Server。
+- [ ] **注册到注册中心**: 修改 `internal/server/register.go`，把 `OrderService_ServiceDesc` 加入注册列表。
+- [ ] **依赖注入**: 运行 `make init`（或执行 `wire ./cmd/server`），更新依赖注入代码。
 
 ### 6. 验证与测试
-- [ ] 运行服务 `go run cmd/server/main.go`。
+- [ ] 运行服务 `make run` 或 `go run ./cmd/server/main.go`。
 - [ ] 使用 Postman 或 grpcurl 测试新接口。
 
 ---
