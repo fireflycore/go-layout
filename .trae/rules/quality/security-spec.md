@@ -2,57 +2,43 @@
 trigger: manual
 ---
 
-# 安全规范（Go 微服务）v1.0
-# ============================================
-# 面向 go-layout 的安全标准与要求
-# 通过将 [ENABLED] 更改为 [DISABLED] 来启用/禁用规则
-#
-# 最后更新：2025-12-31
-# ============================================
+# 安全规范（go-layout）v1.0
 
-## [规则 1] 输入验证与清理 [ENABLED]
+## [规则 1] 输入必须验证 [ENABLED]
 STATUS: ENABLED
 PRIORITY: CRITICAL
-说明：
-- 对所有外部输入（RPC 请求、配置、环境变量、第三方返回）进行验证
-- 以白名单为主：类型、长度、范围、枚举值
-- 参数校验优先复用 Proto 规则（`protovalidate`），避免双份逻辑
+LANGUAGE: Go
+- 外部输入（RPC/配置/环境变量/第三方返回）均要验证
+- 校验优先复用 Proto 规则：`protovalidate`
 
-## [规则 2] 认证与授权 [ENABLED]
+## [规则 2] 认证授权只在服务端 [ENABLED]
 STATUS: ENABLED
 PRIORITY: CRITICAL
-说明：
-- 所有授权判断必须在服务端完成
-- 用户上下文从入站 metadata 提取并校验（与项目 `micro.ParseUserContextMeta` 用法一致）
-- 按最小权限原则设计接口
+LANGUAGE: Go
+- 权限判断必须在服务端完成
+- 用户上下文从入站 metadata 提取并校验（对齐 `micro.ParseUserContextMeta`）
 
-## [规则 3] 敏感数据保护 [ENABLED]
+## [规则 3] 不泄露敏感信息 [ENABLED]
 STATUS: ENABLED
 PRIORITY: CRITICAL
-说明：
-- 不在日志、错误消息、响应体中暴露密钥、令牌、密码、个人敏感信息
-- 传输层使用 TLS（生产环境必须）
-- 密码哈希使用成熟算法（如 bcrypt），不要自研
+LANGUAGE: Go
+- 日志/错误/响应体不得包含密钥、令牌、密码、个人敏感信息
+- 生产环境使用 TLS
 
-## [规则 4] 数据库/存储注入防护 [ENABLED]
+## [规则 4] 防注入 [ENABLED]
 STATUS: ENABLED
 PRIORITY: HIGH
-说明：
-- 所有查询必须参数化，避免拼接 SQL
-- 使用 ORM/Query Builder 时也避免拼接未转义的用户输入
+LANGUAGE: Go
+- DB 查询参数化，避免拼接用户输入
 
-## [规则 5] 依赖安全管理 [ENABLED]
+## [规则 5] 依赖安全 [ENABLED]
 STATUS: ENABLED
 PRIORITY: HIGH
-说明：
-- 最小化新增依赖，优先复用 go.mod 现有依赖
-- 更新依赖后执行 `go mod tidy` 并确保可构建
-- 对安全敏感依赖升级保持谨慎：优先安全补丁与关键修复
+LANGUAGE: Go
+- 最小化新增依赖；变更后执行 `go mod tidy` 并验证可构建
 
-## [规则 6] 日志安全 [ENABLED]
+## [规则 6] 日志卫生 [ENABLED]
 STATUS: ENABLED
 PRIORITY: HIGH
-说明：
-- 记录错误时包含上下文（请求标识、业务关键字段），但避免泄露敏感信息
-- 统一通过注入的 Logger 打印日志，避免随意 `fmt.Println` 输出敏感内容
-
+LANGUAGE: Go
+- 用注入的 Logger 输出；必要字段可记录，但需脱敏/裁剪

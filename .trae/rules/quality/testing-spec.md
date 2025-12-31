@@ -2,45 +2,31 @@
 trigger: manual
 ---
 
-# 测试规范（Go 微服务）v1.0
-# ============================================
-# 面向 go-layout 的测试策略与约束
-# 通过将 [ENABLED] 更改为 [DISABLED] 来启用/禁用规则
-#
-# 最后更新：2025-12-31
-# ============================================
+# 测试规范（go-layout）v1.0
 
-## [规则 1] 测试完整性 [ENABLED]
+## [规则 1] 新逻辑必须可测 [ENABLED]
 STATUS: ENABLED
-说明：
-- 新增业务逻辑优先补充单元测试
-- 修复缺陷优先补充回归测试
+PRIORITY: HIGH
+LANGUAGE: Go
+- 新增逻辑补充单元测试；修复缺陷补充回归用例
 
-## [规则 2] 测试分层策略 [ENABLED]
+## [规则 2] 分层测试 [ENABLED]
 STATUS: ENABLED
-说明：
-- Biz 层：以纯逻辑单元测试为主（通过接口 mock Repo）
-- Data 层：优先做集成测试（需要时连接测试库）
-- Service 层：做入口逻辑与参数校验测试（关注 `Code/Message` 映射）
+PRIORITY: HIGH
+LANGUAGE: Go
+- Biz：以单元测试为主，mock Repo 接口
+- Data：以集成测试为主（必要时引入测试库/容器）
+- Service：关注入口校验与 `Code/Message` 映射
 
-## [规则 3] 表驱动测试 [ENABLED]
+## [规则 3] 表驱动与子用例 [ENABLED]
 STATUS: ENABLED
-说明：
-- 使用表驱动用例覆盖正常/边界/异常路径
-- 使用 `t.Run` 命名子用例，名称描述行为
+PRIORITY: MEDIUM
+LANGUAGE: Go
+- 使用表驱动覆盖正常/边界/异常路径
+- 用 `t.Run` 给子用例起行为描述名
 
-## [规则 4] Mock 边界 [ENABLED]
+## [规则 4] Mock 只在边界 [ENABLED]
 STATUS: ENABLED
-说明：
-- 通过接口隔离外部依赖（Repo/Remote Service）
-- Mock 只用于边界，避免对实现细节过度绑定
-
-# ============================================
-# 摘要 - 启用的规则
-# ============================================
-
-✅ [规则 1] 测试完整性
-✅ [规则 2] 测试分层策略
-✅ [规则 3] 表驱动测试
-✅ [规则 4] Mock 边界
-
+PRIORITY: MEDIUM
+LANGUAGE: Go
+- 只 mock Repo/Remote 等边界依赖，避免绑定实现细节

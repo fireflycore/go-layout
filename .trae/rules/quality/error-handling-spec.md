@@ -2,43 +2,33 @@
 trigger: manual
 ---
 
-# 错误处理规范（Go 微服务）v1.0
-# ============================================
-# 面向 go-layout 的错误处理标准与要求
-# 通过将 [ENABLED] 更改为 [DISABLED] 来启用/禁用规则
-#
-# 最后更新：2025-12-31
-# ============================================
+# 错误处理规范（go-layout）v1.0
 
-## [规则 1] 错误分类体系 [ENABLED]
-STATUS: ENABLED
-PRIORITY: CRITICAL
-说明：
-- 参数/校验错误：请求非法或缺少必需字段（Service 层优先由 protovalidate 发现）
-- 业务错误：业务规则不满足（可恢复/可提示）
-- 系统错误：DB/Redis/网络/配置等基础设施异常
-- 第三方错误：调用外部服务失败（考虑降级/重试）
-
-## [规则 2] 错误传播边界 [ENABLED]
+## [规则 1] 错误分类清晰 [ENABLED]
 STATUS: ENABLED
 PRIORITY: HIGH
-说明：
-- Biz/Data 层返回 Go error，不依赖 gRPC status
-- Service 层将 error 映射为响应体 `Code/Message`，并返回 `nil` error（与项目示例一致）
-- 仅在“框架无法继续处理”的情况下返回非 nil error
+LANGUAGE: Go
+- 参数/校验错误（入口优先 protovalidate）
+- 业务错误（可提示、可恢复）
+- 系统错误（DB/Redis/网络/配置）
+- 第三方错误（必要时重试/降级）
+
+## [规则 2] 错误边界明确 [ENABLED]
+STATUS: ENABLED
+PRIORITY: CRITICAL
+LANGUAGE: Go
+- Biz/Data 返回 Go error
+- Service 将 error 映射为响应体 `Code/Message` 并返回 `nil` error（模板风格）
 
 ## [规则 3] 错误包装与判断 [ENABLED]
 STATUS: ENABLED
 PRIORITY: HIGH
-说明：
-- 包装错误使用 `%w`
-- 分支判断使用 `errors.Is/As`
-- 需要稳定语义时定义哨兵错误或轻量错误类型
+LANGUAGE: Go
+- 包装用 `%w`；判断用 `errors.Is/As`
 
-## [规则 4] 日志与错误信息 [ENABLED]
+## [规则 4] 日志与对外信息 [ENABLED]
 STATUS: ENABLED
 PRIORITY: HIGH
-说明：
-- 记录错误时包含上下文，但避免泄露敏感信息
-- 外部可见的 `Message` 使用可理解且不暴露内部细节的描述
-
+LANGUAGE: Go
+- 日志带上下文但不泄露敏感信息
+- 对外 `Message` 不暴露内部细节
