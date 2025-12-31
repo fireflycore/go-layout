@@ -18,7 +18,7 @@
 
 ### 1. 环境准备
 确保本地已安装以下工具：
-- **Go** (>= 1.20)
+- **Go** (>= 1.25.1)
 - **Buf** (用于 Proto 管理): `npm install -g @bufbuild/buf` 或参考官方文档
 - **Wire** (用于依赖注入): `go install github.com/google/wire/cmd/wire@latest`
 - **Goverter** (用于数据转换): `go install github.com/jmattheis/goverter/cmd/goverter@latest`
@@ -61,7 +61,7 @@ make run
 ### Buf (Protobuf 管理)
 本项目不直接包含 `.proto` 文件，而是假设 Proto 定义在独立的仓库中管理（推荐做法）。
 - `buf.gen.yaml`: 定义了如何从 Proto 生成 Go 代码。
-- **生成代码**：通常通过 CI/CD 管道或脚本执行 `buf generate`，生成的代码位于 `dep/protobuf`。
+- **生成代码**：通常通过 CI/CD 管道或脚本执行 `buf generate`，生成的代码位于 `dep/protobuf/gen`。
 
 ### Wire (依赖注入)
 - **入口**：`cmd/server/wire.go`

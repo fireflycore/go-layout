@@ -14,7 +14,7 @@
 │   └── bootstrap.json          # [配置] 本地引导配置（开发环境使用，生产环境通常走配置服务）
 ├── dep/                        # [生成] 外部依赖/生成代码存放区
 │   ├── dto/                    # [生成] Goverter 生成的数据转换实现代码
-│   └── protobuf/               # [生成] Buf 生成的 gRPC/Proto 结构体代码
+│   └── protobuf/gen/           # [生成] Buf 生成的 gRPC/Proto 结构体代码
 ├── docs/                       # 项目文档
 ├── internal/                   # [核心] 业务代码私有目录（Go 语言机制，外部无法 import）
 │   ├── biz/                    # [业务] 业务逻辑层 (Business Logic)
@@ -88,7 +88,7 @@
 
 | 任务 | 涉及目录/文件 | 说明 |
 | :--- | :--- | :--- |
-| **新增 API** | `dep/protobuf/` (外部) -> `internal/service/` | 首先在 Proto 仓库定义，更新 `dep`，然后在 `service` 实现接口。 |
+| **新增 API** | `dep/protobuf/gen/` (外部) -> `internal/service/` | 首先在 Proto 仓库定义，更新 `dep`，然后在 `service` 实现接口。 |
 | **新增业务逻辑** | `internal/biz/` | 在 `biz` 创建 UseCase，定义 Repo 接口。 |
 | **新增数据库表** | `internal/data/entity/` -> `internal/data/` | 定义 PO 结构体，实现 Repo 接口。 |
 | **新增配置项** | `internal/conf/` | 修改 `BootstrapConf` 或新增配置 Loader。 |

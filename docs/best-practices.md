@@ -9,7 +9,7 @@
 ### 1. 接口定义 (Proto First)
 - [ ] 在 Proto 仓库中创建 `order.proto`，定义 Service 和 Message。
 - [ ] 定义 API 接口（如 `CreateOrder`）和字段验证规则 (`protovalidate`)。
-- [ ] 运行 `buf generate`，确保生成的代码同步到本项目的 `dep/protobuf` 目录。
+- [ ] 运行 `buf generate`，确保生成的代码同步到本项目的 `dep/protobuf/gen` 目录。
 
 ### 2. 基础设施准备 (Data Layer)
 - [ ] **定义 Entity (PO)**: 在 `internal/data/entity/order.go` 中定义数据库表结构。
