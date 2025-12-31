@@ -22,7 +22,7 @@
 │   ├── data/                   # [数据] 数据访问层 (Data Access)
 │   ├── dep/                    # [依赖] 基础设施适配层 (Infrastructure)
 │   ├── dto/                    # [转换] DTO 注册与入口
-│   ├── server/                 # [服务] HTTP/gRPC Server 启动与注册
+│   ├── server/                 # [服务] gRPC Server 启动与注册
 │   └── service/                # [接口] 应用服务层 (Application Service)
 ├── buf.gen.yaml                # [工具] Buf 生成配置文件
 ├── go.mod                      # [依赖] Go 模块定义
@@ -56,7 +56,7 @@
 - `transaction.go`: 事务支持实现。
 
 ### 3. `internal/service` (应用服务层)
-**职责**：实现 gRPC/HTTP 接口，处理请求参数验证，调用 `biz` 层逻辑，返回响应。
+**职责**：实现 gRPC 接口，处理请求参数验证，调用 `biz` 层逻辑，返回响应。
 
 - `core.go`: **[配置]** Wire ProviderSet，注册本层的所有 Service。
 - `demo.go`: **[开发区]** `DemoService` 实现，直接对应 Proto 定义的 Service。
@@ -64,9 +64,9 @@
   - 这里从 Context 中提取 User Meta 信息。
 
 ### 4. `internal/server` (服务启动层)
-**职责**：构建和启动 gRPC/HTTP 服务器，注册 Service，配置中间件。
+**职责**：构建和启动 gRPC 服务器，注册 Service，配置中间件。
 
-- `grpc.go`: **[配置]** 配置 gRPC Server，加载拦截器（日志、Recovery 等）。
+- `grpc.go`: **[配置]** 配置 gRPC Server，加载拦截器（Metadata 透传、访问日志等）。
 - `register.go`: **[配置]** 服务注册中心逻辑 (ETCD 注册)。
 - `server.go`: **[配置]** TCP 监听与启动逻辑。
 

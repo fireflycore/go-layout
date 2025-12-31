@@ -77,7 +77,7 @@ go run .
 
 ### Goverter (数据转换)
 - **定义**：在 `internal/biz/convert` 中定义接口。
-- **生成**：在项目根目录运行 `go generate ./...` (需配置 `//go:generate` 指令) 或直接使用 `goverter` 命令。本项目配置见 `internal/biz/convert/demo.go` 中的注释。
+- **生成**：在项目根目录运行 `make dto`（等价于 `goverter gen ./internal/biz/convert`）。生成代码位于 `dep/dto/`，通过 `internal/dto` 适配为 Biz 层依赖的接口。
 
 ## 目录导航
 - [目录结构详解](directory-structure.md)

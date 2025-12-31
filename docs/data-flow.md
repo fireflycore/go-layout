@@ -6,7 +6,7 @@
 
 ```mermaid
 graph TD
-    Client[客户端/外部请求] -->|gRPC/HTTP| Server[internal/server]
+    Client[客户端/外部请求] -->|gRPC| Server[internal/server]
     Server -->|Dispatch| Service[internal/service/demo.go]
     
     subgraph "Application Layer"

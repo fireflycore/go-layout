@@ -19,7 +19,7 @@
 
 ### 3. 业务逻辑实现 (Biz Layer)
 - [ ] **定义 Converter**: 在 `internal/biz/convert/order.go` 中定义 DTO <-> PO 转换接口。
-- [ ] **生成转换代码**: 运行 `go generate ./...` 生成 `dep/dto/order.go`。
+- [ ] **生成转换代码**: 运行 `make dto` 生成 `dep/dto/order.go`（或执行 `goverter gen ./internal/biz/convert`）。
 - [ ] **实现 UseCase**: 创建 `internal/biz/order.go`，编写 `OrderUseCase`，注入 Repo 和 Converter。
 - [ ] **注册依赖**: 在 `internal/biz/core.go` 的 `ProviderSet` 中添加 `NewOrderUseCase`。
 
@@ -42,11 +42,11 @@
 ## 编码规范与建议
 
 ### 1. 错误处理
-- **Service 层**: 负责将 error 转换为 gRPC Status Code。
-  - 参数错误 -> `codes.InvalidArgument`
-  - 业务错误 -> 自定义 Code 或 `codes.FailedPrecondition`
-  - 系统错误 -> 记录日志并返回 `codes.Internal`
-- **Biz/Data 层**: 直接返回 Go error，不要依赖 gRPC 状态码包（保持层级独立）。
+- **Service 层**：当前模板示例采用“统一响应体”风格（`Code`/`Message`），通常返回 `nil` error，通过响应体表达业务失败。
+  - 参数校验失败（`protovalidate`） -> `Code=400`，`Message=err.Error()`
+  - 用户上下文解析失败（Metadata） -> `Code=400`，`Message=err.Error()`
+  - Biz/Data 返回错误 -> `Code=400`，`Message=err.Error()`
+- **Biz/Data 层**：直接返回 Go error，不依赖 gRPC Status。
 
 ### 2. 日志规范
 - 使用注入的 `dep.AccessLogger` (请求日志) 和 `dep.OperationLogger` (操作日志)。
@@ -55,7 +55,7 @@
 
 ### 3. 事务处理
 - 使用 `internal/biz/repo/transaction.go` 中定义的事务接口。
-- 事务逻辑应控制在 Biz 层，通过 Closure (闭包) 传递给 Data 层执行。
+- 当前模板提供了 `internal/data/transaction.go` 的实现示例，但 `DemoRepo` 未使用事务上下文；如需在业务中使用，请自行补全“从 ctx 获取事务 DB 并在 Repo 中使用”的约定。
 
 ### 4. 避免循环依赖
 - `Biz` 层绝对不能 import `Service` 层。

@@ -72,7 +72,7 @@
       ToCreate(row *pb.CreateDemoRequest) *entity.Demo
   }
   ```
-- **生成产物**：`dep/dto/demo.go` (由 `go generate` 触发生成)。
+- **生成产物**：`dep/dto/demo.go`（由 `goverter` 生成，推荐执行 `make dto`）。
 
 ## 6. UseCase - 业务用例
 **定义**：应用的核心业务逻辑编排者。

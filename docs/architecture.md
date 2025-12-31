@@ -18,14 +18,16 @@
 
 ```go
 // cmd/server/wire.go
-func wireApp(*conf.BootstrapConf, *conf.Utils, dep.AccessLogger, dep.ServerLogger, dep.OperationLogger) (*App, func(), error) {
+func wireApp() (*App, error) {
     panic(wire.Build(
-        server.ProviderSet,  // 引入 Server 层组件
-        data.ProviderSet,    // 引入 Data 层组件
-        biz.ProviderSet,     // 引入 Biz 层组件
-        service.ProviderSet, // 引入 Service 层组件
-        dto.ProviderSet,     // 引入 DTO/Convert 组件
-        newApp,
+        dep.ProviderSet,
+        conf.ProviderSet,
+        data.ProviderSet,
+        dto.ProviderSet,
+        biz.ProviderSet,
+        service.ProviderSet,
+        server.ProviderSet,
+        NewApp,
     ))
 }
 ```
@@ -36,9 +38,15 @@ func wireApp(*conf.BootstrapConf, *conf.Utils, dep.AccessLogger, dep.ServerLogge
 *   **`internal/data/core.go`**:
     ```go
     var ProviderSet = wire.NewSet(
-        NewData,      // 数据库连接
-        NewDemoRepo,  // 注册 DemoRepo 实现
-        // 新增的 Repo 在这里注册
+        NewEtcd,
+        NewRedis,
+        NewMysql,
+        NewData,
+
+        NewConfigRepo,
+        NewLoggerRepo,
+
+        NewDemoRepo,
     )
     ```
 
@@ -53,8 +61,12 @@ func wireApp(*conf.BootstrapConf, *conf.Utils, dep.AccessLogger, dep.ServerLogge
 *   **`internal/service/core.go`**:
     ```go
     var ProviderSet = wire.NewSet(
-        NewDemoService, // 注册 DemoService
-        // 新增的 Service 在这里注册
+        NewConfigCenterRemoteService,
+        NewAccessLoggerRemoteService,
+        NewServerLoggerRemoteService,
+        NewOperationLoggerRemoteService,
+
+        NewDemoService,
     )
     ```
 
@@ -67,7 +79,7 @@ func wireApp(*conf.BootstrapConf, *conf.Utils, dep.AccessLogger, dep.ServerLogge
 
 ## 配置管理实现
 
-`go-layout` 的配置系统设计灵活，支持从本地文件开发，无缝切换到远程配置中心生产。
+`go-layout` 的配置系统设计灵活，支持从本地文件开发，无缝切换到远程配置服务生产。
 
 ### 1. 引导配置 (Bootstrap)
 一切始于 `conf/bootstrap.json`。这是服务启动时读取的第一个文件，定义了“如何加载其他配置”。
@@ -104,4 +116,4 @@ func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf, ...
 ## 总结
 - **Wire** 粘合了所有层级，修改组件依赖关系后必须重新生成。
 - **Bootstrap** 决定了环境和配置加载方式。
-- **Conf Loader** 实现了配置的统一管理和热更新支持。
+- **Conf Loader** 实现了配置的统一管理（local/remote），配置仅在启动时加载，不支持热更新。
