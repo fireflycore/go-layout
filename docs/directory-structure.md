@@ -74,7 +74,9 @@
 **职责**：加载和解析应用配置。
 
 - `bootstrap.go`: 引导配置加载。
-- `mysql.go`, `redis.go`, `etcd.go`: 各个组件的配置加载器，支持从 Local 或 Remote (Etcd) 加载。
+- `mysql.go`, `redis.go`, `etcd.go`: 各个组件的配置加载器。
+  - **Local 模式**：从本地 JSON 文件加载。
+  - **Remote 模式**：通过调用远程 **Config Service** 获取配置内容（注意：不是直接连 ETCD）。
 
 ### 6. `internal/dep` (依赖适配层)
 **职责**：封装第三方库或基础设施，防止外部依赖污染业务代码。

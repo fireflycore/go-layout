@@ -9,7 +9,7 @@
 - **标准分层架构**：基于 DDD（领域驱动设计）思想，清晰划分 `Service` (接口)、`Biz` (业务)、`Data` (数据) 层。
 - **依赖注入**：完全集成 Google `Wire`，实现编译期依赖注入，保证代码的模块化和可测试性。
 - **协议优先**：集成 `Buf` 和 `gRPC`，通过 Proto 定义驱动开发，自动生成接口代码和验证逻辑 (`protovalidate`)。
-- **配置管理**：支持本地文件 (`bootstrap.json`) 和远程配置中心 (`ETCD`)，支持配置热更新。
+- **配置管理**：支持本地文件 (`bootstrap.json`) 和远程配置服务 (Config Service)，统一管理多环境配置。
 - **数据转换**：集成 `Goverter`，自动生成高效的 DTO <-> PO/DO 转换代码，拒绝反射。
 - **统一基础设施**：预置了 `GORM` (MySQL), `Redis`, `Logger` 等常用组件的封装和最佳配置。
 - **示例模块**：内置完整的 `Demo` 模块，展示了从 API 定义到数据库存储的完整链路，作为开发的参考范本。
@@ -58,7 +58,8 @@ cd cmd/server
 wire
 
 # 运行服务
-# 确保 conf/bootstrap.json 中的配置正确 (如 ETCD, MySQL 地址)
+# 确保 conf/bootstrap.json 中的配置正确
+# 如果使用远程配置，需确保 Config Service 可用
 go run .
 ```
 

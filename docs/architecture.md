@@ -77,7 +77,7 @@ func wireApp(*conf.BootstrapConf, *conf.Utils, dep.AccessLogger, dep.ServerLogge
   "env": "dev",
   "port": 8080,
   "app_id": "demo-service",
-  "load_conf_mode": "local",  // local: 读本地文件; remote: 读 ETCD
+  "load_conf_mode": "local",  // local: 读本地文件; remote: 读 Config Service
   "micro": { ... },           // 服务注册发现配置
   "logger": { ... }           // 日志配置
 }
@@ -87,7 +87,8 @@ func wireApp(*conf.BootstrapConf, *conf.Utils, dep.AccessLogger, dep.ServerLogge
 位于 `internal/conf/`。
 例如 `mysql.go` 定义了如何加载 MySQL 配置：
 - **Local 模式**：读取 `conf/mysql.json`。
-- **Remote 模式**：根据 `bootstrap.json` 中的 ETCD 配置，连接 ETCD，读取 Key 为 `mysql` 的配置，并监听变更（热更新）。
+- **Remote 模式**：根据 `bootstrap.json` 中的配置，调用远程 **Config Service** (gRPC) 获取 Key 为 `mysql` 的配置内容。
+- **注意**：目前配置仅在服务启动时加载，**不支持热更新**。
 
 ### 3. 在代码中使用配置
 配置加载后，通常通过依赖注入传递给 Data 层。

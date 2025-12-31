@@ -64,3 +64,10 @@
 
 ### 5. Git 提交规范
 - 遵循 Conventional Commits 规范 (e.g., `feat: add order module`, `fix: order status update bug`).
+
+### 6. 配置管理
+- 关键配置在 `bootstrap.json` 定义。
+- 支持多配置源（本地文件、Config Service）。
+- 推荐在生产环境使用 Config Service 集中管理配置。
+
+### 7. 依赖管理
