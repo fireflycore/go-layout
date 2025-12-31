@@ -6,6 +6,8 @@ trigger: manual
 
 GLOBAL:
   DEFAULT_PROFILE: GoService
+  LOADING_POLICY:
+    - 规则按 PROFILE 加载；GoService 仅加载 CORE，按需加载 OPTIONAL
   RULE_PRECEDENCE:
     - core/requirements-spec.md
     - core/workflow-spec.md
