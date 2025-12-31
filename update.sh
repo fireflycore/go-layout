@@ -1,13 +1,13 @@
 #!/bin/bash
 
-go get github.com/lhdhtrc/micro-go@v0.6.5
+go get github.com/lhdhtrc/micro-go@v0.6.7
 go get github.com/lhdhtrc/logger-go@v0.1.8
-go get github.com/lhdhtrc/compress-go@v0.0.3
-go get github.com/lhdhtrc/crypto-go@v0.0.3
-go get github.com/lhdhtrc/func-go@v0.3.1
+go get github.com/lhdhtrc/compress-go@v0.0.4
+go get github.com/lhdhtrc/crypto-go@v0.0.4
+go get github.com/lhdhtrc/func-go@v0.3.2
 go get github.com/lhdhtrc/etcd-go@v0.2.4
 go get github.com/lhdhtrc/redis-go@v0.0.9
-go get github.com/lhdhtrc/gorm@v0.7.6
+go get github.com/lhdhtrc/gorm@v0.7.7
 
 go get buf.build/go/protovalidate@v1.0.1
 go get github.com/google/uuid@v1.6.0
