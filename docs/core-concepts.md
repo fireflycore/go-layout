@@ -1,63 +1,93 @@
-# 核心概念
+# 核心概念与代码映射
 
-1. DO (Domain Object) - 领域对象
-    - **定义**：业务领域中的核心实体，承载业务逻辑和业务规则
-    - **职责**：封装业务行为和状态，代表业务概念本身
-    - **特征**：
-        - 包含业务逻辑方法，使用贫血模型，只是定义业务模型
-        - 与数据库表结构不一定完全对应
-        - 关注业务规则而非数据存储或传输
-        - **注意**：在简单业务场景中，DO 可能被省略，直接使用 DTO 或 PO 进行流转
-    - **位置**：`internal/biz/model/` (例如 `demo.go`)
+本文档解释 `go-layout` 模板中的核心架构概念，并直接映射到项目中的具体代码文件。理解这些概念对于正确使用本模板至关重要。
 
-2. PO (Persistent Object) - 持久化对象
-    - **定义**：与数据库表结构一一对应的对象
-    - **职责**：描述数据如何存储在数据库中
-    - **特征**：
-        - 与数据库表完全映射
-        - 通常是贫血的（只有数据字段）
-        - 使用 ORM Tag 定义映射关系
-    - **位置**：`internal/data/entity/` (例如 `demo.go`)
+## 1. DTO (Data Transfer Object)
+**定义**：用于服务间通信或 API 响应的数据结构。
+**在模板中的体现**：
+- **来源**：通常由 `buf` 工具根据 `.proto` 文件自动生成。
+- **位置**：`dep/protobuf/gen/...` (外部依赖)
+- **代码示例**：
+  ```go
+  // dep/protobuf/gen/acme/demo/v1/demo.pb.go
+  type CreateDemoRequest struct { ... }
+  type Demo struct { ... }
+  ```
+- **使用场景**：Service 层的入参和出参；Biz 层的入参（部分）和出参。
 
-3. DTO (Data Transfer Object) - 数据传输对象
-    - **定义**：用于进程间或网络间数据传输的对象
-    - **职责**：定义 API 的请求和响应格式
-    - **特征**：
-        - 定义 API 契约和版本兼容性
-        - 扁平化结构，便于序列化
-        - 无业务逻辑
-        - 包含数据验证规则注解
-        - 通常是 grpc 生成的依赖代码
-    - **位置**：
-        - `dep/protobuf/`：Proto 生成的代码
-        - `dep/dto/`：goverter 生成的转换代码
+## 2. PO (Persistent Object) / Entity
+**定义**：与数据库表结构一一对应的结构体，包含 ORM 标签。
+**在模板中的体现**：
+- **位置**：`internal/data/entity/`
+- **代码示例** (`internal/data/entity/demo.go`)：
+  ```go
+  type Demo struct {
+      gorm.TableUUID
+      Title       string `json:"title"`
+      UserId      string `json:"user_id" gorm:"type:uuid;index;"`
+      // ...
+  }
+  func (Demo) Table() string { return "demo" }
+  ```
+- **职责**：只负责定义数据存储格式，不包含业务逻辑。
 
-4. DAO (Data Access Object) - 数据访问对象
-    - **定义**：封装对数据源访问的对象
-    - **职责**：提供对数据库的增删改查，不暴露数据库内部细节
-    - **特征**：
-        - 实现 biz 层的 repo 接口
-        - 封装所有数据访问细节
-        - 处理 PO 对象的 CRUD 操作，或直接返回 DTO 以优化性能
-    - **位置**：`internal/data/` 根目录下
+## 3. DO (Domain Object) - 领域对象
+**定义**：业务核心模型。在理想的 DDD 架构中，它应该包含业务行为。
+**在模板中的策略**：
+- **状态**：**可选**。
+- **说明**：在 `go-layout` 的许多场景（尤其是 CRUD 服务）中，为了简化开发，我们允许 **弱化 DO**。
+    - 如果业务逻辑简单，可以直接在 Biz 层使用 DTO 或 PO 进行流转。
+    - 只有当业务逻辑非常复杂，且 DTO/PO 无法准确表达业务状态时，才建议在 `internal/biz/model` 中定义 DO。
+- **当前示例**：虽然 `internal/biz/model/demo.go` 存在，但在 `DemoUseCase` 的实现中，大部分时候我们是在操作 DTO 或 PO。
 
-## 数据转换
+## 4. Repo (Repository) - 仓储接口
+**定义**：定义业务层对数据的访问需求，解耦业务逻辑与底层存储。
+**在模板中的体现**：
+- **接口定义** (`internal/biz/repo/demo.go`)：
+  ```go
+  type DemoRepo interface {
+      CreateDemo(ctx context.Context, row *entity.Demo) error
+      GetDemoList(...) *pb.DemoList
+      // ...
+  }
+  ```
+  *注意：接口定义在 Biz 层，意味着“业务层规定了它需要什么样的数据服务”。*
 
-> 数据转换依托于 goverter，通过定义数据转换接口，自动生成转换方法
+- **接口实现** (`internal/data/demo.go`)：
+  ```go
+  type demoRepo struct { data *Data }
+  func (uc *demoRepo) CreateDemo(...) error { ... }
+  ```
+  *注意：实现在 Data 层，意味着“数据层负责满足业务层的数据需求”。*
 
-- **DTO ↔ PO**：在 `internal/biz/convert/` 定义接口
-    - 写入场景：Biz 层调用 Convert 接口将 Request DTO 转换为 PO (`entity`)，再传给 Repo。
-    - 读取场景：Repo 层可直接返回 DTO (`pb`)，避免不必要的中间转换。
+## 5. Converter - 数据转换器
+**定义**：负责在 DTO、PO、DO 之间进行数据格式转换。
+**在模板中的体现**：
+- **工具**：使用 `goverter` 自动生成，拒绝反射，拒绝手写重复代码。
+- **定义位置**：`internal/biz/convert/`
+- **代码示例** (`internal/biz/convert/demo.go`)：
+  ```go
+  // goverter:converter
+  type DemoConvert interface {
+      ToCreate(row *pb.CreateDemoRequest) *entity.Demo
+  }
+  ```
+- **生成产物**：`dep/dto/demo.go` (由 `go generate` 触发生成)。
 
-- **Biz 交互原则**
-    - Biz 提供给 Service 的通常是 DTO。
-    - Biz 入参可以是 DTO 或 Biz Model (DO)。
-    - Data 入参通常是 PO，出参可以是 PO 或 DTO。
-
-## 数据验证
-
-> 数据验证依托于 buf-cli 的验证插件, 字段规则定义与 grpc proto 中
-
-1. 在 proto 文件中定义验证规则
-2. 使用 `buf generate` 生成包含验证代码的 gRPC 代码
-3. 在 Service 层使用 `protovalidate` 进行验证
+## 6. UseCase - 业务用例
+**定义**：应用的核心业务逻辑编排者。
+**在模板中的体现**：
+- **位置**：`internal/biz/demo.go`
+- **代码示例**：
+  ```go
+  type DemoUseCase struct {
+      dto  convert.DemoConvert // 依赖转换器
+      repo repo.DemoRepo       // 依赖仓储接口
+  }
+  ```
+- **职责**：
+    1. 接收 Service 传来的 DTO。
+    2. 调用 Converter 转换数据。
+    3. 执行业务校验（如检查余额、权限等）。
+    4. 调用 Repo 进行持久化。
+    5. 返回结果。

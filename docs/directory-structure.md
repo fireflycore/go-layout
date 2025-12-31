@@ -1,81 +1,98 @@
-# 项目目录
+# 项目目录结构详解
+
+本文档详细解析 `go-layout` 模板的目录结构，帮助开发者快速定位代码并理解各个目录的职责。
+
+## 根目录概览
 
 ```markdown
-├── .github/
-│   └── dependabot.yml          # GitHub 依赖管理机器人配置
-├── .run/                       # Goland 运行配置文件，用于启动项目和调试
-├── .trae/                      # Trae IDE 配置文件，包含代码规范和架构规则
-├── cmd/
-│   ├── server/
-│   │   ├── app.go              # 服务实例
-│   │   ├── main.go             # 服务入口
-│   │   ├── wire.go             # 依赖注入入口
-│   │   └── wire_gen.go         # Wire 自动生成的依赖注入代码
-├── conf/
-│   └── bootstrap.json          # 服务引导配置
-├── dep/                        # (Generated, Ignored) 生成的依赖代码目录
-│   ├── dto/                    # 通过 goverter 生成的转换方法实现
-│   └── protobuf/               # 通过 buf-cli 生成的 Proto 代码
+├── cmd/                        # 应用程序入口
+│   └── server/
+│       ├── main.go             # [核心] 程序主入口，负责初始化配置、日志和应用生命周期
+│       ├── wire.go             # [核心] Wire 依赖注入定义文件
+│       └── wire_gen.go         # [生成] Wire 生成的代码，不要手动修改
+├── conf/                       # 配置文件目录
+│   └── bootstrap.json          # [配置] 本地引导配置（开发环境使用，生产环境通常走配置中心）
+├── dep/                        # [生成] 外部依赖/生成代码存放区
+│   ├── dto/                    # [生成] Goverter 生成的数据转换实现代码
+│   └── protobuf/               # [生成] Buf 生成的 gRPC/Proto 结构体代码
 ├── docs/                       # 项目文档
-│   ├── project-guide.md        # 项目指引
-│   ├── directory-structure.md  # 项目目录结构
-│   ├── data-flow.md            # 数据流转说明
-│   ├── core-concepts.md        # 核心概念说明
-│   ├── architecture.md         # 架构分层说明
-│   └── best-practices.md       # 最佳实践
-├── internal/
-│   ├── biz/                    # 业务逻辑层
-│   │   ├── convert/            # 定义 DTO ↔ PO 转换接口
-│   │   │   ├── demo.go         # DemoConvert interface
-│   │   │   └── utils.go        # convert 通用方法定义
-│   │   ├── model/              # 定义业务领域模型 (DO)，非必要无需定义
-│   │   │   └── demo.go         # Demo 领域对象
-│   │   ├── repo/               # 定义业务领域依赖的数据接口
-│   │   │   ├── demo.go         # DemoRepo interface
-│   │   │   ├── rs_config.go    # ConfigRepo interface
-│   │   │   ├── rs_logger.go    # LoggerRepo interface
-│   │   │   └── transaction.go  # TransactionRepo interface
-│   │   ├── demo.go             # DemoUseCase 实现
-│   │   └── core.go             # 定义biz层入口和依赖注入（wire）
-│   ├── conf/                   # 配置管理
-│   │   ├── bootstrap.go        # 定义引导配置
-│   │   ├── etcd.go             # 定义获取 etcd 配置的方法
-│   │   ├── mysql.go            # 定义获取 mysql 配置的方法
-│   │   ├── redis.go            # 定义获取 redis 配置的方法
-│   │   ├── utils.go            # 配置辅助方法
-│   │   └── core.go             # 定义conf层入口和依赖注入（wire）
-│   ├── data/                   # 数据访问层
-│   │   ├── entity/             # 定义数据模型 (PO)
-│   │   │   └── demo.go         # DemoPO 持久化对象
-│   │   ├── demo.go             # DemoRepo 实现 (DAO)
-│   │   ├── rs_config.go        # 配置服务相关方法实现
-│   │   ├── rs_logger.go        # 日志服务相关方法实现
-│   │   ├── transaction.go      # 事务实现
-│   │   ├── data.go             # 数据层连接
-│   │   └── core.go             # 定义data层入口和依赖注入（wire）
-│   ├── dep/                    # 基础设施依赖接口及实现
-│   │   ├── logger.go           # 定义日志记录器
-│   │   ├── remote.go           # 定义远程服务入口
-│   │   └── core.go             # 定义dep层入口和依赖注入（wire）
-│   ├── dto/                    # 数据转换层入口
-│   │   ├── core.go             # 定义dto层入口和依赖注入（wire）
-│   │   └── demo.go             # DemoDTO 构造函数
-│   ├── server/                 # 服务层
-│   │   ├── core.go             # 服务实例入口
-│   │   ├── grpc.go             # 注册 GRPC 服务
-│   │   ├── register.go         # 初始化注册服务
-│   │   └── server.go           # 初始化 TCP 服务器
-│   ├── service/                # 应用服务层
-│   │   ├── demo.go             # DemoService 实现
-│   │   ├── core.go             # 服务层入口
-│   │   └── remote.go           # 定义远程服务入口
-├── .gitignore
-├── buf.gen.yaml                # buf cli 配置文件
-├── go.mod
-├── go.sum
-├── LICENSE
-├── makefile                    # 项目构建和任务管理
-├── README.md                   # 服务使用文档
-├── update.sh                   # 服务更新脚本（可选）
-└── run.sh                      # 服务运行脚本
+├── internal/                   # [核心] 业务代码私有目录（Go 语言机制，外部无法 import）
+│   ├── biz/                    # [业务] 业务逻辑层 (Business Logic)
+│   ├── conf/                   # [配置] 配置加载与解析逻辑
+│   ├── data/                   # [数据] 数据访问层 (Data Access)
+│   ├── dep/                    # [依赖] 基础设施适配层 (Infrastructure)
+│   ├── dto/                    # [转换] DTO 注册与入口
+│   ├── server/                 # [服务] HTTP/gRPC Server 启动与注册
+│   └── service/                # [接口] 应用服务层 (Application Service)
+├── buf.gen.yaml                # [工具] Buf 生成配置文件
+├── go.mod                      # [依赖] Go 模块定义
+└── makefile                    # [工具] 常用命令封装
 ```
+
+## Internal 目录深度解析
+
+`internal` 是开发者的主要工作区。
+
+### 1. `internal/biz` (业务逻辑层)
+**职责**：定义业务接口、实现核心业务逻辑。该层**不应该**依赖 `data` 或 `service` 层，保持纯净。
+
+- `convert/`: **[开发区]** 定义 DTO 与内部模型（PO/DO）的转换接口。
+  - `demo.go`: 示例转换接口。
+- `model/`: **[开发区]** 定义领域对象 (DO)。
+  - `demo.go`: 示例领域对象。
+- `repo/`: **[开发区]** 定义数据访问接口 (Repository Interfaces)。**注意：这里只定义接口，实现在 `data` 层。**
+  - `demo.go`: `DemoRepo` 接口定义。
+- `core.go`: **[配置]** Wire ProviderSet，注册本层的所有 UseCase。
+- `demo.go`: **[开发区]** `DemoUseCase` 实现，编排业务逻辑。
+
+### 2. `internal/data` (数据访问层)
+**职责**：实现 `biz/repo` 中定义的接口，负责具体的数据持久化（MySQL, Redis 等）。
+
+- `entity/`: **[开发区]** 定义持久化对象 (PO)，即数据库表结构映射 (GORM Model)。
+  - `demo.go`: `Demo` 表结构定义。
+- `core.go`: **[配置]** Wire ProviderSet，注册本层的所有 Repo 实现。
+- `data.go`: **[基础设施]** 数据库、Redis、Etcd 客户端的初始化与连接管理。
+- `demo.go`: **[开发区]** `DemoRepo` 的具体实现 (DAO)。
+- `transaction.go`: 事务支持实现。
+
+### 3. `internal/service` (应用服务层)
+**职责**：实现 gRPC/HTTP 接口，处理请求参数验证，调用 `biz` 层逻辑，返回响应。
+
+- `core.go`: **[配置]** Wire ProviderSet，注册本层的所有 Service。
+- `demo.go`: **[开发区]** `DemoService` 实现，直接对应 Proto 定义的 Service。
+  - 这里进行 `protovalidate` 参数校验。
+  - 这里从 Context 中提取 User Meta 信息。
+
+### 4. `internal/server` (服务启动层)
+**职责**：构建和启动 gRPC/HTTP 服务器，注册 Service，配置中间件。
+
+- `grpc.go`: **[配置]** 配置 gRPC Server，加载拦截器（日志、Recovery 等）。
+- `register.go`: **[配置]** 服务注册中心逻辑 (ETCD 注册)。
+- `server.go`: **[配置]** TCP 监听与启动逻辑。
+
+### 5. `internal/conf` (配置层)
+**职责**：加载和解析应用配置。
+
+- `bootstrap.go`: 引导配置加载。
+- `mysql.go`, `redis.go`, `etcd.go`: 各个组件的配置加载器，支持从 Local 或 Remote (Etcd) 加载。
+
+### 6. `internal/dep` (依赖适配层)
+**职责**：封装第三方库或基础设施，防止外部依赖污染业务代码。
+
+- `logger.go`: 日志库封装。
+- `remote.go`: 远程 gRPC 客户端封装（如果你的服务需要调用其他微服务）。
+
+## 开发者修改指南
+
+| 任务 | 涉及目录/文件 | 说明 |
+| :--- | :--- | :--- |
+| **新增 API** | `dep/protobuf/` (外部) -> `internal/service/` | 首先在 Proto 仓库定义，更新 `dep`，然后在 `service` 实现接口。 |
+| **新增业务逻辑** | `internal/biz/` | 在 `biz` 创建 UseCase，定义 Repo 接口。 |
+| **新增数据库表** | `internal/data/entity/` -> `internal/data/` | 定义 PO 结构体，实现 Repo 接口。 |
+| **新增配置项** | `internal/conf/` | 修改 `BootstrapConf` 或新增配置 Loader。 |
+| **依赖注入注册** | 各层的 `core.go` -> `cmd/server/wire.go` | 每次新增 struct 需在对应的 `core.go` 中注册，并运行 `wire`。 |
+
+## 示例文件说明
+项目中包含的 `demo.go` 文件（分布在各层）是**参考实现**。
+- 它们展示了一个完整的 CRUD 流程。
+- 在开始新项目时，请**参考**它们的写法，然后**删除**或**替换**为你的实际业务代码。
