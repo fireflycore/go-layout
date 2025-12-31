@@ -30,3 +30,9 @@ STATUS: ENABLED
 PRIORITY: MEDIUM
 LANGUAGE: Go
 - 只 mock Repo/Remote 等边界依赖，避免绑定实现细节
+
+## [规则 5] 新增公共工具必须有测试覆盖 [ENABLED]
+STATUS: ENABLED
+PRIORITY: MEDIUM
+LANGUAGE: Go
+- 新增 utils/中间件/通用转换等公共逻辑时，必须补充单元测试覆盖边界条件

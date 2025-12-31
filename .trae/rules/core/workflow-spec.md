@@ -9,8 +9,8 @@ STATUS: ENABLED
 PRIORITY: CRITICAL
 LANGUAGE: Go
 说明：
-- 更新链路：`buf generate` → `make dto` → `wire ./cmd/server` → `go mod tidy`
-- 优先使用 `make init`（等价于上述链路）
+- 以根目录 `makefile` 为准，优先使用 `make init`
+- 等价链路：`buf generate` → `goverter gen ./internal/biz/convert` → `wire ./cmd/server` → `go mod tidy`
 
 ## [规则 2] 改动 Proto 必须同步生成产物 [ENABLED]
 STATUS: ENABLED
@@ -56,3 +56,11 @@ PRIORITY: HIGH
 LANGUAGE: Go
 说明：
 - 新增/变更 Provider 后执行 `wire ./cmd/server`（或 `make init`）确保依赖图最新
+
+## [规则 8] 提交前最小回归集 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 必须通过 `go test ./...` 与 `go vet ./...`
+- 改动涉及生成链路时，必须保证生成产物与引用路径一致（`dep/protobuf/gen`、`dep/dto`、`wire_gen.go`）

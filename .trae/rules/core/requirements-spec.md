@@ -67,3 +67,26 @@ LANGUAGE: Go
 说明：
 - 各层依赖以 `internal/*/core.go` 的 `ProviderSet` 暴露与装配为准
 - 禁止通过包级全局变量持有 DB/Redis/Etcd/Logger/ClientConn 等长生命周期资源
+
+## [规则 9] 上下文必须贯穿全链路 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 所有跨层方法都以 `context.Context` 作为首参，并从入口向下传递
+- 禁止在业务链路中使用 `context.Background/TODO` 替代入参 ctx
+
+## [规则 10] 代码格式化与导入必须规范 [ENABLED]
+STATUS: ENABLED
+PRIORITY: MEDIUM
+LANGUAGE: Go
+说明：
+- 交付代码必须通过 `gofmt`，导入分组保持最小且一致
+
+## [规则 11] 配置与密钥不得硬编码入代码 [ENABLED]
+STATUS: ENABLED
+PRIORITY: CRITICAL
+LANGUAGE: Go
+说明：
+- 运行配置来自 `conf/bootstrap.json` 或远程配置服务加载结果
+- 禁止在代码中写死密钥/令牌/密码；日志与响应体不得输出敏感信息

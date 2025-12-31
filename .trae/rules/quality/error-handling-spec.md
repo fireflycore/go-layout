@@ -32,3 +32,10 @@ PRIORITY: HIGH
 LANGUAGE: Go
 - 日志带上下文但不泄露敏感信息
 - 对外 `Message` 不暴露内部细节
+
+## [规则 5] panic 只允许在启动失败场景 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+- 业务链路（Service/Biz/Data）禁止 `panic`
+- 仅允许在启动/装配失败且无法继续运行时 `panic`（例如配置加载失败）

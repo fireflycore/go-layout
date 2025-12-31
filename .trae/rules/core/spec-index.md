@@ -54,6 +54,16 @@ PROFILE: GoService
     - quality/error-handling-spec.md
     - quality/testing-spec.md
 
+PROFILE: GoServiceStrict
+  CORE:
+    - core/requirements-spec.md
+    - core/workflow-spec.md
+    - core/naming-conventions.md
+    - architecture/api-design-spec.md
+    - quality/security-spec.md
+    - quality/error-handling-spec.md
+    - quality/testing-spec.md
+
 USAGE:
   - 优先引用：@.trae/rules/core/spec-index.md
-  - 需要更严格时再补充引用 OPTIONAL 模块
+  - 需要更严格时使用 PROFILE: GoServiceStrict

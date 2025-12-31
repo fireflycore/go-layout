@@ -42,3 +42,10 @@ STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
 - 用注入的 Logger 输出；必要字段可记录，但需脱敏/裁剪
+
+## [规则 7] 仓库内配置只允许示例值 [ENABLED]
+STATUS: ENABLED
+PRIORITY: CRITICAL
+LANGUAGE: All
+- `conf/bootstrap.json` 与文档中出现的密钥/令牌/地址必须是示例值
+- 真实密钥只能通过本地私有配置或远程配置服务注入

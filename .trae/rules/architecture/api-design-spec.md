@@ -50,3 +50,10 @@ PRIORITY: HIGH
 LANGUAGE: Go
 - Service/Biz/Data 交互的 DTO 以 `dep/protobuf/gen` 生成类型为准
 - 禁止复制/手写“同名同义”的请求响应结构体，避免漂移与兼容性问题
+
+## [规则 8] 用户上下文只从 metadata 解析一次 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+- Service 层从入站 metadata 提取并解析用户上下文（对齐 `micro.ParseUserContextMeta`）
+- Biz/Data 不依赖 gRPC metadata 类型，只接收解析后的结构或必要字段
