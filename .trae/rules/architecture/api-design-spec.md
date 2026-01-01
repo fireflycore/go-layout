@@ -117,3 +117,23 @@ LANGUAGE: Go
   - 数字：`gt`, `lt`, `gte`, `lte`
   - 枚举/值：`in`, `const`
 - 官方文档：`https://buf.build/bufbuild/protovalidate/docs/main:buf.validate`
+
+## [规则 13] GORM 查询错误处理 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 底层已封装 GORM 并统一上报 SQL 错误到 Logger 服务
+- 普通查询（Find, Scan, Count）无需在 Data 层抛出错误，直接返回结果即可
+- 只有明确需要校验存在性（如 First/Take 且业务依赖 RecordNotFound）的操作才抛出错误
+
+## [规则 14] 代码风格规范 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 代码应尽可能简洁、统一、工整、易懂、高效
+- 能直接赋值的，避免使用不必要的中间变量进行周转
+- 保持函数简短，逻辑清晰
+- **代码分块**：变量定义、核心逻辑、返回值之间应有空行分隔，保持清晰的视觉结构（参考 `GetDemoList`）
+- **命名见名知意**：函数命名应明确操作对象，例如 `GetDemoCount` 优于 `GetCount`
