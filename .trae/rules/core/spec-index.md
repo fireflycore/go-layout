@@ -2,106 +2,29 @@
 trigger: manual
 ---
 
-# 规则索引（go-layout）v1.0
+# 规则索引（go-layout）v1.1
 
-GLOBAL:
-  DEFAULT_PROFILE: GoService
-  LOADING_POLICY:
-    - 规则按 PROFILE 加载；GoService 仅加载 CORE，按需加载 OPTIONAL
-  PROTO_REPO:
-    SOURCE_OF_TRUTH: proto_repo
-    REQUIRED_FOR_PROTO_CHANGES: true
-    AUTO_DISCOVERY:
-      ENABLED: true
-      SEARCH_MARKERS:
-        - buf.yaml
-        - buf.work.yaml
-      PREFERRED_DIR_NAMES:
-        - demo-proto
-    LOCAL_PATH_FALLBACK: /Users/lhdht/product/lhdht/code/firefly
-  RULE_PRECEDENCE:
-    - core/requirements-spec.md
-    - core/workflow-spec.md
-    - core/naming-conventions.md
-    - architecture/api-design-spec.md
-    - quality/error-handling-spec.md
-    - quality/security-spec.md
-    - quality/testing-spec.md
-  REALITY_SOURCES:
-    - makefile
-    - go.mod
-    - internal/**
-    - dep/**
-  PROTO_COLLAB_FLOW:
-    - 修改 Proto：优先从工作区自动发现 Proto 仓库（marker：`buf.yaml`/`buf.work.yaml`），必要时使用 `LOCAL_PATH_FALLBACK`
-    - 校验并发布：在 Proto 仓库执行 `buf lint` 与 `buf push`
-    - 同步生成：在本仓库执行 `buf generate`（或 `make generate`/`make init`）
-  DELIVERY_CHECKS:
-    - go test ./...
-    - go vet ./...
-  OUTPUT_REQUIREMENTS:
-    - 变更文件清单
-    - 验证命令与结果
-    - 假设与风险提示
-  ENABLE_MODULES:
-    core/requirements-spec.md: ENABLED
-    core/workflow-spec.md: ENABLED
-    core/naming-conventions.md: ENABLED
-    architecture/api-design-spec.md: ENABLED
-    quality/security-spec.md: ENABLED
-    quality/error-handling-spec.md: ENABLED
-    quality/testing-spec.md: ENABLED
+默认：
+- Profile：GoService
+- Proto 仓库：优先自动发现 `buf.yaml/buf.work.yaml`；fallback：`/Users/lhdht/product/lhdht/code/firefly`
 
-MODULE: core/requirements-spec.md
-  STATUS: ENABLED
-  VERSION: v1.0
+Profile：
+- GoService：core 三件套（requirements/workflow/naming）
+- GoServiceStrict：在 GoService 基础上额外加载 architecture 与 quality
 
-MODULE: core/workflow-spec.md
-  STATUS: ENABLED
-  VERSION: v1.0
+规则约束：
+- 规则文件单篇不超过 1000 字
+- 存量兼容：非需求驱动不做“顺手对齐”（字段序/命名/结构），新写/新改按最新规则对齐
 
-MODULE: core/naming-conventions.md
-  STATUS: ENABLED
-  VERSION: v1.0
+交付校验：
+- 按 `quality/testing-spec.md` 的“按场景验收”规则执行
 
-MODULE: architecture/api-design-spec.md
-  STATUS: ENABLED
-  VERSION: v1.0
-
-MODULE: quality/security-spec.md
-  STATUS: ENABLED
-  VERSION: v1.0
-
-MODULE: quality/error-handling-spec.md
-  STATUS: ENABLED
-  VERSION: v1.0
-
-MODULE: quality/testing-spec.md
-  STATUS: ENABLED
-  VERSION: v1.0
-
-PROFILE: GoService
-  CORE:
-    - core/requirements-spec.md
-    - core/workflow-spec.md
-    - core/naming-conventions.md
-  OPTIONAL:
-    - architecture/api-design-spec.md
-    - quality/security-spec.md
-    - quality/error-handling-spec.md
-    - quality/testing-spec.md
-
-PROFILE: GoServiceStrict
-  CORE:
-    - core/requirements-spec.md
-    - core/workflow-spec.md
-    - core/naming-conventions.md
-    - architecture/api-design-spec.md
-    - quality/security-spec.md
-    - quality/error-handling-spec.md
-    - quality/testing-spec.md
-
-USAGE:
-  - 优先引用：@.trae/rules/core/spec-index.md
-  - 默认按 PROFILE: GoService 执行，仅在需要时加载 OPTIONAL 模块
-  - 需要更严格时使用 PROFILE: GoServiceStrict
+加载顺序：
+- GoService：
+  - core/requirements-spec.md
+  - core/workflow-spec.md
+  - core/naming-conventions.md
+- GoServiceStrict：在 GoService 基础上额外加载
+  - architecture/api-design-spec.md（索引）
+  - architecture/*-spec.md
+  - quality/*.md

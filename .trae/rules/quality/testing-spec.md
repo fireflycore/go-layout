@@ -10,6 +10,7 @@ PRIORITY: HIGH
 LANGUAGE: Go
 说明：
 - 新增逻辑补充单元测试；修复缺陷补充回归用例
+- 存量兼容：旧模块若无测试不强制补齐，但新增/改动逻辑需覆盖关键分支
 
 ## [规则 2] 分层测试 [ENABLED]
 STATUS: ENABLED
@@ -47,5 +48,6 @@ STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
 说明：
-- 必须通过 `go test ./...`
+- 验收按场景选择：仅规则/文档改动时，不强制跑 Go 回归；检查字数限制与引用一致性即可
+- 涉及 Go 代码变更时：必须通过 `go test ./...`
 - 建议同时通过 `go vet ./...`
