@@ -30,10 +30,11 @@ LANGUAGE: Go
 
 ## [规则 4] 列表分页字段一致 [ENABLED]
 STATUS: ENABLED
-PRIORITY: MEDIUM
+PRIORITY: HIGH
 LANGUAGE: Go
 说明：
-- `page`/`page_size` + `total` + `list`
+- Request 必须包含 `uint64 page = 1;` 和 `uint64 page_size = 2;`
+- Response 的 `data` 字段必须包含 `int64 total = 1;` 和 `repeated Item list = 2;`
 
 ## [规则 5] 向后兼容 [ENABLED]
 STATUS: ENABLED
@@ -75,3 +76,44 @@ LANGUAGE: Go
 - 先初始化响应体为成功（示例：`Code=200/Message=success`）
 - 依次执行：`protovalidate.Validate(req)` → 解析 metadata（如需用户上下文）→ 调用 Biz
 - 任一步失败：仅修改 `Code/Message` 并返回响应体，错误返回值保持为 `nil`
+
+## [规则 10] 统一响应格式 [ENABLED]
+STATUS: ENABLED
+PRIORITY: CRITICAL
+LANGUAGE: Go
+说明：
+- 所有 RPC Response 必须包含：
+  - `uint32 code = 1;`
+  - `string message = 2;`
+  - `data` 字段 (field 3)，必须始终存在于定义中
+- 如果无实际数据返回：
+  - 定义为：
+    ```protobuf
+    // 空值无用意
+    optional string data = 3;
+    ```
+- 如果有实际数据返回：
+  - 定义为 `Type data = 3;` 或 `DataList data = 3;`（无上述注释）
+
+## [规则 11] 注释规范 [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- Proto 文件中，注释必须位于字段、Message 或 RPC 方法的**上方**，禁止行尾注释
+- AI 生成的代码（包括 Proto 和 Go 实现）必须包含清晰的**中文注释**
+
+## [规则 12] 字段校验规范 [ENABLED]
+STATUS: ENABLED
+PRIORITY: MEDIUM
+LANGUAGE: Go
+说明：
+- 字段约束不是强制的，仅在用户明确要求或 AI 判断场景必要时添加
+- 若需要约束，推荐使用 `buf validate`
+- AI 应根据业务场景自行判断是否需要约束（例如：状态枚举值范围、ID 格式等）
+- 常见约束参考：
+  - 必填：`[(buf.validate.field).required = true]`
+  - 字符串：`min_len`, `max_len`, `uuid`, `email`
+  - 数字：`gt`, `lt`, `gte`, `lte`
+  - 枚举/值：`in`, `const`
+- 官方文档：`https://buf.build/bufbuild/protovalidate/docs/main:buf.validate`
