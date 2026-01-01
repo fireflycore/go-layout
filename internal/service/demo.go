@@ -146,3 +146,26 @@ func (srv *DemoService) DeleteDemo(ctx context.Context, request *pb.DeleteDemoRe
 
 	return result, nil
 }
+
+func (srv *DemoService) GetDemoCount(ctx context.Context, request *pb.GetDemoCountRequest) (*pb.GetDemoCountResponse, error) {
+	result := &pb.GetDemoCountResponse{
+		Code:    200,
+		Message: "success",
+	}
+
+	if err := protovalidate.Validate(request); err != nil {
+		result.Code = 400
+		result.Message = err.Error()
+		return result, nil
+	}
+
+	count, err := srv.uc.GetDemoCount(ctx, request.Status)
+	if err != nil {
+		result.Code = 400
+		result.Message = err.Error()
+		return result, nil
+	}
+	result.Data = count
+
+	return result, nil
+}

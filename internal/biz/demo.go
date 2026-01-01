@@ -2,11 +2,12 @@ package biz
 
 import (
 	"context"
-	"github.com/lhdhtrc/func-go/object"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz/convert"
 	"go-layout/internal/biz/repo"
+
+	"github.com/lhdhtrc/func-go/object"
+	micro "github.com/lhdhtrc/micro-go/pkg/core"
 )
 
 type DemoUseCase struct {
@@ -54,4 +55,8 @@ func (uc *DemoUseCase) UpdateDemo(ctx context.Context, _ *micro.UserContextMeta,
 
 func (uc *DemoUseCase) DeleteDemo(ctx context.Context, id string) error {
 	return uc.repo.DeleteDemo(ctx, id)
+}
+
+func (uc *DemoUseCase) GetDemoCount(ctx context.Context, status *uint32) (int64, error) {
+	return uc.repo.GetCount(ctx, status)
 }

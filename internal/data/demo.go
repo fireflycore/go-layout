@@ -56,3 +56,13 @@ func (uc *demoRepo) DeleteDemo(ctx context.Context, id string) error {
 	uc.data.db.WithContext(ctx).Where("id = ?", id).Delete(&entity.Demo{})
 	return nil
 }
+
+func (uc *demoRepo) GetCount(ctx context.Context, status *uint32) (int64, error) {
+	var count int64
+	sql := uc.data.db.WithContext(ctx).Model(&entity.Demo{})
+	if status != nil {
+		sql.Where("status = ?", *status)
+	}
+	err := sql.Count(&count).Error
+	return count, err
+}
