@@ -14,5 +14,5 @@ type DemoRepo interface {
 	GetDemoInfo(ctx context.Context, id string) (*pb.Demo, error)
 	UpdateDemo(ctx context.Context, id string, row map[string]interface{}) error
 	DeleteDemo(ctx context.Context, id string) error
-	GetCount(ctx context.Context, status *uint32) (int64, error)
+	GetDemoCount(ctx context.Context, status *uint32) int64
 }

@@ -57,6 +57,6 @@ func (uc *DemoUseCase) DeleteDemo(ctx context.Context, id string) error {
 	return uc.repo.DeleteDemo(ctx, id)
 }
 
-func (uc *DemoUseCase) GetDemoCount(ctx context.Context, status *uint32) (int64, error) {
-	return uc.repo.GetCount(ctx, status)
+func (uc *DemoUseCase) GetDemoCount(ctx context.Context, status *uint32) int64 {
+	return uc.repo.GetDemoCount(ctx, status)
 }

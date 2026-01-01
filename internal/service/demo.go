@@ -159,13 +159,7 @@ func (srv *DemoService) GetDemoCount(ctx context.Context, request *pb.GetDemoCou
 		return result, nil
 	}
 
-	count, err := srv.uc.GetDemoCount(ctx, request.Status)
-	if err != nil {
-		result.Code = 400
-		result.Message = err.Error()
-		return result, nil
-	}
-	result.Data = count
+	result.Data = srv.uc.GetDemoCount(ctx, request.Status)
 
 	return result, nil
 }

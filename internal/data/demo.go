@@ -2,11 +2,12 @@ package data
 
 import (
 	"context"
-	"github.com/lhdhtrc/gorm/pkg/scope"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	pb "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/data/entity"
+
+	"github.com/lhdhtrc/gorm/pkg/scope"
+	micro "github.com/lhdhtrc/micro-go/pkg/core"
 )
 
 type demoRepo struct {
@@ -57,12 +58,14 @@ func (uc *demoRepo) DeleteDemo(ctx context.Context, id string) error {
 	return nil
 }
 
-func (uc *demoRepo) GetCount(ctx context.Context, status *uint32) (int64, error) {
+func (uc *demoRepo) GetDemoCount(ctx context.Context, status *uint32) int64 {
 	var count int64
+
 	sql := uc.data.db.WithContext(ctx).Model(&entity.Demo{})
 	if status != nil {
 		sql.Where("status = ?", *status)
 	}
-	err := sql.Count(&count).Error
-	return count, err
+	sql.Count(&count)
+
+	return count
 }
