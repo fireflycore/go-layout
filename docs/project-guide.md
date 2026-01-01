@@ -43,10 +43,10 @@
 3. **清理示例代码**
    `Demo` 模块仅供参考。在熟悉架构后，你可以：
    - 删除 `internal/biz/demo.go`, `internal/biz/model/demo.go`, `internal/biz/repo/demo.go`
-- 删除 `internal/data/demo.go`, `internal/data/entity/demo.go`
-- 删除 `internal/service/demo.go`
-- 删除 `internal/biz/convert/demo.go`
-- **注意**：删除后需要重新运行 `wire ./cmd/server`（或执行 `make init`）生成依赖注入代码。
+   - 删除 `internal/data/demo.go`, `internal/data/entity/demo.go`
+   - 删除 `internal/service/demo.go`
+   - 删除 `internal/biz/convert/demo.go`
+   - **注意**：删除后需要重新运行 `wire ./cmd/server`（或执行 `make init`）生成依赖注入代码。
 
 ### 3. 运行服务
 ```bash
