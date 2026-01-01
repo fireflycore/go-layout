@@ -18,7 +18,7 @@ GLOBAL:
         - buf.work.yaml
       PREFERRED_DIR_NAMES:
         - demo-proto
-    LOCAL_PATH_FALLBACK: D:\\goproject\\src\\demo-proto
+    LOCAL_PATH_FALLBACK: /Users/lhdht/product/lhdht/code/firefly
   RULE_PRECEDENCE:
     - core/requirements-spec.md
     - core/workflow-spec.md
