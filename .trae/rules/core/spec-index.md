@@ -6,9 +6,15 @@ trigger: manual
 
 默认：
 - Profile：GoService
-- Proto 仓库：优先按仓库现状自动发现（`buf.yaml/buf.work.yaml`）
-  - 若本仓库不包含 `.proto`：默认视为“Proto 独立仓库 + 本仓库生成产物（dep/protobuf/gen）”
-  - 若无法自动发现：按本仓库同级目录的 `firefly/` 作为常见默认值（仅描述约定，不强依赖绝对路径）
+
+仓库识别（以文件存在性判断）：
+- 微服务仓库：存在 `buf.gen.yaml`（生成配置）
+- Proto 仓库：存在 `buf.yaml` 或 `buf.work.yaml`（模块/工作区配置）
+- 若同时存在：视为 monorepo；以实际 `buf` 配置与生成产物目录为准
+
+Proto 协作上下文：
+- 微服务仓库通常不包含 `.proto`，只维护生成产物（常见为 `dep/protobuf/gen`）
+- Proto 定义通常维护在独立的 Proto 仓库中，通过 `buf generate` 同步到微服务仓库
 
 Profile：
 - GoService：core 三件套（requirements/workflow/naming）

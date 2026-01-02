@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 工作流程规范（go-layout）v1.2
+# 工作流程规范（go-layout）v1.4
 
 ## [规则 1] 生成链路以 makefile 为准 [ENABLED]
 STATUS: ENABLED
@@ -16,8 +16,9 @@ STATUS: ENABLED
 PRIORITY: CRITICAL
 LANGUAGE: All
 说明：
-- 在 Proto 仓库（常见为 firefly）改 Proto：`buf lint` → `buf push`
-- 在本仓库同步生成：`buf generate`（或 `make generate/make init`）
+- 按仓库识别：存在 `buf.yaml/buf.work.yaml` 为 Proto 仓库；存在 `buf.gen.yaml` 为微服务仓库
+- 在 Proto 仓库改 Proto：`buf lint` → `buf push`
+- 在微服务仓库同步生成：`buf generate`（或 `make generate/make init`）
 
 ## [规则 3] 新增功能推进顺序 [ENABLED]
 STATUS: ENABLED
