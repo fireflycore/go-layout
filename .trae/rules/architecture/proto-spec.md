@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# Proto 规范（go-layout × Proto 仓库）v1.3
+# Proto 规范（go-layout × Proto 仓库）v1.4
 
 ## [规则 1] Proto First [ENABLED]
 STATUS: ENABLED
@@ -10,6 +10,7 @@ PRIORITY: CRITICAL
 LANGUAGE: Proto
 说明：
 - 先改 Proto（通常在独立 Proto 仓库），再生成（`dep/protobuf/gen`），再实现
+- Proto 仓库提交前：至少 `buf lint`；需要对外发布供下游生成时：`buf push`
 - 存量兼容：仅在改动到该 proto 文件时按规则对齐，避免顺手重排字段/响应结构
 - 生成链路：见 `architecture/buf-spec.md`
 
