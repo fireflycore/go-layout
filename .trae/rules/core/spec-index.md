@@ -27,6 +27,16 @@ Profile：
 交付校验：
 - 按 `quality/testing-spec.md` 的“按场景验收”规则执行
 
+执行清单（按变更触发）：
+- 仅改规则/文档：检查字数限制与引用一致性即可
+- 变更 Go 代码：必须通过 `go test ./...`（建议同时 `go vet ./...`）
+- 变更 Proto 定义：在 Proto 仓库执行 `buf lint`，并在微服务仓库执行 `buf generate`（或 `make generate/make init`）
+- 变更生成相关配置（如 `buf.gen.yaml`/wire/goverter 配置）：必须重新生成并确保编译/测试通过
+
+对外输出底线：
+- 响应体/日志/错误信息不得包含敏感信息（见 `quality/security-spec.md`）
+- 存量兼容优先级高于“顺手优化”：仅在需求触发的文件/接口上对齐规则
+
 加载顺序：
 - GoService：
   - core/requirements-spec.md

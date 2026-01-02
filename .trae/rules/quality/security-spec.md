@@ -20,6 +20,10 @@ LANGUAGE: All
 说明：
 - 日志/错误/响应体禁止出现密钥、令牌、密码、个人敏感信息
 - 仓库内配置可包含示例/开发值；严禁提交真实生产密钥，生产通过私有配置或远程配置注入
+敏感信息最小判定（示例）：
+- 认证凭据：Authorization、Bearer token、Cookie/Set-Cookie、session
+- 密钥材料：app_secret、api_key、access_key、secret_key、private_key、证书明文
+- 个人敏感信息：身份证号、银行卡号、手机号（按项目定义）
 
 ## [规则 3] 防注入与日志卫生 [ENABLED]
 STATUS: ENABLED
