@@ -1,10 +1,10 @@
 package dep
 
 import (
-	"fmt"
-	logger "github.com/lhdhtrc/logger-go/pkg"
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/conf"
+
+	logger "github.com/lhdhtrc/logger-go/pkg"
 	"go.uber.org/zap"
 )
 
@@ -18,14 +18,14 @@ func NewLogger(bootstrapConf *conf.BootstrapConf, handle ServerLogger) *zap.Logg
 	return logger.New(bootstrapConf.Logger, handle)
 }
 
-func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo) AccessLogger {
+func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo, zapLogger *zap.Logger) AccessLogger {
 	async := logger.NewAsyncLogger(CacheSize, func(b []byte) {
 		loggerRepo.CreateAccessLogger(bootstrapConf.AppId, b)
 	})
 
 	return func(b []byte, msg string) {
 		if bootstrapConf.Logger.Console {
-			fmt.Print(msg)
+			zapLogger.Info(msg)
 		}
 
 		if !bootstrapConf.Logger.Remote {

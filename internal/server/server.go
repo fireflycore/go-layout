@@ -1,13 +1,14 @@
 package server
 
 import (
-	"fmt"
 	"go-layout/internal/conf"
 	"net"
+	"strconv"
 )
 
 func NewServer(bootstrapConf *conf.BootstrapConf) net.Listener {
-	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", bootstrapConf.Port))
+	addr := net.JoinHostPort("0.0.0.0", strconv.FormatUint(uint64(bootstrapConf.Port), 10))
+	listen, err := net.Listen("tcp", addr)
 
 	if err != nil {
 		panic(err)

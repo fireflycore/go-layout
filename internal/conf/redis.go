@@ -3,7 +3,6 @@ package conf
 import (
 	"context"
 	"errors"
-	"fmt"
 	redis "github.com/lhdhtrc/redis-go/pkg"
 	"go-layout/internal/biz/repo"
 	"time"
@@ -44,7 +43,7 @@ func (load *RedisConfLoader) Load() (*redis.Conf, error) {
 func (load *RedisConfLoader) Local() (*redis.Conf, error) {
 	var dst redis.Conf
 
-	filePath := load.utils.GetConfigFilePath(fmt.Sprintf("%s.json", load.key))
+	filePath := load.utils.GetConfigFilePath(load.key + ".json")
 	if err := load.utils.LoadJSONConfig(filePath, &dst); err != nil {
 		return nil, err
 	}

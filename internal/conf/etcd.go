@@ -3,7 +3,6 @@ package conf
 import (
 	"context"
 	"errors"
-	"fmt"
 	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	"go-layout/internal/biz/repo"
 	"time"
@@ -44,7 +43,7 @@ func (load *EtcdConfLoader) Load() (*etcd.Conf, error) {
 func (load *EtcdConfLoader) Local() (*etcd.Conf, error) {
 	var dst etcd.Conf
 
-	filePath := load.utils.GetConfigFilePath(fmt.Sprintf("%s.json", load.key))
+	filePath := load.utils.GetConfigFilePath(load.key + ".json")
 	if err := load.utils.LoadJSONConfig(filePath, &dst); err != nil {
 		return nil, err
 	}

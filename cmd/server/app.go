@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	"go-layout/internal/conf"
 	"go.uber.org/zap"
@@ -32,12 +31,12 @@ func (ist *App) Stop() {
 
 func NewApp(bootstrapConf *conf.BootstrapConf, netListener net.Listener, grpcServer *grpc.Server, register micro.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
 	register.WithRetryBefore(func() {
-		fmt.Println("重试之前的函数")
+		logger.Info("retry before register")
 	})
 	register.WithRetryAfter(func() {
 		micro.NewRegisterService(services, register)
 		go register.SustainLease()
-		fmt.Println("重试之后的函数")
+		logger.Info("retry after register")
 	})
 	go register.SustainLease()
 

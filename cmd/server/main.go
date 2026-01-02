@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"github.com/lhdhtrc/func-go/process"
+	"go.uber.org/zap"
 	"runtime"
 	"time"
 )
@@ -19,8 +19,8 @@ func main() {
 
 	go app.Start()
 
-	app.Logger.Info(fmt.Sprintf("system run address - %s", app.BootstrapConf.Micro.Network.Internal))
-	app.Logger.Info(fmt.Sprintf("system self check completed，current goroutine num - %d", runtime.NumGoroutine()))
+	app.Logger.Info("system run address", zap.String("address", app.BootstrapConf.Micro.Network.Internal))
+	app.Logger.Info("system self check completed", zap.Int("goroutine_num", runtime.NumGoroutine()))
 	process.Watcher(func() {
 		app.Logger.Info("uninstall all service for this node from the register")
 	})

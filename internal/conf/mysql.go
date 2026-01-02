@@ -3,7 +3,6 @@ package conf
 import (
 	"context"
 	"errors"
-	"fmt"
 	gorm "github.com/lhdhtrc/gorm/pkg"
 	"go-layout/internal/biz/repo"
 	"time"
@@ -44,7 +43,7 @@ func (load *MysqlConfLoader) Load() (*gorm.MysqlConf, error) {
 func (load *MysqlConfLoader) Local() (*gorm.MysqlConf, error) {
 	var dst gorm.MysqlConf
 
-	filePath := load.utils.GetConfigFilePath(fmt.Sprintf("%s.json", load.key))
+	filePath := load.utils.GetConfigFilePath(load.key + ".json")
 	if err := load.utils.LoadJSONConfig(filePath, &dst); err != nil {
 		return nil, err
 	}
