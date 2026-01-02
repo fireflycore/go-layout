@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 规则索引（go-layout）v1.5
+# 规则索引（go-layout）v1.6
 
 默认：
 - Profile：GoService
@@ -52,6 +52,7 @@ Profile：
   - core/requirements-spec.md
   - core/workflow-spec.md
   - core/naming-conventions.md
+  - core/doc-url-spec.md
 - GoServiceStrict：在 GoService 基础上额外加载
   - architecture/api-design-spec.md（API 规范索引）
   - architecture/*-spec.md（API/Proto/Response/Code/Service/Data/Style/Comment/Context/Validation）
