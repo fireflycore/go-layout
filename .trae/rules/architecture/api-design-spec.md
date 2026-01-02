@@ -2,11 +2,14 @@
 trigger: manual
 ---
 
-# API 设计规范索引（go-layout）v1.2
+# API 设计规范索引（go-layout）v1.3
 
 说明：
 - 本文件仅做索引，详则拆分在同目录下的规则文件
 - 规则文件单篇控制在 1000 字以内，避免“一个文件塞一切”
+
+推荐阅读顺序（按最常见开发路径）：
+- Proto/Response/Status Code → Service → Data → Validation/Comment → Buf
 
 模块：
 - Buf：`architecture/buf-spec.md`

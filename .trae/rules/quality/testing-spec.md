@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 测试规范（go-layout）v1.1
+# 测试规范（go-layout）v1.2
 
 ## [规则 1] 新逻辑必须可测 [ENABLED]
 STATUS: ENABLED
@@ -51,3 +51,11 @@ LANGUAGE: Go
 - 验收按场景选择：仅规则/文档改动时，不强制跑 Go 回归；检查字数限制与引用一致性即可
 - 涉及 Go 代码变更时：必须通过 `go test ./...`
 - 建议同时通过 `go vet ./...`
+
+按变更类型选择最小回归集：
+- 仅改规则/文档：检查字数限制与引用一致性即可
+- 新增/修改 Proto：Proto 仓库 `buf lint`；微服务仓库 `buf generate`（或 `make generate/make init`）并确保编译通过
+- 新增/修改 Service RPC：`go test ./...`（覆盖入口校验与 Code/Message 映射的回归用例）
+- 新增/修改 Biz 分支逻辑：`go test ./...`（至少覆盖关键分支的单测，mock Repo）
+- 新增/修改 Data 查询/事务：`go test ./...`（必要时补集成测试或等价验证）
+- 新增公共工具/中间件：`go test ./...`（覆盖边界条件）

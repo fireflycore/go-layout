@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 规则索引（go-layout）v1.3
+# 规则索引（go-layout）v1.4
 
 默认：
 - Profile：GoService
@@ -15,6 +15,16 @@ trigger: manual
 Proto 协作上下文：
 - 微服务仓库通常不包含 `.proto`，只维护生成产物（常见为 `dep/protobuf/gen`）
 - Proto 定义通常维护在独立的 Proto 仓库中，通过 `buf generate` 同步到微服务仓库
+
+快速用法：
+- 第一步：确认仓库类型（见“仓库识别”）
+- 第二步：按变更类型跳转规则
+  - 新增/修改 Proto：`architecture/proto-spec.md` + `architecture/response-spec.md` + `architecture/status-code-spec.md` + `architecture/validation-spec.md`
+  - 新增/修改 Service RPC：`architecture/service-spec.md` + `quality/error-handling-spec.md` + `quality/testing-spec.md`
+  - 新增/修改 Biz：`core/requirements-spec.md` + `quality/testing-spec.md` + `architecture/comment-spec.md`
+  - 新增/修改 Data：`architecture/data-spec.md` + `quality/testing-spec.md` + `architecture/comment-spec.md`
+  - 仅调整生成链路：`core/workflow-spec.md` + `architecture/buf-spec.md`
+- 第三步：按“执行清单（按变更触发）”做最小验证
 
 Profile：
 - GoService：core 三件套（requirements/workflow/naming）
