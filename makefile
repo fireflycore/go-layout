@@ -20,7 +20,7 @@ init:
 .PHONY: run
 run:
 	make init
-	go run ./cmd/server/main.go
+	go run ./cmd/server
 
 # 构建项目
 .PHONY: build
