@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 错误处理规范（go-layout）v1.1
+# 错误处理规范（go-layout）v1.3
 
 ## [规则 1] 错误边界明确 [ENABLED]
 STATUS: ENABLED
@@ -19,17 +19,16 @@ STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
 说明：
-- 禁止泄露敏感信息（密钥、令牌、密码、个人敏感信息等）
-- 模板兼容：允许直接透出 `err.Error()` 到 `Message`（含系统/第三方错误），但不得包含敏感信息
-- 若无法判断是否含敏感信息：优先使用通用文案，并把真实错误写入日志
-- 对外文案收敛与错误分类映射在下一个版本统一规划
+- 模板兼容：允许直接透出 `err.Error()` 到 `Message`（含系统/第三方错误）
+- 真实错误允许直接写入日志，不做兜底改写
+- 对外文案收敛与错误分类映射暂不强制
 
 ## [规则 3] 错误包装与判断 [ENABLED]
 STATUS: ENABLED
 PRIORITY: MEDIUM
 LANGUAGE: Go
 说明：
-- 包装用 `%w`；判断用 `errors.Is/As`
+- 现阶段不强制错误包装；如需包装用 `%w`，判断用 `errors.Is/As`
 
 ## [规则 4] 业务链路禁止 panic [ENABLED]
 STATUS: ENABLED

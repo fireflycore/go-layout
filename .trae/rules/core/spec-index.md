@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 规则索引（go-layout）v1.2
+# 规则索引（go-layout）v1.3
 
 默认：
 - Profile：GoService
@@ -34,7 +34,7 @@ Profile：
 - 变更生成相关配置（如 `buf.gen.yaml`/wire/goverter 配置）：必须重新生成并确保编译/测试通过
 
 对外输出底线：
-- 响应体/日志/错误信息不得包含敏感信息（见 `quality/security-spec.md`）
+- 真实密钥/令牌/密码/个人敏感信息不得进入代码与仓库（见 `quality/security-spec.md`）
 - 存量兼容优先级高于“顺手优化”：仅在需求触发的文件/接口上对齐规则
 
 加载顺序：

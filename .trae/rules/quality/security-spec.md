@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 安全规范（go-layout）v1.2
+# 安全规范（go-layout）v1.4
 
 ## [规则 1] 输入与权限只在服务端处理 [ENABLED]
 STATUS: ENABLED
@@ -18,9 +18,10 @@ STATUS: ENABLED
 PRIORITY: CRITICAL
 LANGUAGE: All
 说明：
-- 日志/错误/响应体禁止出现密钥、令牌、密码、个人敏感信息
-- 仓库内配置可包含示例/开发值；严禁提交真实生产密钥，生产通过私有配置或远程配置注入
-敏感信息最小判定（示例）：
+- 真实密钥/令牌/密码/个人敏感信息不得进入代码与仓库（含配置文件、示例与日志文件）
+- 对外错误信息允许直接透传 `err.Error()`；不做敏感信息判定与兜底改写
+- 真实错误允许直接写入日志；不做敏感信息判定与兜底改写
+敏感信息最小判定（用于检查是否误入库，示例）：
 - 认证凭据：Authorization、Bearer token、Cookie/Set-Cookie、session
 - 密钥材料：app_secret、api_key、access_key、secret_key、private_key、证书明文
 - 个人敏感信息：身份证号、银行卡号、手机号（按项目定义）

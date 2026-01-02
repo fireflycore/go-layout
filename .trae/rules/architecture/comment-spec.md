@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 注释规范（go-layout）v1.2
+# 注释规范（go-layout）v1.3
 
 ## [规则 1] 注释必须加且按场景写 [ENABLED]
 STATUS: ENABLED
@@ -30,14 +30,15 @@ LANGUAGE: Go
 - Biz：标注业务规则来源、状态/权限校验、关键分支原因
 - Data：标注查询条件含义、索引假设、事务/一致性边界与 NotFound 语义
 
-## [规则 4] 最小注释集（建议） [ENABLED]
+## [规则 4] 触发式最小注释集 [ENABLED]
 STATUS: ENABLED
 PRIORITY: MEDIUM
 LANGUAGE: Go
 说明：
-- 每个 Service RPC：至少 3 条步骤注释（校验/上下文/调用/错误映射）
-- 每个 UseCase：关键分支至少 1 条“原因”注释
-- 每个 Data 查询：where 条件含义 + NotFound 语义至少 1 条注释
+- 新增/修改 Service RPC：至少 3 条步骤注释（校验/上下文/调用/错误映射）
+- 新增/修改 UseCase：关键分支至少 1 条“原因”注释
+- 新增/修改 Data 查询：where 条件含义 + NotFound 语义至少 1 条注释
+- 存量兼容：仅在需求触发的文件/接口上补齐，不做顺手批量补注释
 
 ## [规则 5] Proto 注释要求 [ENABLED]
 STATUS: ENABLED

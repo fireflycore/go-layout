@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 开发需求规范（go-layout）v1.1
+# 开发需求规范（go-layout）v1.2
 
 ## [规则 1] 交付必须可用 [ENABLED]
 STATUS: ENABLED
@@ -12,6 +12,12 @@ LANGUAGE: Go
 - 验收按场景选择（见 `quality/testing-spec.md`）
 - 涉及 Go 代码变更时：必须通过 `go test ./...`
 - 不交付占位符/半实现
+
+交付触发清单（硬性）：
+- 新增/修改对外 RPC：必须补入口校验与错误映射；必要时补 protovalidate 规则；至少补 1 个回归用例
+- 新增/修改 Biz 分支逻辑：必须补单元测试覆盖关键分支（mock Repo）
+- 新增/修改 Data 查询条件：必须明确 NotFound 语义；涉及事务/一致性时补集成测试或等价验证
+- 新增公共工具/中间件：必须补单元测试覆盖边界条件
 
 ## [规则 2] 严守分层依赖 [ENABLED]
 STATUS: ENABLED
