@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 安全规范（go-layout）v1.1
+# 安全规范（go-layout）v1.2
 
 ## [规则 1] 输入与权限只在服务端处理 [ENABLED]
 STATUS: ENABLED
@@ -19,7 +19,7 @@ PRIORITY: CRITICAL
 LANGUAGE: All
 说明：
 - 日志/错误/响应体禁止出现密钥、令牌、密码、个人敏感信息
-- 仓库内配置只允许示例值，真实密钥通过私有配置或远程配置注入
+- 仓库内配置可包含示例/开发值；严禁提交真实生产密钥，生产通过私有配置或远程配置注入
 
 ## [规则 3] 防注入与日志卫生 [ENABLED]
 STATUS: ENABLED

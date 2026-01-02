@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# Buf/生成链路规范（Proto）v1.0
+# Buf/生成链路规范（go-layout）v1.2
 
 ## [规则 1] 生成配置以 buf.gen.yaml 为准 [ENABLED]
 STATUS: ENABLED
@@ -34,4 +34,3 @@ LANGUAGE: All
 说明：
 - 新增依赖类型时，在 `buf.gen.yaml` 的 `inputs` 中补充 module/types
 - 生成后代码路径固定：`dep/protobuf/gen/<package path>`
-

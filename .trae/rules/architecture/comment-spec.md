@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 注释规范（Go/Proto）v1.0
+# 注释规范（go-layout）v1.2
 
 ## [规则 1] 注释必须加且按场景写 [ENABLED]
 STATUS: ENABLED

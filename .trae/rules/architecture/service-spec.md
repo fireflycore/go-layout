@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# Service 入口规范（go-layout）v1.0
+# Service 入口规范（go-layout）v1.1
 
 ## [规则 1] 入口统一参数校验 [ENABLED]
 STATUS: ENABLED

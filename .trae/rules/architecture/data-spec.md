@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# Data/GORM 规范（go-layout）v1.0
+# Data/GORM 规范（go-layout）v1.1
 
 ## [规则 1] GORM 查询错误处理 [ENABLED]
 STATUS: ENABLED

@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 测试规范（go-layout）v1.0
+# 测试规范（go-layout）v1.1
 
 ## [规则 1] 新逻辑必须可测 [ENABLED]
 STATUS: ENABLED

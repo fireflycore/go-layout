@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 代码风格规范（go-layout）v1.0
+# 代码风格规范（go-layout）v1.1
 
 ## [规则 1] 代码应简洁统一 [ENABLED]
 STATUS: ENABLED

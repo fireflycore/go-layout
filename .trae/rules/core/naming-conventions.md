@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# 命名约定（go-layout）v1.0
+# 命名约定（go-layout）v1.1
 
 ## [约定 1] 变量与字段 [ENABLED]
 STATUS: ENABLED

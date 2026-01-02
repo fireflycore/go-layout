@@ -2,14 +2,14 @@
 trigger: manual
 ---
 
-# Proto 规范（go-layout × firefly）v1.0
+# Proto 规范（go-layout × Proto 仓库）v1.2
 
 ## [规则 1] Proto First [ENABLED]
 STATUS: ENABLED
 PRIORITY: CRITICAL
 LANGUAGE: Proto
 说明：
-- 先改 Proto（通常在 firefly），再生成（`dep/protobuf/gen`），再实现
+- 先改 Proto（通常在 Proto 独立仓库，常见为 firefly），再生成（`dep/protobuf/gen`），再实现
 - 存量兼容：仅在改动到该 proto 文件时按规则对齐，避免顺手重排字段/响应结构
 - 生成链路：见 `architecture/buf-spec.md`
 

@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-# Context/Timeout 规范（go-layout）v1.0
+# Context/Timeout 规范（go-layout）v1.1
 
 ## [规则 1] ctx 必须贯穿业务链路 [ENABLED]
 STATUS: ENABLED
@@ -19,4 +19,3 @@ LANGUAGE: Go
 说明：
 - 远程调用可在入参 `ctx` 基础上派生超时，避免无边界阻塞
 - 后台任务允许 `context.Background()`，但必须设置超时与取消
-

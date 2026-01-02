@@ -7,7 +7,7 @@
 
 `@.trae/rules/core/spec-index.md`
 
-当需求涉及“安全/错误处理/测试”或你希望更严格的约束时，使用 `GoServiceStrict` 配置加载全部模块。
+当需求涉及“安全/错误处理/测试/API 设计”或你希望更严格的约束时，使用 `GoServiceStrict` 配置加载全部模块。
 
 使用建议：
 - 涉及命令/生成链路/目录位置时，先以仓库现状为准：根目录 `makefile`、`go.mod`、现有 `internal/*` 代码与 `dep/` 目录。
