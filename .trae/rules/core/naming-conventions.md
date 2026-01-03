@@ -51,3 +51,12 @@ PRIORITY: HIGH
 LANGUAGE: Go
 说明：
 - 不修改 `wire_gen.go`、`*_gen.go` 与 `dep/` 下生成内容
+
+## [约定 7] 特殊缩写命名 (ID/IP) [ENABLED]
+STATUS: ENABLED
+PRIORITY: HIGH
+LANGUAGE: Go
+说明：
+- 统一使用 CamelCase 风格处理常见缩写，**不使用**全大写形式
+- ID 必须写作 `Id`（如 `AppId`, `UserId`, `TraceId`），禁止写作 `ID`
+- IP 必须写作 `Ip`（如 `ClientIp`, `ServerIp`），禁止写作 `IP`
