@@ -27,4 +27,3 @@ LANGUAGE: Go
 说明：
 - 先初始化成功响应（`Code=200/Message=success`）
 - 失败时只改 `Code/Message` 并返回响应体，error 返回值保持 `nil`
-- 存量兼容：仅在该 RPC 需要改动时按骨架对齐，避免顺手批量重排

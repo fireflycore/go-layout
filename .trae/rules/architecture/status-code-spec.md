@@ -10,7 +10,6 @@ PRIORITY: HIGH
 LANGUAGE: All
 说明：
 - Code 表达业务结果，不等同于 gRPC status，也不要求与 HTTP 状态码一一对应
-- 存量兼容：仅在改动到该 RPC 时对齐 Code 语义，避免顺手批量重排
 
 ## [规则 2] 推荐的最小码表 [ENABLED]
 STATUS: ENABLED
@@ -31,4 +30,3 @@ LANGUAGE: Go
 - 用户上下文解析失败：默认 Code=400（模板兼容）；若服务已区分鉴权语义可用 401/403
 - Biz 可预期错误：默认 Code=400，Message 使用安全可读的业务文案
 - Data/Remote 系统错误：Code=500；模板兼容允许直接透出 `err.Error()`；并把真实 err 写入日志
-- 存量兼容：存量接口可能统一用 400；改动到该 RPC 时再逐步对齐

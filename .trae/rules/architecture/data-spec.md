@@ -9,10 +9,9 @@ STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
 说明：
-- 底层已封装 GORM，SQL 异常会统一上报 Logger
+- gormx 封装 GORM，SQL 执行日志与异常可通过 OperationLogger 上报日志服务，无需业务层手工干预
 - 普通查询（Find/Scan/Count）无要求则不抛出 error，直接返回结果
 - 需要校验存在性（First/Take 且业务依赖 NotFound）才抛出 error
-- 存量兼容：仅在改动到该查询时套用本规则，避免顺手重写无关查询
 
 ## [规则 2] 查询代码可读性 [ENABLED]
 STATUS: ENABLED

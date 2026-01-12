@@ -11,7 +11,6 @@ LANGUAGE: Go
 说明：
 - Biz/Data 返回 Go error
 - Service 用响应体 `Code/Message` 表达失败并返回 `nil` error（保持模板一致）
-- 存量兼容：仅在改动到该 RPC 时对齐错误映射，避免顺手批量重排
 - Code 语义与最小码表：见 `architecture/status-code-spec.md`
 
 ## [规则 2] 对外信息可控 [ENABLED]

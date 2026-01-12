@@ -11,7 +11,6 @@ LANGUAGE: Go
 说明：
 - 外部输入统一在 Service 入口校验（优先复用 Proto 校验）
 - 权限判断在服务端完成；用户上下文从 metadata 提取并校验
-- 存量兼容：不为“对齐风格”改动现有鉴权链路与字段语义
 
 ## [规则 2] 不泄露敏感信息 [ENABLED]
 STATUS: ENABLED
@@ -32,4 +31,5 @@ PRIORITY: HIGH
 LANGUAGE: Go
 说明：
 - DB 查询参数化，禁止拼接用户输入
-- 统一使用注入的 Logger，避免 `fmt.Println/println`
+- 服务端日志统一使用 ServerLogger（封装 zap），通过 go-logger 注入并上报日志服务
+- 避免 `fmt.Println/println`

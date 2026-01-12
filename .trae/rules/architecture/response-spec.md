@@ -11,7 +11,6 @@ LANGUAGE: Proto
 说明：
 - 所有 Response 必须包含：`uint32 code = 1;`、`string message = 2;`
 - 存量 Proto 可能存在 `message=1, code=2` 的历史写法；新写/新改按本规则逐步对齐
-- 存量兼容：仅在改动到该 Response 时对齐字段顺序与 data 结构，避免顺手批量重排
 - Code 语义：见 `architecture/status-code-spec.md`
 - 返回值必须用 `data`（field=3）
   - 单值：`Type data = 3;`

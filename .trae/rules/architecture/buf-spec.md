@@ -10,7 +10,6 @@ PRIORITY: CRITICAL
 LANGUAGE: All
 说明：
 - Proto 生成只通过 `buf generate`（或 `make generate/make init`）完成
-- 存量兼容：不为“对齐结构”修改生成配置，除非需求明确要求
 
 ## [规则 2] Proto 仓库变更需发布 [ENABLED]
 STATUS: ENABLED
