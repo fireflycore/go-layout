@@ -1,6 +1,6 @@
 #!/bin/bash
 
-go get github.com/fireflycore/go-micro@v0.6.9
+go get github.com/fireflycore/go-micro@v0.7.0
 go get github.com/fireflycore/go-logger@v0.2.1
 go get github.com/fireflycore/go-utils@v0.3.5
 go get github.com/fireflycore/go-etcd@v0.2.6
