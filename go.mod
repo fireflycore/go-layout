@@ -1,22 +1,20 @@
 module go-layout
 
-go 1.25.1
+go 1.25.3
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.10-20250912141014-52f32327d4b0.1
 	buf.build/go/protovalidate v1.0.1
+	github.com/fireflycore/go-etcd v0.2.6
+	github.com/fireflycore/go-logger v0.2.1
+	github.com/fireflycore/go-micro v0.7.0
+	github.com/fireflycore/go-redis v0.1.1
+	github.com/fireflycore/go-utils v0.3.5
+	github.com/fireflycore/gormx v0.8.1
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
-	github.com/lhdhtrc/compress-go v0.0.4
-	github.com/lhdhtrc/crypto-go v0.0.4
-	github.com/lhdhtrc/etcd-go v0.2.4
-	github.com/lhdhtrc/func-go v0.3.2
-	github.com/lhdhtrc/gorm v0.7.7
-	github.com/lhdhtrc/logger-go v0.1.8
-	github.com/lhdhtrc/micro-go v0.6.7
-	github.com/lhdhtrc/redis-go v0.0.9
 	github.com/redis/go-redis/v9 v9.17.1
 	go.etcd.io/etcd/client/v3 v3.6.6
 	go.uber.org/zap v1.27.1
