@@ -51,6 +51,7 @@ Profile：
   - core/workflow-spec.md
   - core/naming-conventions.md
   - core/doc-url-spec.md
+  - core/engineering-spec.md
 - GoServiceStrict：在 GoService 基础上额外加载
   - architecture/api-design-spec.md（API 规范索引）
   - architecture/*-spec.md（API/Proto/Response/Code/Service/Data/Style/Comment/Context/Validation）
