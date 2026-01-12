@@ -1,7 +1,7 @@
 package model
 
 import (
-	gorm "github.com/lhdhtrc/gorm/pkg"
+	gorm "github.com/fireflycore/gormx"
 )
 
 type Demo struct {

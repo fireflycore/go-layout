@@ -3,9 +3,10 @@ package conf
 import (
 	"context"
 	"errors"
-	redis "github.com/lhdhtrc/redis-go/pkg"
 	"go-layout/internal/biz/repo"
 	"time"
+
+	redis "github.com/fireflycore/go-redis"
 )
 
 type RedisConfLoader struct {

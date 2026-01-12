@@ -6,8 +6,8 @@ import (
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/data/entity"
 
-	"github.com/lhdhtrc/gorm/pkg/scope"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
+	micro "github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/gormx/scope"
 )
 
 type demoRepo struct {

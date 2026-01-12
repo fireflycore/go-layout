@@ -4,7 +4,7 @@ import (
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/conf"
 
-	logger "github.com/lhdhtrc/logger-go/pkg"
+	logger "github.com/fireflycore/go-logger"
 	"go.uber.org/zap"
 )
 

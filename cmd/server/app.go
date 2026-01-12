@@ -1,11 +1,12 @@
 package main
 
 import (
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	"go-layout/internal/conf"
+	"net"
+
+	micro "github.com/fireflycore/go-micro/registry"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"net"
 )
 
 type App struct {

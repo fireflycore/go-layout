@@ -1,10 +1,12 @@
 package conf
 
 import (
-	logger "github.com/lhdhtrc/logger-go/pkg"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	"net"
 	"strconv"
+
+	logger "github.com/fireflycore/go-logger"
+	micro "github.com/fireflycore/go-micro/registry"
+	"github.com/fireflycore/go-utils/network"
 )
 
 type BootstrapConf struct {
@@ -41,7 +43,7 @@ func NewBootstrapConf(utils *Utils) *BootstrapConf {
 		panic(err)
 	}
 
-	bc.Micro.Network.Internal = net.JoinHostPort(micro.GetInternalNetworkIp(), strconv.FormatUint(uint64(bc.Port), 10))
+	bc.Micro.Network.Internal = net.JoinHostPort(network.GetInternalNetworkIp(), strconv.FormatUint(uint64(bc.Port), 10))
 
 	return &bc
 }

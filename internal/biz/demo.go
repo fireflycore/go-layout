@@ -6,8 +6,7 @@ import (
 	"go-layout/internal/biz/convert"
 	"go-layout/internal/biz/repo"
 
-	"github.com/lhdhtrc/func-go/object"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
+	micro "github.com/fireflycore/go-micro/rpc"
 )
 
 type DemoUseCase struct {
@@ -45,7 +44,22 @@ func (uc *DemoUseCase) UpdateDemo(ctx context.Context, _ *micro.UserContextMeta,
 		return err
 	}
 
-	updates := object.FilterChangeValue(row, request, []string{})
+	updates := make(map[string]interface{})
+	if request.Title != "" && request.Title != row.Title {
+		updates["title"] = request.Title
+	}
+	if request.Description != "" && request.Description != row.Description {
+		updates["description"] = request.Description
+	}
+	if request.Content != "" && request.Content != row.Content {
+		updates["content"] = request.Content
+	}
+	if request.Status != 0 && request.Status != row.Status {
+		updates["status"] = request.Status
+	}
+	if request.Sort != 0 && request.Sort != row.Sort {
+		updates["sort"] = request.Sort
+	}
 	if len(updates) == 0 {
 		return nil
 	}

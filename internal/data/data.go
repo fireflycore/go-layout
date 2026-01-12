@@ -1,13 +1,14 @@
 package data
 
 import (
-	etcd "github.com/lhdhtrc/etcd-go/pkg"
-	gorme "github.com/lhdhtrc/gorm/pkg"
-	redise "github.com/lhdhtrc/redis-go/pkg"
-	"github.com/redis/go-redis/v9"
 	"go-layout/internal/conf"
 	"go-layout/internal/data/entity"
 	"go-layout/internal/dep"
+
+	etcd "github.com/fireflycore/go-etcd"
+	redise "github.com/fireflycore/go-redis"
+	gorme "github.com/fireflycore/gormx"
+	"github.com/redis/go-redis/v9"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"gorm.io/gorm"
 )

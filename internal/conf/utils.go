@@ -4,13 +4,14 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	compress "github.com/lhdhtrc/compress-go/pkg"
-	crypto "github.com/lhdhtrc/crypto-go/pkg"
-	"github.com/lhdhtrc/func-go/file"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
+
+	compress "github.com/fireflycore/go-utils/compress"
+	crypto "github.com/fireflycore/go-utils/crypto"
+	"github.com/fireflycore/go-utils/file"
 )
 
 type Utils struct {
@@ -91,7 +92,7 @@ func (ist *Utils) AnalyzeTlsData(dir string, tls interface{}) error {
 			fd := strings.ReplaceAll(val, `\n`, "\n")
 			fp := filepath.Join(dirPath, fmt.Sprintf("%s.pem", fieldType.Tag.Get("json")))
 
-			if err := file.WriteLocal(fp, []byte(fd)); err != nil {
+			if err := file.WriteLocalFile(fp, []byte(fd)); err != nil {
 				return err
 			}
 

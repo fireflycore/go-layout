@@ -1,9 +1,9 @@
 package dep
 
 import (
+	compress "github.com/fireflycore/go-utils/compress"
+	crypto "github.com/fireflycore/go-utils/crypto"
 	"github.com/google/wire"
-	compress "github.com/lhdhtrc/compress-go/pkg"
-	crypto "github.com/lhdhtrc/crypto-go/pkg"
 )
 
 var ProviderSet = wire.NewSet(

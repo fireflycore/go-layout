@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/biz"
 
 	"buf.build/go/protovalidate"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
+	micro "github.com/fireflycore/go-micro/rpc"
 	"google.golang.org/grpc/metadata"
 )
 

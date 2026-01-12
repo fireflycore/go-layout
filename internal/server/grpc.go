@@ -1,11 +1,12 @@
 package server
 
 import (
-	ggm "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/lhdhtrc/micro-go/pkg/middleware"
 	demo "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/dep"
 	"go-layout/internal/service"
+
+	"github.com/fireflycore/go-micro/middleware"
+	ggm "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 )
 

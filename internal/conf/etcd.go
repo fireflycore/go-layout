@@ -3,9 +3,10 @@ package conf
 import (
 	"context"
 	"errors"
-	etcd "github.com/lhdhtrc/etcd-go/pkg"
 	"go-layout/internal/biz/repo"
 	"time"
+
+	etcd "github.com/fireflycore/go-etcd"
 )
 
 type EtcdConfLoader struct {

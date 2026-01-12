@@ -1,10 +1,11 @@
 package server
 
 import (
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
-	"github.com/lhdhtrc/micro-go/pkg/etcd"
 	demo "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/conf"
+
+	micro "github.com/fireflycore/go-micro/registry"
+	"github.com/fireflycore/go-micro/registry/etcd"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

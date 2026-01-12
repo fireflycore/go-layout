@@ -3,9 +3,10 @@ package conf
 import (
 	"context"
 	"errors"
-	gorm "github.com/lhdhtrc/gorm/pkg"
 	"go-layout/internal/biz/repo"
 	"time"
+
+	gorm "github.com/fireflycore/gormx"
 )
 
 type MysqlConfLoader struct {

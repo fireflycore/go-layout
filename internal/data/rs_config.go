@@ -2,10 +2,11 @@ package data
 
 import (
 	"context"
-	micro "github.com/lhdhtrc/micro-go/pkg/core"
 	config "go-layout/dep/protobuf/gen/acme/config/v1"
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/conf"
+
+	micro "github.com/fireflycore/go-micro/rpc"
 )
 
 type configRepo struct {

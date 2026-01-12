@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/lhdhtrc/func-go/process"
+	"github.com/fireflycore/go-utils/process"
 	"go.uber.org/zap"
 	"runtime"
 	"time"
