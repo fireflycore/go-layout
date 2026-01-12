@@ -4,7 +4,7 @@ import (
 	"go-layout/internal/conf"
 	"net"
 
-	micro "github.com/fireflycore/go-micro/registry"
+	"github.com/fireflycore/go-micro/registry"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -14,7 +14,7 @@ type App struct {
 
 	Listener   net.Listener
 	GrpcServer *grpc.Server
-	Register   micro.Register
+	Register   registry.Register
 	Services   []*grpc.ServiceDesc
 
 	Logger *zap.Logger
@@ -30,12 +30,12 @@ func (ist *App) Stop() {
 	ist.GrpcServer.Stop()
 }
 
-func NewApp(bootstrapConf *conf.BootstrapConf, netListener net.Listener, grpcServer *grpc.Server, register micro.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
+func NewApp(bootstrapConf *conf.BootstrapConf, netListener net.Listener, grpcServer *grpc.Server, register registry.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
 	register.WithRetryBefore(func() {
 		logger.Info("retry before register")
 	})
 	register.WithRetryAfter(func() {
-		micro.NewRegisterService(services, register)
+		registry.NewRegisterService(services, register)
 		go register.SustainLease()
 		logger.Info("retry after register")
 	})

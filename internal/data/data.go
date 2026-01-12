@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/dep"
 
 	etcd "github.com/fireflycore/go-etcd"
-	redise "github.com/fireflycore/go-redis"
+	redisx "github.com/fireflycore/go-redis"
 	gorme "github.com/fireflycore/gormx"
 	"github.com/redis/go-redis/v9"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -31,8 +31,8 @@ func NewEtcd(etcdConf *etcd.Conf) (*clientv3.Client, error) {
 	return etcd.New(etcdConf)
 }
 
-func NewRedis(redisConf *redise.Conf) (*redis.Client, error) {
-	return redise.New(redisConf)
+func NewRedis(redisConf *redisx.Conf) (*redis.Client, error) {
+	return redisx.New(redisConf)
 }
 
 func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf, logger dep.OperationLogger) (*gorme.MysqlDB, error) {

@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	logger "github.com/fireflycore/go-logger"
-	micro "github.com/fireflycore/go-micro/registry"
+	"github.com/fireflycore/go-micro/registry"
 	"github.com/fireflycore/go-utils/network"
 )
 
@@ -27,9 +27,9 @@ type BootstrapConf struct {
 	LoadConfMode string `json:"load_conf_mode"`
 
 	// 微服务核心组件配置
-	Micro *micro.ServiceConf `json:"micro"`
+	Micro *registry.ServiceConf `json:"micro"`
 	// 网关配置
-	Gateway *micro.GatewayConf `json:"gateway"`
+	Gateway *registry.GatewayConf `json:"gateway"`
 	// 日志组件配置
 	Logger *logger.Conf `json:"logger"`
 }

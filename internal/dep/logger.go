@@ -3,6 +3,7 @@ package dep
 import (
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/conf"
+	"os"
 
 	logger "github.com/fireflycore/go-logger"
 	"go.uber.org/zap"
@@ -25,7 +26,7 @@ func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRe
 
 	return func(b []byte, msg string) {
 		if bootstrapConf.Logger.Console {
-			zapLogger.Info(msg)
+			_, _ = os.Stdout.WriteString(msg)
 		}
 
 		if !bootstrapConf.Logger.Remote {
