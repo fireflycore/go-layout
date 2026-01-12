@@ -18,10 +18,7 @@
 - `github.com/lhdhtrc/compress-go` → `github.com/fireflycore/go-utils@v0.3.5`（compress 子包）
 - `github.com/lhdhtrc/crypto-go` → `github.com/fireflycore/go-utils@v0.3.5`（crypto 子包）
 - `github.com/lhdhtrc/logger-go` → `github.com/fireflycore/go-logger@v0.2.1`
-- `github.com/lhdhtrc/micro-go` → `github.com/fireflycore/go-micro@v0.6.9`
-
-补充：
-- `go` 版本从 `1.25.1` 更新为 `1.25.4`（用于满足 `go-micro@v0.6.9` 的最低版本要求）。
+- `github.com/lhdhtrc/micro-go` → `github.com/fireflycore/go-micro@v0.7.0`
 
 ### import 路径调整（代码）
 由于新包目录结构与旧包不同，本次迁移不是简单的前缀替换：
