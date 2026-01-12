@@ -9,6 +9,12 @@
 - 替换项目中的 `fmt.Print/Println/Printf` 这类“日志输出”用法为 `zap.Logger` 结构化日志。
 - `fmt.Sprintf` 仅用于必要的字符串拼接；涉及日志输出时优先改为结构化字段（`zap.String/zap.Int/...`）。
 
+## 特别注意：AccessLogger Console 输出避免双写
+- `AccessLogger` 的远程写入已经通过 `loggerRepo.CreateAccessLog(...)` 进入 Logger 服务的 AccessLog 管道。
+- 如果在 `AccessLogger` 的 Console 分支里再用注入的 `*zap.Logger` 输出，会走 `ServerLogger` 管道，导致同一条访问日志被写两遍（AccessLog + ServerLog），造成重复与浪费。
+- 因此：当 `bootstrapConf.Logger.Console == true` 时，AccessLogger 的 Console 输出应直接写到标准输出，不走 zap、不走 ServerLogger。
+  - 推荐：`os.Stdout.WriteString(msg)`
+
 ## 本次模板改动点（可作为所有服务升级的参考）
 - 访问日志 Console 输出从 `fmt.Print(msg)` 改为使用注入的 `*zap.Logger` 输出：
   - `internal/dep/logger.go`：`NewAccessLogger(bootstrapConf, loggerRepo, zapLogger)`。
@@ -28,4 +34,3 @@
 - 启动/注册/拦截器/中间件等基础设施层，如需输出信息，必须走 Logger。
 - Wire/DI 更新：新增构造函数参数后，重新生成注入代码（例如 `wire ./cmd/server`）。
 - 回归命令（至少）：`go test ./...`、`go vet ./...`。
-
