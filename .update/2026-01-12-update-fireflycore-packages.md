@@ -15,6 +15,8 @@
 - `github.com/lhdhtrc/redis-go` → `github.com/fireflycore/go-redis@v0.1.1`
 - `github.com/lhdhtrc/etcd-go` → `github.com/fireflycore/go-etcd@v0.2.6`
 - `github.com/lhdhtrc/func-go` → `github.com/fireflycore/go-utils@v0.3.5`
+- `github.com/lhdhtrc/compress-go` → `github.com/fireflycore/go-utils@v0.3.5`（compress 子包）
+- `github.com/lhdhtrc/crypto-go` → `github.com/fireflycore/go-utils@v0.3.5`（crypto 子包）
 - `github.com/lhdhtrc/logger-go` → `github.com/fireflycore/go-logger@v0.2.1`
 - `github.com/lhdhtrc/micro-go` → `github.com/fireflycore/go-micro@v0.6.9`
 
@@ -30,6 +32,9 @@
   - 注册/配置相关类型迁移到 `github.com/fireflycore/go-micro/registry`
 - go-utils：
   - `process.Watcher` 来自 `github.com/fireflycore/go-utils/process`
+  - compress/crypto 从独立仓库合并为子包：
+    - `github.com/lhdhtrc/compress-go/pkg` → `github.com/fireflycore/go-utils/compress`
+    - `github.com/lhdhtrc/crypto-go/pkg` → `github.com/fireflycore/go-utils/crypto`
   - 写文件接口从 `file.WriteLocal` 调整为 `file.WriteLocalFile`
 - gormx：
   - `gormx` 根包为 `github.com/fireflycore/gormx`
@@ -48,4 +53,3 @@
 ## 适用范围
 - 需要从 `github.com/lhdhtrc/*` 系列包迁移到 `github.com/fireflycore/*` 的所有服务仓库。
 - 本次模板未使用的映射项（如 `go-mongo`、`go-proxy`）不影响迁移，可按需在具体服务中启用。
-
