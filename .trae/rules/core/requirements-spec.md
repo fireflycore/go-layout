@@ -53,6 +53,7 @@ PRIORITY: HIGH
 LANGUAGE: All
 说明：
 - 只改与需求直接相关的代码
+- 方法替换/重命名：直接删除旧方法并同步更新所有调用方，不保留兼容层
 
 ## [规则 6] 禁止硬编码敏感信息 [ENABLED]
 STATUS: ENABLED
