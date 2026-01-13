@@ -10,6 +10,7 @@ PRIORITY: HIGH
 LANGUAGE: Go
 说明：
 - Service/Biz/Data/Remote 调用必须使用入参 `ctx` 传递取消与链路信息
+- Data 层所有 GORM/DB 调用必须使用 `db.WithContext(ctx)`
 - 业务链路禁止使用 `context.Background/TODO` 替代入参 `ctx`
 
 ## [规则 2] 超时按场景派生 [ENABLED]
