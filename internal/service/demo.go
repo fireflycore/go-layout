@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/biz"
 
 	"buf.build/go/protovalidate"
-	micro "github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/go-micro/rpc"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -33,7 +33,7 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 	}
 
 	md, _ := metadata.FromIncomingContext(ctx)
-	um, err := micro.ParseUserContextMeta(md)
+	um, err := rpc.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
 		result.Message = err.Error()
@@ -62,7 +62,7 @@ func (srv *DemoService) GetDemoList(ctx context.Context, request *pb.GetDemoList
 	}
 
 	md, _ := metadata.FromIncomingContext(ctx)
-	um, err := micro.ParseUserContextMeta(md)
+	um, err := rpc.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
 		result.Message = err.Error()
@@ -110,7 +110,7 @@ func (srv *DemoService) UpdateDemo(ctx context.Context, request *pb.UpdateDemoRe
 	}
 
 	md, _ := metadata.FromIncomingContext(ctx)
-	um, err := micro.ParseUserContextMeta(md)
+	um, err := rpc.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
 		result.Message = err.Error()

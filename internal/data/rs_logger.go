@@ -9,7 +9,7 @@ import (
 	"go-layout/internal/biz/repo"
 	"time"
 
-	micro "github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/go-micro/rpc"
 )
 
 type loggerRepo struct {
@@ -40,7 +40,7 @@ func (repo *loggerRepo) CreateAccessLogger(appId string, raw []byte) {
 	}
 	row.AppId = appId
 
-	_, _ = micro.WithRemoteInvoke[string, *accessLogger.CreateResponse](func() (*accessLogger.CreateResponse, error) {
+	_, _ = rpc.WithRemoteInvoke[string, *accessLogger.CreateResponse](func() (*accessLogger.CreateResponse, error) {
 		return repo.accessLogger.Create(ctx, &row)
 	})
 }
@@ -55,7 +55,7 @@ func (repo *loggerRepo) CreateServerLogger(appId string, raw []byte) {
 	}
 	row.AppId = appId
 
-	_, _ = micro.WithRemoteInvoke[string, *serverLogger.CreateResponse](func() (*serverLogger.CreateResponse, error) {
+	_, _ = rpc.WithRemoteInvoke[string, *serverLogger.CreateResponse](func() (*serverLogger.CreateResponse, error) {
 		return repo.serverLogger.Create(ctx, &row)
 	})
 }
@@ -70,7 +70,7 @@ func (repo *loggerRepo) CreateOperationLogger(appId string, raw []byte) {
 	}
 	row.InvokeAppId = appId
 
-	_, _ = micro.WithRemoteInvoke[string, *operationLogger.CreateResponse](func() (*operationLogger.CreateResponse, error) {
+	_, _ = rpc.WithRemoteInvoke[string, *operationLogger.CreateResponse](func() (*operationLogger.CreateResponse, error) {
 		return repo.operationLogger.Create(ctx, &row)
 	})
 }

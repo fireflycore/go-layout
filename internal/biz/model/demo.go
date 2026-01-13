@@ -1,11 +1,9 @@
 package model
 
-import (
-	gorm "github.com/fireflycore/gormx"
-)
+import "github.com/fireflycore/gormx"
 
 type Demo struct {
-	gorm.TableUUID
+	gormx.TableUUID
 
 	Title       string `json:"title"`
 	Description string `json:"description"`

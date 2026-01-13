@@ -41,7 +41,7 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 
     // 2. 获取用户上下文 (租户ID, 用户ID等)
     md, _ := metadata.FromIncomingContext(ctx)
-    um, err := micro.ParseUserContextMeta(md)
+    um, err := rpc.ParseUserContextMeta(md)
 
     // 3. 调用业务逻辑
     if err = srv.uc.CreateDemo(ctx, um, request); err != nil { ... }
@@ -55,7 +55,7 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 **方法**: `CreateDemo`
 
 ```go
-func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta, request *pb.CreateDemoRequest) error {
+func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *rpc.UserContextMeta, request *pb.CreateDemoRequest) error {
     // 1. 数据转换: DTO (Request) -> PO (Entity)
     // 使用定义在 internal/biz/convert/demo.go 的接口，由 goverter 生成实现
     row := uc.dto.ToCreate(request)
@@ -105,7 +105,7 @@ func (srv *DemoService) GetDemoList(...) {
 **方法**: `GetDemoList`
 
 ```go
-func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *rpc.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
     // 纯查询操作，无复杂业务逻辑，直接透传调用 Repo
     return uc.repo.GetDemoList(ctx, um, request)
 }
@@ -116,7 +116,7 @@ func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *micro.UserContextMet
 **方法**: `GetDemoList`
 
 ```go
-func (uc *demoRepo) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+func (uc *demoRepo) GetDemoList(ctx context.Context, um *rpc.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
     var raw pb.DemoList // 直接使用 Proto 定义的 DTO 作为结果集容器
 
     // 构建查询

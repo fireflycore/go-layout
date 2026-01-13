@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/conf"
 
-	micro "github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/go-micro/rpc"
 )
 
 type configRepo struct {
@@ -31,7 +31,7 @@ func NewConfigRepo(
 }
 
 func (repo *configRepo) GetConfig(ctx context.Context, appId, group, key string) (*config.Config, error) {
-	return micro.WithRemoteInvoke[*config.Config, *config.GetResponse](func() (*config.GetResponse, error) {
+	return rpc.WithRemoteInvoke[*config.Config, *config.GetResponse](func() (*config.GetResponse, error) {
 		return repo.configService.Get(ctx, &config.GetRequest{
 			AppId: appId,
 			Group: group,

@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/biz/convert"
 	"go-layout/internal/biz/repo"
 
-	micro "github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/go-micro/rpc"
 )
 
 type DemoUseCase struct {
@@ -21,7 +21,7 @@ func NewDemoUseCase(dto convert.DemoConvert, repo repo.DemoRepo) *DemoUseCase {
 	}
 }
 
-func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta, request *pb.CreateDemoRequest) error {
+func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *rpc.UserContextMeta, request *pb.CreateDemoRequest) error {
 	row := uc.dto.ToCreate(request)
 	row.AppId = um.AppId
 	row.UserId = um.UserId
@@ -30,7 +30,7 @@ func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *micro.UserContextMeta
 	return uc.repo.CreateDemo(ctx, row)
 }
 
-func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *micro.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *rpc.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
 	return uc.repo.GetDemoList(ctx, um, request)
 }
 
@@ -38,7 +38,7 @@ func (uc *DemoUseCase) GetDemoInfo(ctx context.Context, id string) (*pb.Demo, er
 	return uc.repo.GetDemoInfo(ctx, id)
 }
 
-func (uc *DemoUseCase) UpdateDemo(ctx context.Context, _ *micro.UserContextMeta, request *pb.UpdateDemoRequest) error {
+func (uc *DemoUseCase) UpdateDemo(ctx context.Context, _ *rpc.UserContextMeta, request *pb.UpdateDemoRequest) error {
 	row, err := uc.repo.GetDemoInfo(ctx, request.Id)
 	if err != nil {
 		return err

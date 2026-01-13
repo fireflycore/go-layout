@@ -22,7 +22,7 @@
 - **代码示例** (`internal/data/entity/demo.go`)：
   ```go
   type Demo struct {
-      gorm.TableUUID
+      gormx.TableUUID
       Title       string `json:"title"`
       UserId      string `json:"user_id" gorm:"type:uuid;index;"`
       // ...

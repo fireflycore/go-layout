@@ -17,7 +17,7 @@ STATUS: ENABLED
 PRIORITY: HIGH
 LANGUAGE: Go
 说明：
-- Service 从入站 metadata 解析（对齐 `micro.ParseUserContextMeta`）
+- Service 从入站 metadata 解析（对齐 `rpc.ParseUserContextMeta`）
 - Biz/Data 不依赖 metadata 类型
 
 ## [规则 3] 入口处理骨架一致 [ENABLED]
