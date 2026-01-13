@@ -15,6 +15,21 @@
 - 因此：当 `bootstrapConf.Logger.Console == true` 时，AccessLogger 的 Console 输出应直接写到标准输出，不走 zap、不走 ServerLogger。
   - 推荐：`os.Stdout.WriteString(msg)`
 
+## 特别注意：服务注册续租与重试（避免重复 goroutine/重复注册）
+- `go-micro` 的 `Register.SustainLease()` 内部已经包含“续租失败 -> 重试 -> 重新申请 lease -> 重新注册节点”的完整闭环。
+- 因此在服务侧不要在 `WithRetryAfter` 里再次：
+  - `go register.SustainLease()`（会导致续租 goroutine 越开越多）
+  - `registry.NewRegisterService(...)`（会导致重复 Put、重复更新 lastNode，增加注册中心压力）
+- 推荐模式：
+  - 进程启动时只启动一次：`go register.SustainLease()`
+  - `WithRetryBefore/WithRetryAfter` 仅用于日志/指标/告警回调，不承担实际重注册逻辑
+
+## 特别注意：优雅退出时主动注销注册
+- 仅依赖 TTL 过期会让节点下线不够及时；优雅退出应主动调用 `Register.Uninstall()` 撤销 lease。
+- 推荐在退出信号回调里执行 `app.Stop()`，并在 `Stop()` 内完成：
+  - `Register.Uninstall()`
+  - `GrpcServer.Stop()`
+
 ## 本次模板改动点（可作为所有服务升级的参考）
 - 访问日志 Console 输出从 `fmt.Print(msg)` 改为使用注入的 `*zap.Logger` 输出：
   - `internal/dep/logger.go`：`NewAccessLogger(bootstrapConf, loggerRepo, zapLogger)`。
