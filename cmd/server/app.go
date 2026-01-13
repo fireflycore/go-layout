@@ -27,6 +27,7 @@ func (ist *App) Start() {
 }
 
 func (ist *App) Stop() {
+	ist.Register.Uninstall()
 	ist.GrpcServer.Stop()
 }
 
@@ -35,8 +36,6 @@ func NewApp(bootstrapConf *conf.BootstrapConf, netListener net.Listener, grpcSer
 		logger.Info("retry before register")
 	})
 	register.WithRetryAfter(func() {
-		registry.NewRegisterService(services, register)
-		go register.SustainLease()
 		logger.Info("retry after register")
 	})
 	go register.SustainLease()

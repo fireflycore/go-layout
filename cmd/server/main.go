@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/fireflycore/go-utils/process"
-	"go.uber.org/zap"
 	"runtime"
 	"time"
+
+	"github.com/fireflycore/go-utils/process"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -23,5 +24,6 @@ func main() {
 	app.Logger.Info("system self check completed", zap.Int("goroutine_num", runtime.NumGoroutine()))
 	process.Watcher(func() {
 		app.Logger.Info("uninstall all service for this node from the register")
+		app.Stop()
 	})
 }
