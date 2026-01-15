@@ -13,7 +13,7 @@
       "external": "112.112.112.112:10600"
     },
     "kernel": {
-      "version": "v0.2.6"
+      "version": "v0.2.8"
     },
     "max_retry": 5,
     "ttl": 5
