@@ -5,12 +5,12 @@ go 1.25.3
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.10-20250912141014-52f32327d4b0.1
 	buf.build/go/protovalidate v1.0.1
-	github.com/fireflycore/go-etcd v0.2.7
+	github.com/fireflycore/go-etcd v0.2.9
 	github.com/fireflycore/go-logger v0.2.1
-	github.com/fireflycore/go-micro v0.7.1
+	github.com/fireflycore/go-micro v0.7.5
 	github.com/fireflycore/go-redis v0.1.2
 	github.com/fireflycore/go-utils v0.3.6
-	github.com/fireflycore/gormx v0.8.2
+	github.com/fireflycore/gormx v0.8.3
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
