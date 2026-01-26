@@ -4,8 +4,8 @@ import (
 	demo "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/conf"
 
+	etcd "github.com/fireflycore/go-etcd/registry"
 	"github.com/fireflycore/go-micro/registry"
-	"github.com/fireflycore/go-micro/registry/etcd"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
