@@ -5,7 +5,7 @@ import (
 	"go-layout/internal/conf"
 	"os"
 
-	logger "github.com/fireflycore/go-logger"
+	"github.com/fireflycore/go-logger"
 	"go.uber.org/zap"
 )
 
@@ -19,9 +19,9 @@ func NewLogger(bootstrapConf *conf.BootstrapConf, handle ServerLogger) *zap.Logg
 	return logger.New(bootstrapConf.Logger, handle)
 }
 
-func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo, zapLogger *zap.Logger) AccessLogger {
+func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo) AccessLogger {
 	async := logger.NewAsyncLogger(CacheSize, func(b []byte) {
-		loggerRepo.CreateAccessLogger(bootstrapConf.AppId, b)
+		loggerRepo.CreateAccessLog(bootstrapConf.AppId, b)
 	})
 
 	return func(b []byte, msg string) {
@@ -39,7 +39,7 @@ func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRe
 
 func NewServerLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo) ServerLogger {
 	async := logger.NewAsyncLogger(CacheSize, func(b []byte) {
-		loggerRepo.CreateServerLogger(bootstrapConf.AppId, b)
+		loggerRepo.CreateServerLog(bootstrapConf.AppId, b)
 	})
 
 	return func(b []byte) {
@@ -52,7 +52,7 @@ func NewServerLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRe
 
 func NewOperationLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo) OperationLogger {
 	async := logger.NewAsyncLogger(CacheSize, func(b []byte) {
-		loggerRepo.CreateOperationLogger(bootstrapConf.AppId, b)
+		loggerRepo.CreateOperationLog(bootstrapConf.AppId, b)
 	})
 
 	return func(b []byte) {
