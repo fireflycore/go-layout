@@ -1,30 +1,29 @@
 package conf
 
 import (
-	"context"
 	"errors"
 	"go-layout/internal/biz/repo"
-	"time"
 
-	etcd "github.com/fireflycore/go-etcd"
+	"github.com/fireflycore/go-etcd"
 )
 
 type EtcdConfLoader struct {
 	key   string
 	group string
 
-	bootstrapConf *BootstrapConf
-	configRepo    repo.ConfigRepo
 	utils         *Utils
+	bootstrapConf *BootstrapConf
+
+	configRepo repo.ConfigRepo
 }
 
-func NewEtcdConfLoader(bootstrapConf *BootstrapConf, utils *Utils, configRepo repo.ConfigRepo) *EtcdConfLoader {
+func NewEtcdConfLoader(utils *Utils, bootstrapConf *BootstrapConf, configRepo repo.ConfigRepo) *EtcdConfLoader {
 	return &EtcdConfLoader{
 		key:           "etcd",
 		group:         "database",
+		utils:         utils,
 		bootstrapConf: bootstrapConf,
 		configRepo:    configRepo,
-		utils:         utils,
 	}
 }
 
@@ -53,10 +52,7 @@ func (load *EtcdConfLoader) Local() (*etcd.Conf, error) {
 }
 
 func (load *EtcdConfLoader) Remote() (*etcd.Conf, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	data, err := load.configRepo.GetConfig(ctx, load.bootstrapConf.AppId, load.group, load.key)
+	data, err := load.configRepo.GetConfig(load.bootstrapConf.AppId, load.group, load.key)
 	if err != nil {
 		return nil, err
 	}

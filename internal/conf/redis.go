@@ -1,30 +1,28 @@
 package conf
 
 import (
-	"context"
 	"errors"
+	"github.com/fireflycore/go-redis"
 	"go-layout/internal/biz/repo"
-	"time"
-
-	redis "github.com/fireflycore/go-redis"
 )
 
 type RedisConfLoader struct {
 	key   string
 	group string
 
-	bootstrapConf *BootstrapConf
-	configRepo    repo.ConfigRepo
 	utils         *Utils
+	bootstrapConf *BootstrapConf
+
+	configRepo repo.ConfigRepo
 }
 
-func NewRedisConfLoader(bootstrapConf *BootstrapConf, utils *Utils, configRepo repo.ConfigRepo) *RedisConfLoader {
+func NewRedisConfLoader(utils *Utils, bootstrapConf *BootstrapConf, configRepo repo.ConfigRepo) *RedisConfLoader {
 	return &RedisConfLoader{
 		key:           "redis",
 		group:         "database",
+		utils:         utils,
 		bootstrapConf: bootstrapConf,
 		configRepo:    configRepo,
-		utils:         utils,
 	}
 }
 
@@ -53,10 +51,7 @@ func (load *RedisConfLoader) Local() (*redis.Conf, error) {
 }
 
 func (load *RedisConfLoader) Remote() (*redis.Conf, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	data, err := load.configRepo.GetConfig(ctx, load.bootstrapConf.AppId, load.group, load.key)
+	data, err := load.configRepo.GetConfig(load.bootstrapConf.AppId, load.group, load.key)
 
 	if err != nil {
 		return nil, err
