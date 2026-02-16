@@ -5,37 +5,51 @@ import (
 	config "go-layout/dep/protobuf/gen/acme/config/v1"
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/conf"
+	"sync"
+	"time"
 
 	"github.com/fireflycore/go-micro/rpc"
 )
 
 type configRepo struct {
-	configService config.ConfigServiceClient
+	// 缓存配置
+	cache sync.Map
 
-	bootstrapConf *conf.BootstrapConf
+	ctx context.Context
+
 	confUtils     *conf.Utils
+	bootstrapConf *conf.BootstrapConf
+
+	configService config.ConfigServiceClient
 }
 
 func NewConfigRepo(
-	configService config.ConfigServiceClient,
+	ctx context.Context,
 
-	bootstrapConf *conf.BootstrapConf,
 	confUtils *conf.Utils,
+	bootstrapConf *conf.BootstrapConf,
+
+	configService config.ConfigServiceClient,
 ) repo.ConfigRepo {
 	return &configRepo{
-		configService: configService,
+		ctx: ctx,
 
-		bootstrapConf: bootstrapConf,
 		confUtils:     confUtils,
+		bootstrapConf: bootstrapConf,
+
+		configService: configService,
 	}
 }
 
-func (repo *configRepo) GetConfig(ctx context.Context, appId, group, key string) (*config.Config, error) {
-	return rpc.WithRemoteInvoke[*config.Config, *config.GetResponse](func() (*config.GetResponse, error) {
-		return repo.configService.Get(ctx, &config.GetRequest{
+func (ur *configRepo) GetConfig(appId, group, key string) (*config.Config, error) {
+	ctx, cancel := context.WithTimeout(ur.ctx, time.Second*5)
+	defer cancel()
+
+	return rpc.WithRemoteInvoke[*config.Config, *config.GetConfigResponse](func() (*config.GetConfigResponse, error) {
+		return ur.configService.GetConfig(ctx, &config.GetConfigRequest{
 			AppId: appId,
 			Group: group,
-			Env:   repo.bootstrapConf.Env,
+			Env:   ur.bootstrapConf.Env,
 			Key:   key,
 		})
 	})

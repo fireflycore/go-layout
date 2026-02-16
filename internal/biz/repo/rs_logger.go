@@ -1,7 +1,7 @@
 package repo
 
 type LoggerRepo interface {
-	CreateAccessLogger(appId string, raw []byte)
-	CreateServerLogger(appId string, raw []byte)
-	CreateOperationLogger(appId string, raw []byte)
+	CreateAccessLog(appId string, raw []byte)
+	CreateServerLog(appId string, raw []byte)
+	CreateOperationLog(appId string, raw []byte)
 }
