@@ -1,10 +1,12 @@
 package conf
 
 import (
+	"github.com/fireflycore/go-micro/constant"
+	"github.com/fireflycore/go-micro/sys"
 	"net"
 	"strconv"
 
-	logger "github.com/fireflycore/go-logger"
+	"github.com/fireflycore/go-logger"
 	"github.com/fireflycore/go-micro/registry"
 	"github.com/fireflycore/go-utils/network"
 )
@@ -17,6 +19,8 @@ type BootstrapConf struct {
 
 	// 应用id
 	AppId string `json:"app_id"`
+	// 应用名称
+	AppName string `json:"app_name"`
 	// 应用密钥
 	AppSecret string `json:"app_secret"`
 
@@ -32,9 +36,12 @@ type BootstrapConf struct {
 	Gateway *registry.GatewayConf `json:"gateway"`
 	// 日志组件配置
 	Logger *logger.Conf `json:"logger"`
+
+	// 系统主机信息
+	SystemHostInfo *sys.HostInfo `json:"-"`
 }
 
-func NewBootstrapConf(utils *Utils) *BootstrapConf {
+func NewBootstrapConf(utils *Utils, hostInfo *sys.HostInfo) *BootstrapConf {
 	var bc BootstrapConf
 
 	filePath := utils.GetConfigFilePath("bootstrap.json")
@@ -44,6 +51,39 @@ func NewBootstrapConf(utils *Utils) *BootstrapConf {
 	}
 
 	bc.Micro.Network.Internal = net.JoinHostPort(network.GetInternalNetworkIp(), strconv.FormatUint(uint64(bc.Port), 10))
+	bc.SystemHostInfo = hostInfo
 
 	return &bc
+}
+
+func (bc *BootstrapConf) GetAppId() string {
+	return bc.AppId
+}
+
+func (bc *BootstrapConf) GetAppName() string {
+	return bc.AppName
+}
+
+func (bc *BootstrapConf) GetAppVersion() string {
+	return bc.Version
+}
+
+func (bc *BootstrapConf) GetServiceEndpoint() string {
+	return bc.Gateway.Network.Internal
+}
+
+func (bc *BootstrapConf) GetServiceAuthToken() string {
+	return constant.InvokeServiceAuthToken
+}
+
+func (bc *BootstrapConf) GetSystemType() uint32 {
+	return bc.SystemHostInfo.GetSystemType()
+}
+
+func (bc *BootstrapConf) GetSystemName() string {
+	return bc.SystemHostInfo.OS
+}
+
+func (bc *BootstrapConf) GetSystemVersion() string {
+	return bc.SystemHostInfo.PlatformVersion
 }

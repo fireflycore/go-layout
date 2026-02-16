@@ -2,6 +2,7 @@
   "env": "prod",
   "port": 10500,
   "app_id": "00000000-0000-0000-0000-00000000000",
+  "app_name": "go-layout",
   "app_secret": "UnkK/F+1+6aFV9Gz4lCX1se05+jpmueX",
   "version": "v0.0.1",
   "load_conf_mode": "local",
@@ -15,6 +16,7 @@
     "kernel": {
       "version": "v0.2.8"
     },
+    "weight": 100,
     "max_retry": 5,
     "ttl": 5
   },
