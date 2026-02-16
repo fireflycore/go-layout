@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"strings"
 
-	compress "github.com/fireflycore/go-utils/compress"
-	crypto "github.com/fireflycore/go-utils/crypto"
+	"github.com/fireflycore/go-utils/compress"
+	"github.com/fireflycore/go-utils/crypto"
 	"github.com/fireflycore/go-utils/file"
 )
 
