@@ -1,10 +1,11 @@
 package conf
 
 import (
-	"github.com/fireflycore/go-micro/constant"
-	"github.com/fireflycore/go-micro/sys"
 	"net"
 	"strconv"
+
+	"github.com/fireflycore/go-micro/constant"
+	"github.com/fireflycore/go-micro/sys"
 
 	"github.com/fireflycore/go-logger"
 	"github.com/fireflycore/go-micro/registry"
@@ -69,7 +70,7 @@ func (bc *BootstrapConf) GetAppVersion() string {
 }
 
 func (bc *BootstrapConf) GetServiceEndpoint() string {
-	return bc.Gateway.Network.Internal
+	return bc.Micro.Network.Internal
 }
 
 func (bc *BootstrapConf) GetServiceAuthToken() string {
