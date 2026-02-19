@@ -74,7 +74,7 @@ func (ur *loggerRepo) CreateOperationLog(appId string, raw []byte) {
 	if err := json.Unmarshal(raw, &row); err != nil {
 		return
 	}
-	row.InvokeAppId = appId
+	row.TargetAppId = appId
 
 	_, _ = rpc.WithRemoteInvoke[string, *operationLogger.CreateLogResponse](func() (*operationLogger.CreateLogResponse, error) {
 		return ur.operationLogger.CreateLog(ctx, &row)
