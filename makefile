@@ -19,7 +19,6 @@ init:
 # 运行项目
 .PHONY: run
 run:
-	make init
 	go run ./cmd/server
 
 # 构建项目
