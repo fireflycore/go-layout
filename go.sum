@@ -48,8 +48,8 @@ github.com/fireflycore/go-redis v0.1.2 h1:Jfbe3LtsQOuZPLlkZNDnm8jiHBk5JnXnCDBmLd
 github.com/fireflycore/go-redis v0.1.2/go.mod h1:WeBXnAtuzIqqn11oWb9k55airiaUemFDGgaRLZnmCZg=
 github.com/fireflycore/go-utils v0.3.6 h1:Cvc6S31p5lOsJTdJMxTrF7MYod1HdsLb7kYwHIbjLYE=
 github.com/fireflycore/go-utils v0.3.6/go.mod h1:Sg9E/2bnNlSuvsO9zoobo4Qc+y7Xf/KSp3tQq+BjzBg=
-github.com/fireflycore/gormx v0.9.0 h1:6Y6L/HMGH4QeKsf9YaPKVykrEHrv3zueTMXlJR6W5XY=
-github.com/fireflycore/gormx v0.9.0/go.mod h1:TlkIdG0A4SddfnMitlluIA4D6kUDeeK+adrgJdtMnaw=
+github.com/fireflycore/gormx v0.9.2 h1:8ZXnuz1f0lFakgkRH5bBjQyFkOpA5CCUrLkUnNFB0+w=
+github.com/fireflycore/gormx v0.9.2/go.mod h1:TlkIdG0A4SddfnMitlluIA4D6kUDeeK+adrgJdtMnaw=
 github.com/go-kit/log v0.1.0/go.mod h1:zbhenjAZHb184qTLMA9ZjW7ThYL0H2mk7Q6pNt4vbaY=
 github.com/go-logfmt/logfmt v0.5.0/go.mod h1:wCYkCAKZfumFQihp8CzCvQ3paCTfi41vtzG1KdI/P7A=
 github.com/go-logr/logr v1.4.3 h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=

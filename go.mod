@@ -9,7 +9,7 @@ require (
 	github.com/fireflycore/go-micro v0.9.4
 	github.com/fireflycore/go-redis v0.1.2
 	github.com/fireflycore/go-utils v0.3.6
-	github.com/fireflycore/gormx v0.9.0
+	github.com/fireflycore/gormx v0.9.2
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
