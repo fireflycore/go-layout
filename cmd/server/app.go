@@ -4,8 +4,8 @@ import (
 	"go-layout/internal/conf"
 	"net"
 
+	"github.com/fireflycore/go-micro/logger"
 	"github.com/fireflycore/go-micro/registry"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -17,7 +17,7 @@ type App struct {
 	Register   registry.Register
 	Services   []*grpc.ServiceDesc
 
-	Logger *zap.Logger
+	Logger *logger.Core
 }
 
 func (ist *App) Start() {
@@ -31,7 +31,7 @@ func (ist *App) Stop() {
 	ist.GrpcServer.Stop()
 }
 
-func NewApp(bootstrapConf *conf.BootstrapConf, netListener net.Listener, grpcServer *grpc.Server, register registry.Register, services []*grpc.ServiceDesc, logger *zap.Logger) *App {
+func NewApp(bootstrapConf *conf.BootstrapConf, netListener net.Listener, grpcServer *grpc.Server, register registry.Register, services []*grpc.ServiceDesc, logger *logger.Core) *App {
 	register.WithRetryBefore(func() {
 		logger.Info("retry before register")
 	})

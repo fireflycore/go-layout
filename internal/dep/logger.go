@@ -5,8 +5,7 @@ import (
 	"go-layout/internal/conf"
 	"os"
 
-	"github.com/fireflycore/go-logger"
-	"go.uber.org/zap"
+	"github.com/fireflycore/go-micro/logger"
 )
 
 const CacheSize = 1000
@@ -15,8 +14,8 @@ type AccessLogger func(b []byte, msg string)
 type ServerLogger func(b []byte)
 type OperationLogger func(b []byte)
 
-func NewLogger(bootstrapConf *conf.BootstrapConf, handle ServerLogger) *zap.Logger {
-	return logger.New(bootstrapConf.Logger, handle)
+func NewLogger(bootstrapConf *conf.BootstrapConf, handle ServerLogger) *logger.Core {
+	return logger.NewLogger(logger.NewZapLogger(bootstrapConf.Logger, handle))
 }
 
 func NewAccessLogger(bootstrapConf *conf.BootstrapConf, loggerRepo repo.LoggerRepo) AccessLogger {

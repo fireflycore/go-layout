@@ -4,11 +4,11 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/fireflycore/go-micro/conf"
 	"github.com/fireflycore/go-micro/constant"
-	"github.com/fireflycore/go-micro/sys"
-
-	"github.com/fireflycore/go-logger"
+	"github.com/fireflycore/go-micro/logger"
 	"github.com/fireflycore/go-micro/registry"
+	"github.com/fireflycore/go-micro/sys"
 	"github.com/fireflycore/go-utils/network"
 )
 
@@ -57,6 +57,10 @@ func NewBootstrapConf(utils *Utils, hostInfo *sys.HostInfo) *BootstrapConf {
 	return &bc
 }
 
+func NewBootstrapConfImpl(bootstrapConf *BootstrapConf) conf.BootstrapConf {
+	return bootstrapConf
+}
+
 func (bc *BootstrapConf) GetAppId() string {
 	return bc.AppId
 }
@@ -87,4 +91,14 @@ func (bc *BootstrapConf) GetSystemName() string {
 
 func (bc *BootstrapConf) GetSystemVersion() string {
 	return bc.SystemHostInfo.PlatformVersion
+}
+
+func (bc *BootstrapConf) GetGatewayEndpoint() string {
+	var addr string
+	if bc.Gateway.Network.SN == bc.Micro.Network.SN {
+		addr = bc.Gateway.Network.Internal
+	} else {
+		addr = bc.Gateway.Network.External
+	}
+	return addr
 }

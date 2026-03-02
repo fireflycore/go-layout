@@ -1,6 +1,7 @@
 package dep
 
 import (
+	"github.com/fireflycore/go-micro/rpc"
 	"github.com/fireflycore/go-micro/sys"
 	"github.com/fireflycore/go-utils/compress"
 	"github.com/fireflycore/go-utils/crypto"
@@ -8,15 +9,15 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	NewRemoteServiceContext,
-	NewRemoteServiceGrpcClient,
+	crypto.NewAESCrypto,
+	compress.NewGZIP,
+	sys.NewHostInfo,
+
+	rpc.NewRemoteInvokeServiceContext,
+	rpc.NewRemoteServiceGrpcClient,
 
 	NewLogger,
 	NewAccessLogger,
 	NewServerLogger,
 	NewOperationLogger,
-
-	sys.NewHostInfo,
-	crypto.NewAESCrypto,
-	compress.NewGZIP,
 )
