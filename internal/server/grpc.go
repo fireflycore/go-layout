@@ -20,6 +20,7 @@ func NewGrpcServer(
 ) *grpc.Server {
 	srv := grpc.NewServer(grpc.UnaryInterceptor(ggm.ChainUnaryServer(
 		recovery.UnaryServerInterceptor(),
+		gm.NewBeforeGuard(),
 		gm.NewServiceAccessLogger(logger),
 		gm.NewInjectServiceContext(bootstrapConf),
 	)))
