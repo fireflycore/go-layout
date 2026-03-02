@@ -6,10 +6,10 @@ require (
 	buf.build/go/protovalidate v1.0.1
 	github.com/fireflycore/go-etcd v0.2.9
 	github.com/fireflycore/go-logger v0.2.4
-	github.com/fireflycore/go-micro v0.9.4
+	github.com/fireflycore/go-micro v1.0.5
 	github.com/fireflycore/go-redis v0.1.2
 	github.com/fireflycore/go-utils v0.3.6
-	github.com/fireflycore/gormx v0.9.2
+	github.com/fireflycore/gormx v0.9.5
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
