@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/biz"
 
 	"buf.build/go/protovalidate"
-	"github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/go-micro/invocation"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -32,13 +32,15 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 		return result, nil
 	}
 
+	// Service 入口只解析一次用户上下文，后续链路统一复用 ctx 中的用户身份。
 	md, _ := metadata.FromIncomingContext(ctx)
-	um, err := rpc.ParseUserContextMeta(md)
+	um, err := invocation.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
 		result.Message = err.Error()
 		return result, nil
 	}
+	ctx = invocation.WithUserContext(ctx, um)
 
 	if err = srv.uc.CreateDemo(ctx, um, request); err != nil {
 		result.Code = 400
@@ -61,13 +63,15 @@ func (srv *DemoService) GetDemoList(ctx context.Context, request *pb.GetDemoList
 		return result, nil
 	}
 
+	// 列表查询同样只在入口解析一次 metadata，避免 Biz/Data 重复依赖 gRPC metadata。
 	md, _ := metadata.FromIncomingContext(ctx)
-	um, err := rpc.ParseUserContextMeta(md)
+	um, err := invocation.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
 		result.Message = err.Error()
 		return result, nil
 	}
+	ctx = invocation.WithUserContext(ctx, um)
 
 	result.Data = srv.uc.GetDemoList(ctx, um, request)
 
@@ -109,13 +113,15 @@ func (srv *DemoService) UpdateDemo(ctx context.Context, request *pb.UpdateDemoRe
 		return result, nil
 	}
 
+	// 更新场景需要用户身份时，也沿用统一的 context 注入方式。
 	md, _ := metadata.FromIncomingContext(ctx)
-	um, err := rpc.ParseUserContextMeta(md)
+	um, err := invocation.ParseUserContextMeta(md)
 	if err != nil {
 		result.Code = 400
 		result.Message = err.Error()
 		return result, nil
 	}
+	ctx = invocation.WithUserContext(ctx, um)
 
 	if err = srv.uc.UpdateDemo(ctx, um, request); err != nil {
 		result.Code = 400
