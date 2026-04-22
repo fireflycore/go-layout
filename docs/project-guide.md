@@ -9,7 +9,7 @@
 - **标准分层架构**：基于 DDD（领域驱动设计）思想，清晰划分 `Service` (接口)、`Biz` (业务)、`Data` (数据) 层。
 - **依赖注入**：完全集成 Google `Wire`，实现编译期依赖注入，保证代码的模块化和可测试性。
 - **协议优先**：集成 `Buf` 和 `gRPC`，通过 Proto 定义驱动开发，自动生成接口代码和验证逻辑 (`protovalidate`)。
-- **配置管理**：支持本地文件 (`bootstrap.json`) 和远程配置服务 (Config Service)，统一管理多环境配置。
+- **配置管理**：启动时读取 `bootstrap.json` 与 `consul.json`，再通过 Consul Store 统一拉取多环境运行配置。`config` 数据面支持热更新，但当前模板默认只做启动期加载，未内置运行时 `Watcher` 重载链路。
 - **统一运行托管**：默认接入 `ManagedServer`，统一托管业务 gRPC、management 端口和 sidecar 生命周期。
 - **数据转换**：集成 `Goverter`，自动生成高效的 DTO <-> PO/DO 转换代码，拒绝反射。
 - **统一基础设施**：预置了 `GORM` (MySQL), `Redis`, `Logger` 等常用组件的封装和最佳配置。
@@ -51,11 +51,11 @@
 
 ### 3. 运行服务
 ```bash
-# 最省心的方式（推荐）：一条命令完成生成与运行
+# 直接按当前代码启动服务
 make run
 ```
-`make run` 会依次执行 `buf generate`、`goverter`、`wire ./cmd/server`、`go mod tidy`，然后通过 `ManagedServer` 启动业务 gRPC 与 management 端口。
-如果你需要分步执行，可参考 `makefile` 中的 `init/generate/dto` 目标。
+当前 `make run` 仅执行 `go run ./cmd/server`，通过 `ManagedServer` 启动业务 gRPC 与 management 端口。
+如果你改动了 Proto、DTO 或依赖注入注册，请先执行 `make init`；如只需更新生成代码，也可按需执行 `make generate` 或 `make dto`。
 
 ### 4. 管理端口
 - 默认管理端口来自 `bootstrap.json.management_port`，未配置时回落到 `bootstrap.json.server_port + 1`。
