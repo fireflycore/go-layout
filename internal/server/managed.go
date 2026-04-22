@@ -34,7 +34,7 @@ func NewAppManagedServer(
 			select {
 			case err := <-errCh:
 				if err != nil {
-					log.Error("go-layout managed server exited with error",
+					log.Error("managed server exited with error",
 						zap.String("service_name", bootstrapConf.GetServiceName()),
 						zap.String("service_instance_id", bootstrapConf.GetServiceInstanceId()),
 						zap.Error(err),
@@ -46,7 +46,7 @@ func NewAppManagedServer(
 			}
 		},
 		Shutdown: func(ctx context.Context) error {
-			log.Info("stopping go-layout service servers",
+			log.Info("stopping service servers",
 				zap.String("service_name", bootstrapConf.GetServiceName()),
 				zap.String("service_instance_id", bootstrapConf.GetServiceInstanceId()),
 			)
@@ -57,7 +57,7 @@ func NewAppManagedServer(
 				_ = providers.Shutdown()
 			}
 
-			log.Info("go-layout service servers stopped",
+			log.Info("service servers stopped",
 				zap.String("service_name", bootstrapConf.GetServiceName()),
 				zap.String("service_instance_id", bootstrapConf.GetServiceInstanceId()),
 			)
