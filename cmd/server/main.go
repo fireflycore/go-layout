@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"runtime"
 	"time"
 
@@ -18,12 +19,24 @@ func main() {
 		panic(err)
 	}
 
-	go app.Start()
+	// 创建应用根上下文，统一接收系统退出信号并驱动托管运行结束。
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	app.Logger.Info("system run address", zap.String("address", app.BootstrapConf.Micro.Network.Internal))
-	app.Logger.Info("system self check completed", zap.Int("goroutine_num", runtime.NumGoroutine()))
-	process.Watcher(func() {
-		app.Logger.Info("uninstall all service for this node from the register")
-		app.Stop()
+	// 监听系统信号，收到退出信号时只需取消上下文，由托管器统一完成收尾。
+	go process.Watcher(func() {
+		app.Logger.Info("received shutdown signal")
+		cancel()
 	})
+
+	// 启动前输出当前 goroutine 数，便于基础运行态观测。
+	app.Logger.Info("go-layout service runtime prepared",
+		zap.Int("goroutine_num", runtime.NumGoroutine()),
+	)
+
+	// 进入统一托管运行入口，由 App.Run 负责 sidecar 生命周期和本地服务协同运行。
+	if err = app.Run(ctx); err != nil && err != context.Canceled {
+		app.Logger.Error("go-layout service exited with error", zap.Error(err))
+		panic(err)
+	}
 }
