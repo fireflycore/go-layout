@@ -32,9 +32,6 @@ type BootstrapConf struct {
 	AppSecret string `json:"app_secret"`
 	Version   string `json:"version"`
 
-	// LoadConfMode 控制配置来源，local 表示本地文件，remote 表示远程配置中心。
-	LoadConfMode string `json:"load_conf_mode"`
-
 	ServiceName      string `json:"service_name"`
 	ServiceNamespace string `json:"service_namespace"`
 	ServiceDNS       string `json:"service_dns"`
