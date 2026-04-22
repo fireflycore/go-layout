@@ -25,7 +25,7 @@ run:
 .PHONY: build
 build:
 	make init
-	go build -ldflags="-s -w" -o main ./cmd/server/
+	go build -ldflags="-s -w -X 'go-layout/internal/server.GitCommit=$$(git rev-parse --short HEAD)' -X 'go-layout/internal/server.BuildTime=$$(date -u +%Y-%m-%dT%H:%M:%SZ)'" -o main ./cmd/server/
 
 # 提交代码
 .PHONY: push
