@@ -11,7 +11,8 @@
 │       ├── wire.go             # [核心] Wire 依赖注入定义文件
 │       └── wire_gen.go         # [生成] Wire 生成的代码，不要手动修改
 ├── conf/                       # 配置文件目录
-│   └── bootstrap.json          # [配置] 本地引导配置（开发环境使用，生产环境通常走配置服务）
+│   ├── bootstrap.json          # [配置] 引导配置，定义服务身份、端口、sidecar 与 telemetry
+│   └── consul.json             # [配置] Consul 连接示例，用于创建 Store 读取运行期配置
 ├── dep/                        # [生成] 外部依赖/生成代码存放区
 │   ├── dto/                    # [生成] Goverter 生成的数据转换实现代码
 │   └── protobuf/gen/           # [生成] Buf 生成的 gRPC/Proto 结构体代码
@@ -26,7 +27,7 @@
 │   └── service/                # [接口] 应用服务层 (Application Service)
 ├── buf.gen.yaml                # [工具] Buf 生成配置文件
 ├── go.mod                      # [依赖] Go 模块定义
-└── makefile                    # [工具] 常用命令封装
+└── makefile                    # [工具] 常用命令封装，当前拆分为 generate/init/run/build
 ```
 
 ## Internal 目录深度解析
@@ -61,7 +62,7 @@
 - `core.go`: **[配置]** Wire ProviderSet，注册本层的所有 Service。
 - `demo.go`: **[开发区]** `DemoService` 实现，直接对应 Proto 定义的 Service。
   - 这里进行 `protovalidate` 参数校验。
-  - 这里从 Context 中提取 User Meta 信息。
+  - 这里统一解析一次用户上下文，并把结果继续透传到 Biz/Data 链路。
 
 ### 4. `internal/server` (服务启动层)
 **职责**：构建和启动 gRPC 服务器、management 端口，并把 sidecar 生命周期接入统一托管入口。
@@ -75,16 +76,17 @@
 ### 5. `internal/conf` (配置层)
 **职责**：加载和解析应用配置。
 
-- `bootstrap.go`: 引导配置加载，兼容 `go-micro` 的 `BootstrapConfig`，统一提供 management、telemetry、sidecar 相关 getter。
-- `mysql.go`, `redis.go`, `etcd.go`: 各个组件的配置加载器。
-  - **Local 模式**：从本地 JSON 文件加载。
-  - **Remote 模式**：通过调用远程 **Config Service** 获取配置内容（注意：不是直接连 ETCD）。
+- `bootstrap.go`: 引导配置加载，并适配 `go-micro` 的 `BootstrapConfig` 接口，统一提供 management、telemetry、sidecar 相关 getter。
+- `consul.go`: 读取 `conf/consul.json`，创建 Consul 连接所需的基础配置。
+- `mysql.go`, `redis.go`: 组件配置加载器。
+  - 启动阶段基于 `microConfig.Store` 直连 Consul Store 拉取配置。
+  - 当前模板默认不提供本地 `mysql.json/redis.json` 热切换模式。
 
 ### 6. `internal/dep` (依赖适配层)
 **职责**：封装第三方库或基础设施，防止外部依赖污染业务代码。
 
 - `client.go`: 基于 `invocation` 的统一远程调用连接管理器，负责 DNS target、OTel 和服务身份 metadata。
-- `logger.go`: 新版日志注入适配，统一返回 `go-micro/logger` 的 zap 包装器。
+- 当前目录主要承载 `telemetry/logger/invocation` 相关依赖注入，不再单独保留旧版 remote logger repo。
 
 ## 开发者修改指南
 
@@ -95,6 +97,7 @@
 | **新增数据库表** | `internal/data/entity/` -> `internal/data/` | 定义 PO 结构体，实现 Repo 接口。 |
 | **新增配置项** | `internal/conf/` | 修改 `BootstrapConf` 或新增配置 Loader。 |
 | **依赖注入注册** | 各层的 `core.go` -> `cmd/server/wire.go` | 每次新增 struct 需在对应的 `core.go` 中注册，并执行 `wire ./cmd/server`（或 `make init`）。 |
+| **日常启动** | `makefile` + `cmd/server/` | 当前 `make run` 只负责 `go run ./cmd/server`；若改动生成链路或依赖注入，需要先显式执行 `make init`。 |
 | **运行链路排查** | `cmd/server/` + `internal/server/` + `internal/conf/bootstrap.go` | 统一从 `ManagedServer`、management 端口和 sidecar 生命周期入手排查。 |
 
 ## 示例文件说明
