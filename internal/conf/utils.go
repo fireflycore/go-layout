@@ -6,12 +6,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
-	"strings"
 
 	"github.com/fireflycore/go-utils/compress"
 	"github.com/fireflycore/go-utils/crypto"
-	"github.com/fireflycore/go-utils/file"
 )
 
 type Utils struct {
@@ -19,6 +16,7 @@ type Utils struct {
 	compress compress.Compress
 }
 
+// NewConfUtils 组装配置读取和解密阶段共用的工具能力。
 func NewConfUtils(crypto crypto.Crypto, compress compress.Compress) *Utils {
 	return &Utils{
 		crypto:   crypto,
@@ -36,7 +34,7 @@ func (ist *Utils) GetConfigFilePath(filename string) string {
 }
 
 // LoadJSONConfig 获取本地配置
-func (ist *Utils) LoadJSONConfig(file string, target interface{}) error {
+func (ist *Utils) LoadJSONConfig(file string, target any) error {
 	b, err := os.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("failed to read config file %s: %w", file, err)
@@ -48,7 +46,7 @@ func (ist *Utils) LoadJSONConfig(file string, target interface{}) error {
 	return nil
 }
 
-// AnalyzeData 解析数据
+// AnalyzeData 按“整份配置项”解密并反序列化目标对象。
 func (ist *Utils) AnalyzeData(content string, key []byte, val any) error {
 	decode, err := base64.StdEncoding.DecodeString(content)
 	if err != nil {
@@ -65,39 +63,5 @@ func (ist *Utils) AnalyzeData(content string, key []byte, val any) error {
 		return err
 	}
 
-	return json.Unmarshal(decompress, &val)
-}
-
-// AnalyzeTlsData 解析tls数据
-func (ist *Utils) AnalyzeTlsData(dir string, tls interface{}) error {
-	if tls == nil {
-		return nil
-	}
-
-	dirPath := filepath.Join("dep", "cert", dir)
-
-	// 遍历config的字段
-	valueOfConfig := reflect.ValueOf(tls)
-	if valueOfConfig.Kind() == reflect.Ptr {
-		valueOfConfig = valueOfConfig.Elem()
-	}
-	typeOfConfig := valueOfConfig.Type()
-
-	for i := 0; i < valueOfConfig.NumField(); i++ {
-		fieldValue := valueOfConfig.Field(i)
-		fieldType := typeOfConfig.Field(i)
-		if fieldValue.IsValid() && !fieldValue.IsZero() && fieldType.Type.Kind() == reflect.String {
-			val := fieldValue.String()
-
-			fd := strings.ReplaceAll(val, `\n`, "\n")
-			fp := filepath.Join(dirPath, fmt.Sprintf("%s.pem", fieldType.Tag.Get("json")))
-
-			if err := file.WriteLocalFile(fp, []byte(fd)); err != nil {
-				return err
-			}
-
-			fieldValue.SetString(fp)
-		}
-	}
-	return nil
+	return json.Unmarshal(decompress, val)
 }
