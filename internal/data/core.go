@@ -11,7 +11,5 @@ var ProviderSet = wire.NewSet(
 	NewMysql,
 	NewConfigStore,
 
-	NewConfigRepo,
-
 	NewDemoRepo,
 )
