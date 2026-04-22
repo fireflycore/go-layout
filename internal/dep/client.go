@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// NewInvocationDNSManager 创建 config 服务统一复用的 DNS 管理器。
+// NewInvocationDNSManager 创建服务统一复用的 DNS 管理器。
 //
 // 这里的职责只有一个：
 // - 给业务侧补齐标准服务 DNS 的默认配置。
