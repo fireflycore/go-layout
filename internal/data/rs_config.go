@@ -8,49 +8,59 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/go-micro/invocation"
 )
 
 type configRepo struct {
 	// 缓存配置
 	cache sync.Map
 
-	ctx context.Context
-
 	confUtils     *conf.Utils
 	bootstrapConf *conf.BootstrapConf
 
-	configService config.ConfigServiceClient
+	caller *invocation.RemoteServiceCaller
 }
 
 func NewConfigRepo(
-	ctx context.Context,
-
 	confUtils *conf.Utils,
 	bootstrapConf *conf.BootstrapConf,
-
-	configService config.ConfigServiceClient,
+	invoker *invocation.UnaryInvoker,
 ) repo.ConfigRepo {
 	return &configRepo{
-		ctx: ctx,
-
 		confUtils:     confUtils,
 		bootstrapConf: bootstrapConf,
-
-		configService: configService,
+		caller: invocation.NewRemoteServiceCaller(
+			invoker,
+			&invocation.ServiceDNS{
+				Service:   "config",
+				Namespace: bootstrapConf.GetServiceNamespace(),
+			},
+			invocation.BuildInvocationContextFromContext,
+		),
 	}
 }
 
 func (ur *configRepo) GetConfig(appId, group, key string) (*config.Config, error) {
-	ctx, cancel := context.WithTimeout(ur.ctx, time.Second*5)
+	// 启动阶段读取配置属于后台初始化流程，允许基于根上下文派生超时。
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	return rpc.WithRemoteInvoke[*config.Config, *config.GetConfigResponse](func() (*config.GetConfigResponse, error) {
-		return ur.configService.GetConfig(ctx, &config.GetConfigRequest{
+	var res config.GetConfigResponse
+
+	err := ur.caller.Invoke(
+		ctx,
+		config.ConfigService_GetConfig_FullMethodName,
+		&config.GetConfigRequest{
 			AppId: appId,
 			Group: group,
 			Env:   ur.bootstrapConf.Env,
 			Key:   key,
-		})
-	})
+		},
+		&res,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Data, nil
 }
