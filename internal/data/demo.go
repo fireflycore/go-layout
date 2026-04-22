@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/data/entity"
 
-	"github.com/fireflycore/go-micro/rpc"
+	"github.com/fireflycore/go-micro/invocation"
 	"github.com/fireflycore/gormx/scope"
 )
 
@@ -24,7 +24,7 @@ func (uc *demoRepo) CreateDemo(ctx context.Context, row *entity.Demo) error {
 	return uc.data.db.WithContext(ctx).Create(row).Error
 }
 
-func (uc *demoRepo) GetDemoList(ctx context.Context, um *rpc.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+func (uc *demoRepo) GetDemoList(ctx context.Context, um *invocation.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
 	var raw pb.DemoList
 
 	sql := uc.data.db.WithContext(ctx).Model(&entity.Demo{})
