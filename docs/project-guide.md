@@ -10,6 +10,7 @@
 - **依赖注入**：完全集成 Google `Wire`，实现编译期依赖注入，保证代码的模块化和可测试性。
 - **协议优先**：集成 `Buf` 和 `gRPC`，通过 Proto 定义驱动开发，自动生成接口代码和验证逻辑 (`protovalidate`)。
 - **配置管理**：支持本地文件 (`bootstrap.json`) 和远程配置服务 (Config Service)，统一管理多环境配置。
+- **统一运行托管**：默认接入 `ManagedServer`，统一托管业务 gRPC、management 端口和 sidecar 生命周期。
 - **数据转换**：集成 `Goverter`，自动生成高效的 DTO <-> PO/DO 转换代码，拒绝反射。
 - **统一基础设施**：预置了 `GORM` (MySQL), `Redis`, `Logger` 等常用组件的封装和最佳配置。
 - **示例模块**：内置完整的 `Demo` 模块，展示了从 API 定义到数据库存储的完整链路，作为开发的参考范本。
@@ -53,8 +54,16 @@
 # 最省心的方式（推荐）：一条命令完成生成与运行
 make run
 ```
-`make run` 会依次执行 `buf generate`、`goverter`、`wire ./cmd/server`、`go mod tidy`，然后运行 `cmd/server/main.go`。
+`make run` 会依次执行 `buf generate`、`goverter`、`wire ./cmd/server`、`go mod tidy`，然后通过 `ManagedServer` 启动业务 gRPC 与 management 端口。
 如果你需要分步执行，可参考 `makefile` 中的 `init/generate/dto` 目标。
+
+### 4. 管理端口
+- 默认管理端口来自 `bootstrap.json.management_port`，未配置时回落到 `bootstrap.json.server_port + 1`。
+- 常用探针：
+  - `GET /health`: 存活检查
+  - `GET /ready`: 就绪状态与 sidecar 接管状态
+  - `GET /info`: 构建信息、监听地址、管理端口和 sidecar 快照
+  - `GET /metrics`: Prometheus 指标
 
 ## 工具链指南
 

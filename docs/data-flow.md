@@ -39,9 +39,10 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
     // 1. 参数验证 (基于 Proto 定义的规则)
     if err := protovalidate.Validate(request); err != nil { ... }
 
-    // 2. 获取用户上下文 (租户ID, 用户ID等)
+    // 2. 在 Service 入口解析一次用户上下文，并写回 ctx 供后续链路复用
     md, _ := metadata.FromIncomingContext(ctx)
-    um, err := rpc.ParseUserContextMeta(md)
+    um, err := invocation.ParseUserContextMeta(md)
+    ctx = invocation.WithUserContext(ctx, um)
 
     // 3. 调用业务逻辑
     if err = srv.uc.CreateDemo(ctx, um, request); err != nil { ... }
@@ -55,7 +56,7 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 **方法**: `CreateDemo`
 
 ```go
-func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *rpc.UserContextMeta, request *pb.CreateDemoRequest) error {
+func (uc *DemoUseCase) CreateDemo(ctx context.Context, um *invocation.UserContextMeta, request *pb.CreateDemoRequest) error {
     // 1. 数据转换: DTO (Request) -> PO (Entity)
     // 使用定义在 internal/biz/convert/demo.go 的接口，由 goverter 生成实现
     row := uc.dto.ToCreate(request)
@@ -105,7 +106,7 @@ func (srv *DemoService) GetDemoList(...) {
 **方法**: `GetDemoList`
 
 ```go
-func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *rpc.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *invocation.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
     // 纯查询操作，无复杂业务逻辑，直接透传调用 Repo
     return uc.repo.GetDemoList(ctx, um, request)
 }
@@ -116,7 +117,7 @@ func (uc *DemoUseCase) GetDemoList(ctx context.Context, um *rpc.UserContextMeta,
 **方法**: `GetDemoList`
 
 ```go
-func (uc *demoRepo) GetDemoList(ctx context.Context, um *rpc.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
+func (uc *demoRepo) GetDemoList(ctx context.Context, um *invocation.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
     var raw pb.DemoList // 直接使用 Proto 定义的 DTO 作为结果集容器
 
     // 构建查询
@@ -133,8 +134,9 @@ func (uc *demoRepo) GetDemoList(ctx context.Context, um *rpc.UserContextMeta, re
 
 ## 关键代码设计点
 
-1.  **接口隔离**：Biz 层只依赖 `repo.DemoRepo` 接口（定义在 `internal/biz/repo`），不依赖 `internal/data` 的具体实现。这使得单元测试时可以轻松 Mock Repo。
-2.  **转换器 (Converter)**：`uc.dto.ToCreate` 是通过 `goverter` 自动生成的。在 `internal/biz/convert/demo.go` 中定义接口，生成的代码位于 `dep/dto/`。这避免了手写繁琐的 struct 赋值代码。
-3.  **读写分离策略**：
+1.  **入口只解析一次用户上下文**：Service 层使用 `invocation.ParseUserContextMeta` 解析 metadata，并通过 `invocation.WithUserContext` 写回 `ctx`，后续 Biz/Data 不再直接依赖 gRPC metadata。
+2.  **接口隔离**：Biz 层只依赖 `repo.DemoRepo` 接口（定义在 `internal/biz/repo`），不依赖 `internal/data` 的具体实现。这使得单元测试时可以轻松 Mock Repo。
+3.  **转换器 (Converter)**：`uc.dto.ToCreate` 是通过 `goverter` 自动生成的。在 `internal/biz/convert/demo.go` 中定义接口，生成的代码位于 `dep/dto/`。这避免了手写繁琐的 struct 赋值代码。
+4.  **读写分离策略**：
     *   **写入**：严格经过 PO 转换，确保数据完整性和约束。
     *   **读取**：灵活处理，允许直接返回 DTO 以减少对象拷贝开销，特别是在列表查询场景。

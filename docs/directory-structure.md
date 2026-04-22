@@ -22,7 +22,7 @@
 │   ├── data/                   # [数据] 数据访问层 (Data Access)
 │   ├── dep/                    # [依赖] 基础设施适配层 (Infrastructure)
 │   ├── dto/                    # [转换] DTO 注册与入口
-│   ├── server/                 # [服务] gRPC Server 启动与注册
+│   ├── server/                 # [服务] gRPC、management、sidecar 生命周期托管
 │   └── service/                # [接口] 应用服务层 (Application Service)
 ├── buf.gen.yaml                # [工具] Buf 生成配置文件
 ├── go.mod                      # [依赖] Go 模块定义
@@ -64,16 +64,18 @@
   - 这里从 Context 中提取 User Meta 信息。
 
 ### 4. `internal/server` (服务启动层)
-**职责**：构建和启动 gRPC 服务器，注册 Service，配置中间件。
+**职责**：构建和启动 gRPC 服务器、management 端口，并把 sidecar 生命周期接入统一托管入口。
 
-- `grpc.go`: **[配置]** 配置 gRPC Server，加载拦截器（Metadata 透传、访问日志等）。
-- `register.go`: **[配置]** 服务注册中心逻辑 (ETCD 注册)。
-- `server.go`: **[配置]** TCP 监听与启动逻辑。
+- `grpc.go`: **[配置]** 业务 gRPC Server 封装，负责监听、OTel、访问日志和优雅停机。
+- `management.go`: **[配置]** 管理端口，暴露 `/health`、`/ready`、`/info`、`/metrics`。
+- `register.go`: **[配置]** 把 gRPC ServiceDesc 转换为 `ServiceLifecycle`，桥接本地 sidecar-agent。
+- `managed.go`: **[配置]** 使用 `ManagedServer` 统一托管 `gRPC + management + sidecar lifecycle`。
+- `build_info.go`: **[配置]** 管理端口对外暴露的构建信息。
 
 ### 5. `internal/conf` (配置层)
 **职责**：加载和解析应用配置。
 
-- `bootstrap.go`: 引导配置加载。
+- `bootstrap.go`: 引导配置加载，兼容 `go-micro` 的 `BootstrapConfig`，统一提供 management、telemetry、sidecar 相关 getter。
 - `mysql.go`, `redis.go`, `etcd.go`: 各个组件的配置加载器。
   - **Local 模式**：从本地 JSON 文件加载。
   - **Remote 模式**：通过调用远程 **Config Service** 获取配置内容（注意：不是直接连 ETCD）。
@@ -81,8 +83,8 @@
 ### 6. `internal/dep` (依赖适配层)
 **职责**：封装第三方库或基础设施，防止外部依赖污染业务代码。
 
-- `logger.go`: 日志库封装。
-- `remote.go`: 远程 gRPC 客户端封装（如果你的服务需要调用其他微服务）。
+- `client.go`: 基于 `invocation` 的统一远程调用连接管理器，负责 DNS target、OTel 和服务身份 metadata。
+- `logger.go`: 新版日志注入适配，统一返回 `go-micro/logger` 的 zap 包装器。
 
 ## 开发者修改指南
 
@@ -93,6 +95,7 @@
 | **新增数据库表** | `internal/data/entity/` -> `internal/data/` | 定义 PO 结构体，实现 Repo 接口。 |
 | **新增配置项** | `internal/conf/` | 修改 `BootstrapConf` 或新增配置 Loader。 |
 | **依赖注入注册** | 各层的 `core.go` -> `cmd/server/wire.go` | 每次新增 struct 需在对应的 `core.go` 中注册，并执行 `wire ./cmd/server`（或 `make init`）。 |
+| **运行链路排查** | `cmd/server/` + `internal/server/` + `internal/conf/bootstrap.go` | 统一从 `ManagedServer`、management 端口和 sidecar 生命周期入手排查。 |
 
 ## 示例文件说明
 项目中包含的 `demo.go` 文件（分布在各层）是**参考实现**。
