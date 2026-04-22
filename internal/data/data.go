@@ -4,30 +4,36 @@ import (
 	"go-layout/internal/conf"
 	"go-layout/internal/data/entity"
 
-	etcd "github.com/fireflycore/go-etcd"
+	consul "github.com/fireflycore/go-consul"
+	consulConfig "github.com/fireflycore/go-consul/config"
+	microConfig "github.com/fireflycore/go-micro/config"
 	redisx "github.com/fireflycore/go-redis"
-	gorme "github.com/fireflycore/gormx"
+	"github.com/fireflycore/gormx"
+	"github.com/hashicorp/consul/api"
 	"github.com/redis/go-redis/v9"
-	clientv3 "go.etcd.io/etcd/client/v3"
 	"gorm.io/gorm"
 )
 
 type Data struct {
-	etcd *clientv3.Client
-	rdb  *redis.Client
-	db   *gorm.DB
+	db  *gorm.DB
+	rdb *redis.Client
+
+	store  microConfig.Store
+	consul *api.Client
 }
 
-func NewData(etcd *clientv3.Client, rdb *redis.Client, db *gorme.MysqlDB) (*Data, error) {
+func NewData(db *gorm.DB, rdb *redis.Client, store microConfig.Store, consul *api.Client) (*Data, error) {
 	return &Data{
-		etcd: etcd,
-		rdb:  rdb,
-		db:   db.DB,
+		db:  db,
+		rdb: rdb,
+
+		store:  store,
+		consul: consul,
 	}, nil
 }
 
-func NewEtcd(etcdConf *etcd.Conf) (*clientv3.Client, error) {
-	return etcd.New(etcdConf)
+func NewConsul(consulConf *consul.Config) (*api.Client, error) {
+	return consul.New(consulConf)
 }
 
 func NewRedis(redisConf *redisx.Conf) (*redis.Client, error) {
@@ -35,11 +41,19 @@ func NewRedis(redisConf *redisx.Conf) (*redis.Client, error) {
 }
 
 // NewMysql 初始化模板库默认 MySQL 连接，并保持示例实体自动迁移关闭。
-func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf) (*gorme.MysqlDB, error) {
+func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gormx.MysqlConf) (*gormx.MysqlDB, error) {
 	mysqlConf.WithLoggerConsole(bootstrapConf.Logger.Console)
 	mysqlConf.WithAutoMigrate(false)
 
-	return gorme.NewMysql(mysqlConf, []interface{}{
+	return gormx.NewMysql(mysqlConf, []interface{}{
 		&entity.Demo{},
 	})
+}
+
+func NewConfigStore(client *api.Client) (microConfig.Store, error) {
+	store, err := consulConfig.NewStore(client, nil)
+	if err != nil {
+		return nil, err
+	}
+	return store, nil
 }
