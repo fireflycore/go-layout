@@ -7,11 +7,7 @@ var ProviderSet = wire.NewSet(
 	NewBootstrapConf,
 	NewBootstrapConfImpl,
 
-	NewEtcdConfLoader,
-	NewRedisConfLoader,
-	NewMysqlConfLoader,
-
-	NewEtcdConf,
+	NewConsulConf,
 	NewRedisConf,
 	NewMysqlConf,
 )
