@@ -4,9 +4,7 @@ go 1.25.3
 
 require (
 	buf.build/go/protovalidate v1.1.3
-	github.com/cavlabs/jiguang-sdk-go v1.0.6
 	github.com/fireflycore/go-consul v0.0.8
-	github.com/fireflycore/go-etcd v0.2.9
 	github.com/fireflycore/go-micro v1.3.9
 	github.com/fireflycore/go-redis v0.1.2
 	github.com/fireflycore/go-utils v0.3.6
@@ -15,8 +13,8 @@ require (
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.28.0
+	github.com/hashicorp/consul/api v1.31.2
 	github.com/redis/go-redis/v9 v9.17.1
-	go.etcd.io/etcd/client/v3 v3.6.6
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.67.0
 	go.uber.org/zap v1.27.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20260311181403-84a4fc48630c
@@ -35,8 +33,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/coreos/go-semver v0.3.1 // indirect
-	github.com/coreos/go-systemd/v22 v22.6.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/ebitengine/purego v0.10.0 // indirect
 	github.com/fatih/color v1.16.0 // indirect
@@ -44,10 +40,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-sql-driver/mysql v1.9.3 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/cel-go v0.27.0 // indirect
-	github.com/hashicorp/consul/api v1.31.2 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -80,8 +73,6 @@ require (
 	github.com/uptrace/opentelemetry-go-extra/otelgorm v0.3.2 // indirect
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.3.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	go.etcd.io/etcd/api/v3 v3.6.6 // indirect
-	go.etcd.io/etcd/client/pkg/v3 v3.6.6 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/bridges/otelzap v0.17.0 // indirect
 	go.opentelemetry.io/otel v1.42.0 // indirect
