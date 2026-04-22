@@ -38,13 +38,11 @@ func wireApp() (*App, error) {
 *   **`internal/data/core.go`**:
     ```go
     var ProviderSet = wire.NewSet(
-        NewEtcd,
+        NewConsul,
         NewRedis,
         NewMysql,
+        NewConfigStore,
         NewData,
-
-        NewConfigRepo,
-        NewLoggerRepo,
 
         NewDemoRepo,
     )
@@ -61,11 +59,6 @@ func wireApp() (*App, error) {
 *   **`internal/service/core.go`**:
     ```go
     var ProviderSet = wire.NewSet(
-        NewConfigCenterRemoteService,
-        NewAccessLoggerRemoteService,
-        NewServerLoggerRemoteService,
-        NewOperationLoggerRemoteService,
-
         NewDemoService,
     )
     ```
@@ -79,41 +72,46 @@ func wireApp() (*App, error) {
 
 ## 配置管理实现
 
-`go-layout` 的配置系统设计灵活，支持从本地文件开发，无缝切换到远程配置服务生产。
+`go-layout` 的配置系统已经统一到 `bootstrap + consul + Store.LoadStoreConfig` 模型：启动时读取引导配置，然后直连 Consul Store 拉取运行期配置。`config` 数据面本身支持 `Store.Get + Watcher.Watch`，但当前模板默认只装配启动期读取链路。
 
 ### 1. 引导配置 (Bootstrap)
-一切始于 `conf/bootstrap.json`。这是服务启动时读取的第一个文件，定义了“如何加载其他配置”。
+一切始于 `conf/bootstrap.json`。这是服务启动时读取的第一个文件，定义了服务身份、监听端口、sidecar 与 telemetry 基础信息。
 
 ```json
 {
   "env": "dev",
-  "port": 8080,
+  "port": 10500,
   "app_id": "demo-service",
-  "load_conf_mode": "local",  // local: 读本地文件; remote: 读 Config Service
-  "micro": { ... },           // 服务注册发现配置
-  "logger": { ... }           // 日志配置
+  "service_name": "go-layout",
+  "service_namespace": "default",
+  "sidecar_agent": { ... },
+  "logger": { ... },
+  "telemetry": { ... }
 }
 ```
 
 ### 2. 配置加载器 (Conf Loader)
 位于 `internal/conf/`。
 例如 `mysql.go` 定义了如何加载 MySQL 配置：
-- **Local 模式**：读取 `conf/mysql.json`（仓库默认仅提供 `bootstrap.json`，其余组件配置文件需要按需补齐）。
-- **Remote 模式**：根据 `bootstrap.json` 中的配置，调用远程 **Config Service** (gRPC) 获取 Key 为 `mysql` 的配置内容。
-- **注意**：目前配置仅在服务启动时加载，**不支持热更新**。
+- **引导配置**：读取 `conf/consul.json`，创建 Consul Client 和 `microConfig.Store`。
+- **运行期配置**：根据 `bootstrap.json` 中的 `app_id/env/app_secret`，通过 `LoadStoreConfig` 从 Consul Store 拉取 `mysql`、`redis` 等配置。
+- **TLS 口径**：TLS 字段直接使用证书文件路径，不再支持把证书正文下发到配置里后由模板落盘。
+- **注意**：`config` 数据面支持热更新，但当前模板默认仅在服务启动时加载一次；如需热更新，需要业务服务显式接入 `Watcher` 并实现组件重载策略。
 
 ### 3. 在代码中使用配置
 配置加载后，通常通过依赖注入传递给 Data 层。
 例如 `internal/data/data.go`:
 
 ```go
-func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf, ...) (*gorme.MysqlDB, error) {
-    // Wire 自动注入加载好的 mysqlConf
-    return gorme.NewMysql(mysqlConf, ...)
+func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gormx.MysqlConf) (*gormx.MysqlDB, error) {
+    mysqlConf.WithLoggerConsole(bootstrapConf.Logger.Console)
+    mysqlConf.WithAutoMigrate(false)
+    return gormx.NewMysql(mysqlConf, ...)
 }
 ```
 
 ## 总结
 - **Wire** 粘合了所有层级，修改组件依赖关系后必须重新生成。
-- **Bootstrap** 决定了环境和配置加载方式。
-- **Conf Loader** 实现了配置的统一管理（local/remote），配置仅在启动时加载，不支持热更新。
+- **Bootstrap** 提供服务身份、端口、telemetry 与 sidecar 基础信息。
+- **Conf Loader** 统一走 Consul Store 读取运行期配置，TLS 证书仅保留路径引用；`config` 具备热更新能力，但当前模板默认仅装配启动期加载。
+- **Makefile** 当前将 `generate/init/run/build` 明确拆分：`run` 只负责启动，生成与依赖整理需要显式执行 `make init`。
