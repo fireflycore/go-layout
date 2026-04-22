@@ -3,7 +3,6 @@ package data
 import (
 	"go-layout/internal/conf"
 	"go-layout/internal/data/entity"
-	"go-layout/internal/dep"
 
 	etcd "github.com/fireflycore/go-etcd"
 	redisx "github.com/fireflycore/go-redis"
@@ -35,10 +34,10 @@ func NewRedis(redisConf *redisx.Conf) (*redis.Client, error) {
 	return redisx.New(redisConf)
 }
 
-func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf, logger dep.OperationLogger) (*gorme.MysqlDB, error) {
-	mysqlConf.WithAutoMigrate(false)
-	mysqlConf.WithLoggerHandle(logger)
+// NewMysql 初始化模板库默认 MySQL 连接，并保持示例实体自动迁移关闭。
+func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gorme.MysqlConf) (*gorme.MysqlDB, error) {
 	mysqlConf.WithLoggerConsole(bootstrapConf.Logger.Console)
+	mysqlConf.WithAutoMigrate(false)
 
 	return gorme.NewMysql(mysqlConf, []interface{}{
 		&entity.Demo{},
