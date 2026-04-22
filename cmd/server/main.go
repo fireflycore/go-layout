@@ -30,13 +30,13 @@ func main() {
 	})
 
 	// 启动前输出当前 goroutine 数，便于基础运行态观测。
-	app.Logger.Info("go-layout service runtime prepared",
+	app.Logger.Info("service runtime prepared",
 		zap.Int("goroutine_num", runtime.NumGoroutine()),
 	)
 
 	// 进入统一托管运行入口，由 App.Run 负责 sidecar 生命周期和本地服务协同运行。
 	if err = app.Run(ctx); err != nil && err != context.Canceled {
-		app.Logger.Error("go-layout service exited with error", zap.Error(err))
+		app.Logger.Error("service exited with error", zap.Error(err))
 		panic(err)
 	}
 }

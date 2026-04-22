@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// App 聚合 go-layout 模板服务的托管运行依赖。
+// App 聚合服务进程的托管运行依赖。
 type App struct {
 	BootstrapConf *conf.BootstrapConf
 
@@ -29,7 +29,7 @@ type App struct {
 // Run 使用统一托管入口运行服务，并在退出时自动完成 sidecar 收尾。
 func (ist *App) Run(ctx context.Context) error {
 	// 启动前先输出服务基础元信息，便于排查部署实例与监听地址。
-	ist.Logger.Info("starting go-layout service",
+	ist.Logger.Info("starting service",
 		zap.String("service_name", ist.BootstrapConf.GetServiceName()),
 		zap.String("service_namespace", ist.BootstrapConf.GetServiceNamespace()),
 		zap.String("service_instance_id", ist.BootstrapConf.GetServiceInstanceId()),
@@ -51,7 +51,7 @@ func (ist *App) Run(ctx context.Context) error {
 		)
 	}
 	// 输出启动完成日志，说明管理端口和业务端口已准备好进入托管运行阶段。
-	ist.Logger.Info("go-layout service startup completed",
+	ist.Logger.Info("service startup completed",
 		zap.String("grpc_addr", ist.GrpcServer.Addr()),
 		zap.String("management_addr", ist.ManagementServer.Addr()),
 		zap.String("service_endpoint", ist.BootstrapConf.GetServiceEndpoint()),
@@ -63,7 +63,7 @@ func (ist *App) Run(ctx context.Context) error {
 	// 把主运行控制权交给 ManagedServer，统一托管 gRPC、管理端口和 sidecar 生命周期。
 	err := ist.ManagedServer.Run(ctx)
 	// 托管运行结束后输出最终停止日志。
-	ist.Logger.Info("go-layout service stopped",
+	ist.Logger.Info("service stopped",
 		zap.String("service_name", ist.BootstrapConf.GetServiceName()),
 		zap.String("service_instance_id", ist.BootstrapConf.GetServiceInstanceId()),
 	)
