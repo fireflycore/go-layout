@@ -4,24 +4,24 @@ import (
 	"context"
 	"time"
 
-	microConfig "github.com/fireflycore/go-micro/config"
+	"github.com/fireflycore/go-micro/config"
 	"github.com/fireflycore/go-redis"
 )
 
-func NewRedisConf(utils *Utils, bootstrapConf *BootstrapConf, store microConfig.Store) (*redis.Conf, error) {
+func NewRedisConfig(utils *Utils, bootstrapConfig *BootstrapConfig, store config.Store) (*redis.Conf, error) {
 	// 启动配置读取允许从根上下文派生超时，避免启动阶段无边界阻塞。
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	dst, err := microConfig.LoadStoreConfig[redis.Conf](
+	dst, err := config.LoadStoreConfig[redis.Conf](
 		ctx,
 		store,
-		microConfig.StoreParams{
-			AppId:     bootstrapConf.AppId,
-			Env:       bootstrapConf.Env,
+		config.StoreParams{
+			AppId:     bootstrapConfig.App.Id,
+			Env:       bootstrapConfig.App.Env,
 			Group:     "database",
 			Name:      "redis",
-			AppSecret: []byte(bootstrapConf.AppSecret),
+			AppSecret: []byte(bootstrapConfig.App.Secret),
 		},
 		utils.AnalyzeData,
 	)

@@ -3,11 +3,11 @@ package conf
 import "github.com/google/wire"
 
 var ProviderSet = wire.NewSet(
-	NewConfUtils,
-	NewBootstrapConf,
-	NewBootstrapConfImpl,
+	NewConfigUtils,
+	NewBootstrapConfig,
+	NewLoggerConfig,
 
-	NewConsulConf,
-	NewRedisConf,
-	NewMysqlConf,
+	NewConsulConfig,
+	NewRedisConfig,
+	NewMysqlConfig,
 )

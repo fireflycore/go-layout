@@ -4,24 +4,24 @@ import (
 	"context"
 	"time"
 
-	microConfig "github.com/fireflycore/go-micro/config"
+	"github.com/fireflycore/go-micro/config"
 	"github.com/fireflycore/gormx"
 )
 
-func NewMysqlConf(utils *Utils, bootstrapConf *BootstrapConf, store microConfig.Store) (*gormx.MysqlConf, error) {
+func NewMysqlConfig(utils *Utils, bootstrapConfig *BootstrapConfig, store config.Store) (*gormx.MysqlConfig, error) {
 	// 启动配置读取允许从根上下文派生超时，避免启动阶段无边界阻塞。
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	dst, err := microConfig.LoadStoreConfig[gormx.MysqlConf](
+	dst, err := config.LoadStoreConfig[gormx.MysqlConfig](
 		ctx,
 		store,
-		microConfig.StoreParams{
-			AppId:     bootstrapConf.AppId,
-			Env:       bootstrapConf.Env,
+		config.StoreParams{
+			AppId:     bootstrapConfig.App.Id,
+			Env:       bootstrapConfig.App.Env,
 			Group:     "database",
 			Name:      "mysql",
-			AppSecret: []byte(bootstrapConf.AppSecret),
+			AppSecret: []byte(bootstrapConfig.App.Secret),
 		},
 		utils.AnalyzeData,
 	)

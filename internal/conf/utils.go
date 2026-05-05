@@ -16,8 +16,8 @@ type Utils struct {
 	compress compress.Compress
 }
 
-// NewConfUtils 组装配置读取和解密阶段共用的工具能力。
-func NewConfUtils(crypto crypto.Crypto, compress compress.Compress) *Utils {
+// NewConfigUtils 组装配置读取和解密阶段共用的工具能力。
+func NewConfigUtils(crypto crypto.Crypto, compress compress.Compress) *Utils {
 	return &Utils{
 		crypto:   crypto,
 		compress: compress,
