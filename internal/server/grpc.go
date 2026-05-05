@@ -14,6 +14,8 @@ import (
 	ggm "github.com/grpc-ecosystem/go-grpc-middleware"
 	recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc"
+	health "google.golang.org/grpc/health"
+	grpc_health_v1 "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // GrpcServer 封装模板库业务 gRPC 服务的监听和优雅停机。
@@ -25,11 +27,11 @@ type GrpcServer struct {
 // NewGrpcServer 创建业务 gRPC 服务，并统一挂接 OTel 与访问日志中间件。
 func NewGrpcServer(
 	log *logger.AccessLogger,
-	bootstrapConf *conf.BootstrapConf,
+	bootstrapConfig *conf.BootstrapConfig,
 
 	demoService *service.DemoService,
 ) *GrpcServer {
-	listen, err := net.Listen("tcp", net.JoinHostPort("0.0.0.0", strconv.FormatUint(uint64(bootstrapConf.GetServerPort()), 10)))
+	listen, err := net.Listen("tcp", net.JoinHostPort("0.0.0.0", strconv.FormatUint(uint64(bootstrapConfig.ServerPort), 10)))
 	if err != nil {
 		panic(err)
 	}
@@ -38,11 +40,19 @@ func NewGrpcServer(
 		grpc.StatsHandler(gm.NewOtelServerStatsHandler()),
 		grpc.UnaryInterceptor(ggm.ChainUnaryServer(
 			recovery.UnaryServerInterceptor(),
+			gm.NewServiceContextUnaryInterceptor(gm.ServiceContextInterceptorOptions{
+				ServiceAppId:      bootstrapConfig.App.Id,
+				ServiceInstanceId: bootstrapConfig.App.InstanceId,
+			}),
 
 			gm.ValidationErrorToInvalidArgument(),
 			gm.NewAccessLogger(log),
 		)),
 	)
+
+	healthServer := health.NewServer()
+	healthServer.SetServingStatus(bootstrapConfig.Service.Name, grpc_health_v1.HealthCheckResponse_SERVING)
+	grpc_health_v1.RegisterHealthServer(srv, healthServer)
 
 	demo.RegisterDemoServiceServer(srv, demoService)
 

@@ -20,29 +20,23 @@ func NewServiceDesc(log *logger.ServerLogger) []*grpc.ServiceDesc {
 	return raw
 }
 
-// NewServiceLifecycle 把 gRPC 服务描述转换成 sidecar 生命周期桥接对象。
-func NewServiceLifecycle(bootstrapConf *conf.BootstrapConf, services []*grpc.ServiceDesc) (*agent.ServiceLifecycle, error) {
-	return agent.NewServiceLifecycleFromGRPC(agent.GRPCDescriptorOptions{
-		AppId:       bootstrapConf.AppId,
-		AppName:     bootstrapConf.AppName,
-		ServiceName: bootstrapConf.GetServiceName(),
-		Namespace:   bootstrapConf.GetServiceNamespace(),
-		DNS:         bootstrapConf.GetServiceDNS(),
-		Env:         bootstrapConf.Env,
-		Port:        int(bootstrapConf.GetServerPort()),
+// NewSidecarAgent 基于 bootstrap 与 gRPC ServiceDesc 组装 go-consul/agent 主对象。
+func NewSidecarAgent(bootstrapConfig *conf.BootstrapConfig, services []*grpc.ServiceDesc) (*agent.Agent, error) {
+	serviceOpts := &agent.ServiceOptions{
+		App:         bootstrapConfig.App,
+		Kernel:      bootstrapConfig.Kernel,
+		Service:     bootstrapConfig.Service,
 		Protocol:    "grpc",
-		Version:     bootstrapConf.Version,
-		ServiceOptions: &agent.ServiceOptions{
-			InstanceId: bootstrapConf.GetServiceInstanceId(),
-			Namespace:  bootstrapConf.GetServiceNamespace(),
-		},
-		RawServices: services,
-	}, agent.DefaultLocalRuntimeOptions(bootstrapConf.GetSidecarAgentBaseURL()), agent.LifecycleOptions{
-		GracePeriod: bootstrapConf.GetSidecarGracePeriod(),
-	})
+		ServerPort:  bootstrapConfig.ServerPort,
+		ManagedPort: bootstrapConfig.ManagedPort,
+	}
+
+	sidecarConfig := bootstrapConfig.SidecarAgentConfig()
+	sidecarConfig.RawServices = services
+
+	return agent.New(serviceOpts, sidecarConfig)
 }
 
-// NewSidecarStatusProvider 复用生命周期对象本身作为 sidecar 状态提供者。
-func NewSidecarStatusProvider(lifecycle *agent.ServiceLifecycle) SidecarStatusProvider {
-	return lifecycle
+func NewSidecarStatusProvider(a *agent.Agent) SidecarStatusProvider {
+	return a
 }
