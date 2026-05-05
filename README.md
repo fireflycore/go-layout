@@ -3,7 +3,7 @@
 `go-layout` 是 Firefly 微服务框架的 Go 版本标准项目模板。它提供了一套标准化的目录结构和基础设施配置，旨在帮助开发者快速构建规范的微服务应用。
 
 本模板基于 **[go-micro](https://github.com/fireflycore/go-micro)**（Firefly 微服务框架的 Go 版本核心库）构建。
-默认启动链路为：读取 `conf/bootstrap.json` 和 `conf/consul.json`，通过 Consul Store 加载运行期配置，再以 `ManagedServer` 托管业务 gRPC、management 端口和 sidecar 生命周期。`config` 数据面本身支持 `watch`/热更新，但 `go-layout` 默认模板当前只接入启动期加载，如需运行时热更新需要业务服务显式补充 `Watcher` 装配与组件重载策略。
+默认启动链路为：读取 `conf/bootstrap.json` 和 `conf/consul.json`，通过 Consul Store 加载运行期配置，再以 `go-consul/agent.Agent` 托管业务 gRPC、management 端口和 sidecar-agent watch/replay 生命周期。`config` 数据面本身支持 `watch`/热更新，但 `go-layout` 默认模板当前只接入启动期加载，如需运行时热更新需要业务服务显式补充 `Watcher` 装配与组件重载策略。
 
 > [在线文档](https://firefly.lhdht.cn/guide/)
 
@@ -41,7 +41,7 @@
 
 4.  **准备配置**
 
-    - 修改 `conf/bootstrap.json`，填写服务身份、端口、sidecar 与 telemetry 基础信息。
+    - 修改 `conf/bootstrap.json`，填写 `app`、`service`、端口、sidecar-agent、logger 与 telemetry 基础信息。
     - 修改 `conf/consul.json`，填写 Consul 地址、协议、数据中心与令牌。
 
 ### 常用命令
@@ -50,3 +50,11 @@
 - `make init`: 执行生成链路、`wire ./cmd/server` 和 `go mod tidy`
 - `make run`: 直接执行 `go run ./cmd/server`
 - `make build`: 先执行 `make init`，再注入构建信息并编译服务
+
+## 当前框架主线
+
+- 启动托管：`App.Run(ctx)` 进入 `agent.Agent.Run(ctx)`，由 Agent 统一驱动 `gRPC + management + sidecar watch/replay`。
+- 服务注册：`internal/server/register.go` 基于 `agent.ServiceOptions + grpc.ServiceDesc` 组装 `agent.Agent`。
+- 管理端口：`internal/server/managed.go` 暴露 `/health`、`/ready`、`/info`、`/metrics`，并在 `/ready`、`/info` 输出 sidecar 状态摘要。
+- 服务上下文：gRPC 入口通过 `gm.NewServiceContextUnaryInterceptor` 注入 `go-micro/service.Context`，业务代码不再解析旧 `invocation.UserContextMeta`。
+- 远程调用：`internal/dep/client.go` 保留 `ConnectionManager / UnaryInvoker / RemoteServiceManaged` 模板，新增下游服务时集中登记 `invocation.DNS`。

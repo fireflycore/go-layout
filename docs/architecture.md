@@ -79,11 +79,23 @@ func wireApp() (*App, error) {
 
 ```json
 {
-  "env": "dev",
-  "port": 10500,
-  "app_id": "demo-service",
-  "service_name": "go-layout",
-  "service_namespace": "default",
+  "app": {
+    "id": "demo-service",
+    "env": "dev",
+    "name": "go-layout",
+    "secret": "...",
+    "version": "v0.0.1"
+  },
+  "service": {
+    "name": "go-layout",
+    "type": "svc",
+    "namespace": "default",
+    "cluster_domain": "cluster.local",
+    "port": 9090,
+    "weight": 100
+  },
+  "server_port": 10500,
+  "managed_port": 10501,
   "sidecar_agent": { ... },
   "logger": { ... },
   "telemetry": { ... }
@@ -94,7 +106,7 @@ func wireApp() (*App, error) {
 位于 `internal/conf/`。
 例如 `mysql.go` 定义了如何加载 MySQL 配置：
 - **引导配置**：读取 `conf/consul.json`，创建 Consul Client 和 `microConfig.Store`。
-- **运行期配置**：根据 `bootstrap.json` 中的 `app_id/env/app_secret`，通过 `LoadStoreConfig` 从 Consul Store 拉取 `mysql`、`redis` 等配置。
+- **运行期配置**：根据 `bootstrap.json` 中的 `app.id/app.env/app.secret`，通过 `LoadStoreConfig` 从 Consul Store 拉取 `mysql`、`redis` 等配置。
 - **TLS 口径**：TLS 字段直接使用证书文件路径，不再支持把证书正文下发到配置里后由模板落盘。
 - **注意**：`config` 数据面支持热更新，但当前模板默认仅在服务启动时加载一次；如需热更新，需要业务服务显式接入 `Watcher` 并实现组件重载策略。
 
@@ -103,15 +115,37 @@ func wireApp() (*App, error) {
 例如 `internal/data/data.go`:
 
 ```go
-func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gormx.MysqlConf) (*gormx.MysqlDB, error) {
-    mysqlConf.WithLoggerConsole(bootstrapConf.Logger.Console)
-    mysqlConf.WithAutoMigrate(false)
-    return gormx.NewMysql(mysqlConf, ...)
+func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlConfig) (*gorm.DB, error) {
+    mysqlConfig.WithLoggerConsole(bootstrapConfig.Logger.Console)
+    mysqlConfig.WithAutoMigrate(false)
+    db, err := gormx.NewMysql(mysqlConfig)
+    if err != nil {
+        return nil, err
+    }
+    return db.DB, nil
 }
 ```
 
+## 运行托管实现
+
+当前模板以 `go-consul/agent.Agent` 作为裸机 sidecar-agent 桥接单入口：
+
+- `internal/server/register.go` 基于 `agent.ServiceOptions + grpc.ServiceDesc` 构造 `agent.Agent`。
+- `internal/server/server.go` 通过 `Agent.ConfigureRun(...)` 注入业务 `Serve/Shutdown` 回调。
+- `cmd/server/app.go` 最终调用 `Agent.Run(ctx)`，统一驱动 `gRPC + management + sidecar watch/replay`。
+- `internal/server/managed.go` 暴露 `/health`、`/ready`、`/info`、`/metrics`，其中 `/ready` 和 `/info` 会返回 `agent.Status` 摘要。
+
+## 服务上下文
+
+gRPC 服务端入口通过 `gm.NewServiceContextUnaryInterceptor(...)` 注入 `go-micro/service.Context`。
+
+- Service 层通过 `service.FromContext(ctx)` 读取用户与服务身份。
+- Biz/Data 层不再解析 gRPC metadata。
+- 出站调用继续由 `go-micro/invocation.UnaryInvoker` 基于当前 context 复用 metadata，并注入当前服务身份。
+
 ## 总结
 - **Wire** 粘合了所有层级，修改组件依赖关系后必须重新生成。
-- **Bootstrap** 提供服务身份、端口、telemetry 与 sidecar 基础信息。
+- **Bootstrap** 提供 `app/service` 身份、业务端口、管理端口、telemetry 与 sidecar-agent 基础信息。
 - **Conf Loader** 统一走 Consul Store 读取运行期配置，TLS 证书仅保留路径引用；`config` 具备热更新能力，但当前模板默认仅装配启动期加载。
+- **Agent** 统一托管业务服务运行和 sidecar-agent 生命周期，不再使用旧 `ServiceLifecycle/ManagedServer` 主线。
 - **Makefile** 当前将 `generate/init/run/build` 明确拆分：`run` 只负责启动，生成与依赖整理需要显式执行 `make init`。

@@ -52,7 +52,7 @@
 - `entity/`: **[开发区]** 定义持久化对象 (PO)，即数据库表结构映射 (GORM Model)。
   - `demo.go`: `Demo` 表结构定义。
 - `core.go`: **[配置]** Wire ProviderSet，注册本层的所有 Repo 实现。
-- `data.go`: **[基础设施]** 数据库、Redis、Etcd 客户端的初始化与连接管理。
+- `data.go`: **[基础设施]** 数据库、Redis、Consul Store 客户端的初始化与连接管理。
 - `demo.go`: **[开发区]** `DemoRepo` 的具体实现 (DAO)。
 - `transaction.go`: 事务支持实现。
 
@@ -62,21 +62,21 @@
 - `core.go`: **[配置]** Wire ProviderSet，注册本层的所有 Service。
 - `demo.go`: **[开发区]** `DemoService` 实现，直接对应 Proto 定义的 Service。
   - 这里进行 `protovalidate` 参数校验。
-  - 这里统一解析一次用户上下文，并把结果继续透传到 Biz/Data 链路。
+  - 这里读取 gRPC middleware 注入的 `go-micro/service.Context`，不再解析 metadata。
 
 ### 4. `internal/server` (服务启动层)
 **职责**：构建和启动 gRPC 服务器、management 端口，并把 sidecar 生命周期接入统一托管入口。
 
 - `grpc.go`: **[配置]** 业务 gRPC Server 封装，负责监听、OTel、访问日志和优雅停机。
-- `management.go`: **[配置]** 管理端口，暴露 `/health`、`/ready`、`/info`、`/metrics`。
-- `register.go`: **[配置]** 把 gRPC ServiceDesc 转换为 `ServiceLifecycle`，桥接本地 sidecar-agent。
-- `managed.go`: **[配置]** 使用 `ManagedServer` 统一托管 `gRPC + management + sidecar lifecycle`。
+- `managed.go`: **[配置]** 管理端口，暴露 `/health`、`/ready`、`/info`、`/metrics`。
+- `register.go`: **[配置]** 基于 `agent.ServiceOptions + grpc.ServiceDesc` 组装 `go-consul/agent.Agent`。
+- `server.go`: **[配置]** 通过 `Agent.ConfigureRun(...)` 注入业务 `Serve/Shutdown`，统一托管 `gRPC + management + sidecar watch/replay`。
 - `build_info.go`: **[配置]** 管理端口对外暴露的构建信息。
 
 ### 5. `internal/conf` (配置层)
 **职责**：加载和解析应用配置。
 
-- `bootstrap.go`: 引导配置加载，并适配 `go-micro` 的 `BootstrapConfig` 接口，统一提供 management、telemetry、sidecar 相关 getter。
+- `bootstrap.go`: 引导配置加载，统一装配 `app/kernel/service/logger/telemetry`、业务端口、管理端口和 sidecar-agent 配置。
 - `consul.go`: 读取 `conf/consul.json`，创建 Consul 连接所需的基础配置。
 - `mysql.go`, `redis.go`: 组件配置加载器。
   - 启动阶段基于 `microConfig.Store` 直连 Consul Store 拉取配置。
@@ -85,7 +85,8 @@
 ### 6. `internal/dep` (依赖适配层)
 **职责**：封装第三方库或基础设施，防止外部依赖污染业务代码。
 
-- `client.go`: 基于 `invocation` 的统一远程调用连接管理器，负责 DNS target、OTel 和服务身份 metadata。
+- `client.go`: 基于 `invocation` 的统一远程调用连接管理器，负责 DNS target、OTel、metadata 透传和服务身份兜底注入。
+- `telemetry.go`: 基于 `bootstrap.json` 的 app/service 身份创建 OTel providers。
 - 当前目录主要承载 `telemetry/logger/invocation` 相关依赖注入，不再单独保留旧版 remote logger repo。
 
 ## 开发者修改指南
@@ -95,10 +96,10 @@
 | **新增 API** | `dep/protobuf/gen/` (外部) -> `internal/service/` | 首先在 Proto 仓库定义，更新 `dep`，然后在 `service` 实现接口。 |
 | **新增业务逻辑** | `internal/biz/` | 在 `biz` 创建 UseCase，定义 Repo 接口。 |
 | **新增数据库表** | `internal/data/entity/` -> `internal/data/` | 定义 PO 结构体，实现 Repo 接口。 |
-| **新增配置项** | `internal/conf/` | 修改 `BootstrapConf` 或新增配置 Loader。 |
+| **新增配置项** | `internal/conf/` | 修改 `BootstrapConfig` 或新增配置 Loader。 |
 | **依赖注入注册** | 各层的 `core.go` -> `cmd/server/wire.go` | 每次新增 struct 需在对应的 `core.go` 中注册，并执行 `wire ./cmd/server`（或 `make init`）。 |
 | **日常启动** | `makefile` + `cmd/server/` | 当前 `make run` 只负责 `go run ./cmd/server`；若改动生成链路或依赖注入，需要先显式执行 `make init`。 |
-| **运行链路排查** | `cmd/server/` + `internal/server/` + `internal/conf/bootstrap.go` | 统一从 `ManagedServer`、management 端口和 sidecar 生命周期入手排查。 |
+| **运行链路排查** | `cmd/server/` + `internal/server/` + `internal/conf/bootstrap.go` | 统一从 `agent.Agent`、management 端口和 sidecar-agent 状态入手排查。 |
 
 ## 示例文件说明
 项目中包含的 `demo.go` 文件（分布在各层）是**参考实现**。

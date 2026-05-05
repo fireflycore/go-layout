@@ -11,7 +11,7 @@ graph TD
     
     subgraph "Application Layer"
     Service -->|Validate| ProtoValidate[参数验证]
-    Service -->|Context| UserMeta[用户上下文解析]
+    Service -->|Context| ServiceContext[读取 service.Context]
     Service -->|Call| Biz[internal/biz/demo.go]
     end
     
@@ -39,12 +39,14 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
     // 1. 参数验证 (基于 Proto 定义的规则)
     if err := protovalidate.Validate(request); err != nil { ... }
 
-    // 2. 用户上下文由中间件提前写入 ctx，这里不再显式解析 metadata
+    // 2. ServiceContext 由 gRPC middleware 提前写入 ctx
+    sc, err := requireServiceContext(ctx)
+    if err != nil { return nil, err }
 
     // 3. 调用业务逻辑
-    if err := srv.uc.CreateDemo(ctx, request); err != nil { ... }
+    if err := srv.uc.CreateDemo(ctx, sc, request); err != nil { ... }
     
-    return result, nil
+    return &pb.CreateDemoResponse{}, nil
 }
 ```
 
@@ -53,17 +55,15 @@ func (srv *DemoService) CreateDemo(ctx context.Context, request *pb.CreateDemoRe
 **方法**: `CreateDemo`
 
 ```go
-func (uc *DemoUseCase) CreateDemo(ctx context.Context, request *pb.CreateDemoRequest) error {
-    userMeta := invocation.MustUserContextFromContext(ctx)
-
+func (uc *DemoUseCase) CreateDemo(ctx context.Context, sc *service.Context, request *pb.CreateDemoRequest) error {
     // 1. 数据转换: DTO (Request) -> PO (Entity)
     // 使用定义在 internal/biz/convert/demo.go 的接口，由 goverter 生成实现
     row := uc.dto.ToCreate(request)
     
     // 2. 填充业务字段 (如审计信息)
-    row.AppId = userMeta.AppId
-    row.UserId = userMeta.UserId
-    row.TenantId = userMeta.TenantId
+    row.AppId = sc.AppId
+    row.UserId = sc.UserId
+    row.TenantId = sc.TenantId
 
     // 3. 调用 Repo 接口保存
     return uc.repo.CreateDemo(ctx, row)
@@ -95,8 +95,10 @@ func (uc *demoRepo) CreateDemo(ctx context.Context, row *entity.Demo) error {
 func (srv *DemoService) GetDemoList(...) {
     // ... 验证 ...
     // 直接返回 Biz 层提供的结果
-    result.Data = srv.uc.GetDemoList(ctx, request)
-    return result, nil
+    sc, err := requireServiceContext(ctx)
+    if err != nil { return nil, err }
+
+    return srv.uc.GetDemoList(ctx, sc, request), nil
 }
 ```
 
@@ -105,9 +107,9 @@ func (srv *DemoService) GetDemoList(...) {
 **方法**: `GetDemoList`
 
 ```go
-func (uc *DemoUseCase) GetDemoList(ctx context.Context, request *pb.GetDemoListRequest) *pb.DemoList {
+func (uc *DemoUseCase) GetDemoList(ctx context.Context, sc *service.Context, request *pb.GetDemoListRequest) *pb.GetDemoListResponse {
     // 纯查询操作，无复杂业务逻辑，直接透传调用 Repo
-    return uc.repo.GetDemoList(ctx, request)
+    return uc.repo.GetDemoList(ctx, sc, request)
 }
 ```
 
@@ -116,14 +118,12 @@ func (uc *DemoUseCase) GetDemoList(ctx context.Context, request *pb.GetDemoListR
 **方法**: `GetDemoList`
 
 ```go
-func (uc *demoRepo) GetDemoList(ctx context.Context, request *pb.GetDemoListRequest) *pb.DemoList {
-    userMeta, _ := invocation.UserContextFromContext(ctx)
-
-    var raw pb.DemoList // 直接使用 Proto 定义的 DTO 作为结果集容器
+func (uc *demoRepo) GetDemoList(ctx context.Context, sc *service.Context, request *pb.GetDemoListRequest) *pb.GetDemoListResponse {
+    var raw pb.GetDemoListResponse // 直接使用 Proto 定义的 DTO 作为结果集容器
 
     // 构建查询
     sql := uc.data.db.DB.WithContext(ctx).Model(&entity.Demo{})
-    // ... Where 条件，可按需结合 userMeta 补充租户/应用过滤 ...
+    // ... Where 条件，可按需结合 sc 补充租户/应用过滤 ...
     
     // 执行查询，GORM 会自动将结果映射到 raw.List 中
     // 注意：这里利用了 GORM 的智能映射或需要确保字段名兼容
@@ -135,7 +135,7 @@ func (uc *demoRepo) GetDemoList(ctx context.Context, request *pb.GetDemoListRequ
 
 ## 关键代码设计点
 
-1.  **用户上下文由中间件统一注入**：gRPC 中间件负责解析 metadata，并通过 `invocation.WithUserContext` 写入 `ctx`；后续 Service/Biz/Data 只通过 `invocation.UserContextFromContext` 或 `invocation.MustUserContextFromContext` 读取，不再显式解析和透传 `um`。
+1.  **服务上下文由中间件统一注入**：gRPC 中间件负责构造 `go-micro/service.Context` 并写入 `ctx`；Service 层读取后按需传给 Biz/Data，不再显式解析 metadata，也不再使用旧 `invocation.UserContextMeta`。
 2.  **接口隔离**：Biz 层只依赖 `repo.DemoRepo` 接口（定义在 `internal/biz/repo`），不依赖 `internal/data` 的具体实现。这使得单元测试时可以轻松 Mock Repo。
 3.  **转换器 (Converter)**：`uc.dto.ToCreate` 是通过 `goverter` 自动生成的。在 `internal/biz/convert/demo.go` 中定义接口，生成的代码位于 `dep/dto/`。这避免了手写繁琐的 struct 赋值代码。
 4.  **读写分离策略**：
