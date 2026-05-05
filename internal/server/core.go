@@ -6,10 +6,12 @@ import (
 
 // ProviderSet is server providers.
 var ProviderSet = wire.NewSet(
-	NewManagementServer,
 	NewGrpcServer,
 	NewServiceDesc,
-	NewServiceLifecycle,
+
+	NewSidecarAgent,
 	NewSidecarStatusProvider,
+
+	NewAppServer,
 	NewAppManagedServer,
 )
