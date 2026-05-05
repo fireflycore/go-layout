@@ -20,10 +20,10 @@ import (
 // - 给业务侧补齐标准服务 DNS 的默认配置。
 //
 // 它不做服务发现，也不做实例选择。
-func NewInvocationDNSManager(bootstrapConf *conf.BootstrapConf) *invocation.DNSManager {
+func NewInvocationDNSManager(bootstrapConfig *conf.BootstrapConfig) *invocation.DNSManager {
 	return invocation.NewDNSManager(&invocation.DNSConfig{
 		// 默认命名空间来自当前服务启动配置。
-		DefaultNamespace: bootstrapConf.GetServiceNamespace(),
+		DefaultNamespace: bootstrapConfig.Service.Namespace,
 		// 默认服务端口统一使用当前新模型的 9090。
 		DefaultPort: invocation.DefaultServicePort,
 	})
@@ -34,24 +34,37 @@ func NewInvocationDNSManager(bootstrapConf *conf.BootstrapConf) *invocation.DNSM
 // 这里本质上只做三件事：
 // - 基于标准 DNS target 建立连接；
 // - 复用 grpc.ClientConn；
-// - 统一挂接 OTel 与服务身份 metadata。
-func NewInvocationConnectionManager(bootstrapConf *conf.BootstrapConf) (*invocation.ConnectionManager, error) {
+// - 统一挂接 OTel 与服务身份兜底注入。
+func NewInvocationConnectionManager(bootstrapConfig *conf.BootstrapConfig) (*invocation.ConnectionManager, error) {
 	return invocation.NewConnectionManager(invocation.ConnectionManagerOptions{
-		DNSManager: NewInvocationDNSManager(bootstrapConf),
+		DNSManager: NewInvocationDNSManager(bootstrapConfig),
 		DialOptions: []grpc.DialOption{
 			// 当前阶段仍然采用明文 gRPC，后续由 sidecar / mesh 处理链路安全。
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 			// 统一挂上 gRPC client 侧 OTel 采集。
 			grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
-			// 统一补服务身份 token，避免 repo 层重复处理。
-			grpc.WithUnaryInterceptor(serviceAuthUnaryInterceptor(bootstrapConf.GetServiceAuthToken())),
+			// 当前 invocation 负责链路 metadata 透传，这里只补服务身份兜底 token。
+			grpc.WithUnaryInterceptor(serviceAuthUnaryInterceptor(bootstrapConfig.App.InstanceId)),
 		},
 	})
 }
 
+// NewRemoteServiceManaged 在启动期集中登记本服务依赖的远程业务服务。
+//
+// 模板默认不声明下游服务；新增远程依赖时，在这里补充 invocation.DNS，
+// 再在 data 层按业务服务名绑定 RemoteServiceCaller。
+func NewRemoteServiceManaged(invoker *invocation.UnaryInvoker) *invocation.RemoteServiceManaged {
+	return invocation.NewRemoteServiceManaged(invoker)
+}
+
 // NewUnaryInvoker 把连接管理器封装成统一的 unary 调用入口。
-func NewUnaryInvoker(manager *invocation.ConnectionManager) *invocation.UnaryInvoker {
-	return &invocation.UnaryInvoker{Dialer: manager}
+func NewUnaryInvoker(manager *invocation.ConnectionManager, bootstrapConfig *conf.BootstrapConfig) *invocation.UnaryInvoker {
+	return invocation.NewUnaryInvoker(
+		manager,
+		bootstrapConfig.App.Id,
+		bootstrapConfig.App.InstanceId,
+		invocation.DefaultInvokeTimeout,
+	)
 }
 
 // serviceAuthUnaryInterceptor 在所有出站调用上统一补 Authorization。
