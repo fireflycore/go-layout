@@ -3,7 +3,6 @@ package dep
 import (
 	"github.com/fireflycore/go-micro/logger"
 	"github.com/fireflycore/go-micro/sys"
-	"github.com/fireflycore/go-micro/telemetry"
 	"github.com/fireflycore/go-utils/compress"
 	"github.com/fireflycore/go-utils/crypto"
 	"github.com/google/wire"
@@ -15,12 +14,13 @@ var ProviderSet = wire.NewSet(
 	compress.NewGZIP,
 	sys.NewHostInfo,
 
-	telemetry.NewProviders,
-
 	logger.NewZapLogger,
 	logger.NewAccessLogger,
 	logger.NewServerLogger,
 
+	NewTelemetryProviders,
+
 	NewInvocationConnectionManager,
+	NewRemoteServiceManaged,
 	NewUnaryInvoker,
 )
