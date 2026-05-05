@@ -7,8 +7,10 @@ import (
 	consul "github.com/fireflycore/go-consul"
 	consulConfig "github.com/fireflycore/go-consul/config"
 	microConfig "github.com/fireflycore/go-micro/config"
+	"github.com/fireflycore/go-micro/constant"
 	redisx "github.com/fireflycore/go-redis"
 	"github.com/fireflycore/gormx"
+	"github.com/fireflycore/gormx/logger"
 	"github.com/hashicorp/consul/api"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -44,13 +46,25 @@ func NewRedis(redisConf *redisx.Conf) (*redis.Client, error) {
 }
 
 // NewMysql 初始化模板库默认 MySQL 连接，并保持示例实体自动迁移关闭。
-func NewMysql(bootstrapConf *conf.BootstrapConf, mysqlConf *gormx.MysqlConf) (*gorm.DB, error) {
-	mysqlConf.WithLoggerConsole(bootstrapConf.Logger.Console)
-	mysqlConf.WithAutoMigrate(false)
-
-	db, err := gormx.NewMysql(mysqlConf, []any{
+func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlConfig) (*gorm.DB, error) {
+	mysqlConfig.WithTables([]interface{}{
 		&entity.Demo{},
 	})
+	mysqlConfig.WithAutoMigrate(false)
+	mysqlConfig.WithLoggerConsole(bootstrapConfig.Logger.Console)
+	mysqlConfig.WithUserContextFields(&logger.UserContextFields{
+		UserId:  constant.UserId,
+		OrgIds:  constant.OrgIds,
+		RoleIds: constant.RoleIds,
+
+		AppId:    constant.AppId,
+		TenantId: constant.TenantId,
+
+		ServiceAppId:      constant.ServiceAppId,
+		ServiceInstanceId: constant.ServiceInstanceId,
+	})
+
+	db, err := gormx.NewMysql(mysqlConfig)
 
 	if err != nil {
 		return nil, err
