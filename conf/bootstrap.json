@@ -1,27 +1,35 @@
 {
-  "env": "prod",
-  "server_port": 10500,
-  "management_port": 10501,
-  "app_id": "00000000-0000-0000-0000-000000000000",
-  "app_name": "go-layout",
-  "app_secret": "UnkK/F+1+6aFV9Gz4lCX1se05+jpmueX",
-  "version": "v0.0.1",
-  "service_name": "go-layout",
-  "service_namespace": "default",
-  "service_dns": "go-layout.default.svc.cluster.local",
-  "sidecar_agent": {
-    "base_url": "http://127.0.0.1:19090",
-    "grace_period": "20s"
-  },
-  "telemetry": {
-    "otel_endpoint": "",
-    "otel_insecure": true,
-    "otel_traces": true,
-    "otel_metrics": true,
-    "otel_logs": false
+  "app": {
+    "id": "00000000-0000-0000-0000-000000000000",
+    "env": "prod",
+    "name": "go-layout",
+    "secret": "UnkK/F+1+6aFV9Gz4lCX1se05+jpmueX",
+    "version": "v0.0.1"
   },
   "logger": {
     "console": true,
     "remote": false
+  },
+  "service": {
+    "name": "go-layout",
+    "type": "svc",
+    "namespace": "default",
+    "cluster_domain": "cluster.local",
+    "port": 9090,
+    "weight": 100
+  },
+  "telemetry": {
+    "otlp_endpoint": "",
+    "insecure": true,
+    "traces": true,
+    "metrics": true,
+    "logs": false
+  },
+  "server_port": 10500,
+  "managed_port": 10501,
+  "load_config_mode": "store",
+  "sidecar_agent": {
+    "base_url": "http://127.0.0.1:15010",
+    "grace_period": "20s"
   }
 }
