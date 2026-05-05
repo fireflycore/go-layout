@@ -6,7 +6,7 @@ import (
 	"go-layout/internal/biz/repo"
 	"go-layout/internal/data/entity"
 
-	"github.com/fireflycore/go-micro/invocation"
+	"github.com/fireflycore/go-micro/service"
 	"github.com/fireflycore/gormx/scope"
 )
 
@@ -24,12 +24,12 @@ func (uc *demoRepo) CreateDemo(ctx context.Context, row *entity.Demo) error {
 	return uc.data.db.WithContext(ctx).Create(row).Error
 }
 
-func (uc *demoRepo) GetDemoList(ctx context.Context, um *invocation.UserContextMeta, request *pb.GetDemoListRequest) *pb.DemoList {
-	var raw pb.DemoList
+func (uc *demoRepo) GetDemoList(ctx context.Context, sc *service.Context, request *pb.GetDemoListRequest) *pb.GetDemoListResponse {
+	var raw pb.GetDemoListResponse
 
 	sql := uc.data.db.WithContext(ctx).Model(&entity.Demo{})
-	sql.Where("user_id = ?", um.UserId)
-	sql.Where("app_id = ?", um.AppId)
+	sql.Where("user_id = ?", sc.UserId)
+	sql.Where("app_id = ?", sc.AppId)
 	if len(request.SearchKey) != 0 {
 		sk := "%" + request.SearchKey + "%"
 		sql.Where("name LIKE ?", sk)
