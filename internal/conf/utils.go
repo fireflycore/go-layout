@@ -1,12 +1,12 @@
 package conf
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 
+	microConfig "github.com/fireflycore/go-micro/config"
 	"github.com/fireflycore/go-utils/compress"
 	"github.com/fireflycore/go-utils/crypto"
 )
@@ -22,6 +22,16 @@ func NewConfigUtils(crypto crypto.Crypto, compress compress.Compress) *Utils {
 		crypto:   crypto,
 		compress: compress,
 	}
+}
+
+// Encryptor 返回统一配置读取链路使用的加解密实现。
+func (ist *Utils) Encryptor() microConfig.Encryptor {
+	return ist.crypto
+}
+
+// Compressor 返回统一配置读取链路使用的压缩实现。
+func (ist *Utils) Compressor() microConfig.Compressor {
+	return ist.compress
 }
 
 // GetConfigFilePath 获取配置路径
@@ -44,24 +54,4 @@ func (ist *Utils) LoadJSONConfig(file string, target any) error {
 		return fmt.Errorf("failed to parse config file %s: %w", file, err)
 	}
 	return nil
-}
-
-// AnalyzeData 按“整份配置项”解密并反序列化目标对象。
-func (ist *Utils) AnalyzeData(content string, key []byte, val any) error {
-	decode, err := base64.StdEncoding.DecodeString(content)
-	if err != nil {
-		return err
-	}
-
-	decrypt, de := ist.crypto.Decrypt(decode, key)
-	if de != nil {
-		return de
-	}
-
-	decompress, err := ist.compress.Decompress(decrypt)
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(decompress, val)
 }
