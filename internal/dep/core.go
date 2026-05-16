@@ -11,7 +11,7 @@ import (
 // ProviderSet 组装模板库基础依赖，包括 telemetry、标准日志和 invocation 调用能力。
 var ProviderSet = wire.NewSet(
 	crypto.NewAESCrypto,
-	compress.NewGZIP,
+	compress.NewZstd,
 	sys.NewHostInfo,
 
 	logger.NewZapLogger,
