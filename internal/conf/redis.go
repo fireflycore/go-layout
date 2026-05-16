@@ -17,13 +17,14 @@ func NewRedisConfig(utils *Utils, bootstrapConfig *BootstrapConfig, store config
 		ctx,
 		store,
 		config.StoreParams{
-			AppId:     bootstrapConfig.App.Id,
-			Env:       bootstrapConfig.App.Env,
-			Group:     "database",
-			Name:      "redis",
-			AppSecret: []byte(bootstrapConfig.App.Secret),
+			AppId:      bootstrapConfig.App.Id,
+			Env:        bootstrapConfig.App.Env,
+			Group:      "database",
+			Name:       "redis",
+			AppSecret:  []byte(bootstrapConfig.App.Secret),
+			Compressor: utils.Compressor(),
+			Encryptor:  utils.Encryptor(),
 		},
-		utils.AnalyzeData,
 	)
 	if err != nil {
 		return nil, err
