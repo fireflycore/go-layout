@@ -65,7 +65,7 @@ func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlCon
 }
 
 // NewRedis 创建模板服务默认 Redis 客户端。
-func NewRedis(redisConf *redisx.Conf) (*redis.Client, error) {
+func NewRedis(redisConf *redisx.Config) (*redis.Client, error) {
 	return redisx.New(redisConf)
 }
 
