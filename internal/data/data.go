@@ -47,7 +47,7 @@ func NewRedis(redisConf *redisx.Conf) (*redis.Client, error) {
 
 // NewMysql 初始化模板库默认 MySQL 连接，并保持示例实体自动迁移关闭。
 func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlConfig) (*gorm.DB, error) {
-	mysqlConfig.WithTables([]interface{}{
+	mysqlConfig.WithTables([]any{
 		&entity.Demo{},
 	})
 	mysqlConfig.WithAutoMigrate(false)
