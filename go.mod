@@ -6,7 +6,7 @@ require (
 	buf.build/go/protovalidate v1.1.3
 	github.com/fireflycore/go-consul v0.2.0
 	github.com/fireflycore/go-micro v1.5.5
-	github.com/fireflycore/go-redis v0.1.2
+	github.com/fireflycore/go-redis v0.1.3
 	github.com/fireflycore/go-utils v0.3.7
 	github.com/fireflycore/gormx v1.0.0
 	github.com/google/uuid v1.6.0
