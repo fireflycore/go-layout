@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// AppServer 把业务 gRPC、管理端口和 sidecar-agent 收敛成统一运行入口。
+// AppServer 汇总服务运行期需要持有的主对象。
 type AppServer struct {
 	ConnectionManager *invocation.ConnectionManager
 	ManagedServer     *AppManagedServer
@@ -20,33 +20,37 @@ type AppServer struct {
 	GrpcServer        *GrpcServer
 }
 
+// NewAppServer 将 gRPC、管理端口关闭逻辑写入 sidecar Agent（ConfigureRun），并返回同一 Agent 作为统一运行入口。
 func NewAppServer(
 	bootstrapConfig *conf.BootstrapConfig,
+
 	log *logger.ServerLogger,
 	providers *telemetry.Providers,
+
 	grpcServer *GrpcServer,
 	sidecarAgent *agent.Agent,
 	managedServer *AppManagedServer,
+
 	connectionManager *invocation.ConnectionManager,
 ) (*AppServer, error) {
 	if sidecarAgent == nil {
 		return nil, errors.New("sidecar agent is required")
 	}
 
+	// 统一把 gRPC 与管理端口的启动、关闭动作挂到 sidecar 生命周期上。
 	sidecarAgent.ConfigureRun(agent.SidecarAgentConfig{
-		GracePeriod: bootstrapConfig.SidecarAgentConfig().GracePeriod,
 		Serve: func(ctx context.Context) error {
 			errCh := make(chan error, 2)
-
+			// 管理端口与 gRPC 端口并行启动，任何一个异常退出都视为服务异常。
 			go func() {
 				errCh <- managedServer.Serve()
 			}()
 			go func() {
 				errCh <- grpcServer.Serve()
 			}()
-
 			select {
 			case err := <-errCh:
+				// 这里保留服务名与实例号，便于定位是哪一个实例先退出。
 				if err != nil {
 					log.Error("managed server exited with error",
 						zap.String("service_name", bootstrapConfig.Service.Name),
@@ -59,12 +63,12 @@ func NewAppServer(
 				return nil
 			}
 		},
-		Shutdown: func(context.Context) error {
+		Shutdown: func(ctx context.Context) error {
+			// 先停止对外监听，再回收出站连接和可观测性 provider。
 			log.Info("stopping service servers",
 				zap.String("service_name", bootstrapConfig.Service.Name),
 				zap.String("service_instance_id", bootstrapConfig.App.InstanceId),
 			)
-
 			managedServer.Stop()
 			grpcServer.Stop()
 			if connectionManager != nil {
@@ -76,10 +80,7 @@ func NewAppServer(
 					)
 				}
 			}
-			if providers != nil {
-				_ = providers.Shutdown()
-			}
-
+			providers.Shutdown()
 			log.Info("service servers stopped",
 				zap.String("service_name", bootstrapConfig.Service.Name),
 				zap.String("service_instance_id", bootstrapConfig.App.InstanceId),

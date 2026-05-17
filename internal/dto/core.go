@@ -4,7 +4,7 @@ import (
 	"github.com/google/wire"
 )
 
-// ProviderSet is server providers.
+// ProviderSet 组装 DTO 转换实现。
 var ProviderSet = wire.NewSet(
 	NewDemoDTO,
 )

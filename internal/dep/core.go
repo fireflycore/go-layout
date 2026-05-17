@@ -8,7 +8,7 @@ import (
 	"github.com/google/wire"
 )
 
-// ProviderSet 组装模板库基础依赖，包括 telemetry、标准日志和 invocation 调用能力。
+// ProviderSet 组装公共依赖与出站调用相关 provider。
 var ProviderSet = wire.NewSet(
 	crypto.NewAESCrypto,
 	compress.NewZstd,

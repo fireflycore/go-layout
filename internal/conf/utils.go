@@ -11,6 +11,7 @@ import (
 	"github.com/fireflycore/go-utils/crypto"
 )
 
+// Utils 提供启动期配置文件读取相关辅助能力。
 type Utils struct {
 	crypto   crypto.Crypto
 	compress compress.Compress
@@ -34,7 +35,7 @@ func (ist *Utils) Compressor() microConfig.Compressor {
 	return ist.compress
 }
 
-// GetConfigFilePath 获取配置路径
+// GetConfigFilePath 返回 conf 目录下配置文件的绝对路径。
 func (ist *Utils) GetConfigFilePath(filename string) string {
 	cur, err := os.Getwd()
 	if err != nil {
@@ -43,13 +44,15 @@ func (ist *Utils) GetConfigFilePath(filename string) string {
 	return filepath.Join(cur, "conf", filename)
 }
 
-// LoadJSONConfig 获取本地配置
+// LoadJSONConfig 读取并解析 JSON 配置文件。
 func (ist *Utils) LoadJSONConfig(file string, target any) error {
+	// 先完整读取文件内容，保持启动阶段错误尽早暴露。
 	b, err := os.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("failed to read config file %s: %w", file, err)
 	}
 
+	// 解析失败时保留原始文件路径，方便启动期快速定位问题。
 	if err = json.Unmarshal(b, target); err != nil {
 		return fmt.Errorf("failed to parse config file %s: %w", file, err)
 	}

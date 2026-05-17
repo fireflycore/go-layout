@@ -1,9 +1,6 @@
 package conf
 
 import (
-	"net"
-	"strconv"
-
 	"github.com/fireflycore/go-consul/agent"
 	"github.com/fireflycore/go-micro/app"
 	"github.com/fireflycore/go-micro/kernel"
@@ -13,30 +10,41 @@ import (
 	"github.com/fireflycore/go-micro/telemetry"
 )
 
-// BootstrapConfig 是服务启动阶段加载的一次性引导配置。
+// BootstrapConfig 描述服务启动期静态配置。
 type BootstrapConfig struct {
-	App       app.Config       `json:"app"`
-	Kernel    kernel.Config    `json:"kernel"`
-	Logger    logger.Config    `json:"logger"`
-	Service   service.Config   `json:"service"`
+	// App 应用配置
+	App app.Config `json:"app"`
+	// Kernel 内核配置
+	Kernel kernel.Config `json:"kernel"`
+	// Logger 日志配置
+	Logger logger.Config `json:"logger"`
+	// Service 服务配置
+	Service service.Config `json:"service"`
+	// Telemetry 可观测性配置
 	Telemetry telemetry.Config `json:"telemetry"`
 
-	ServerPort     uint   `json:"server_port"`
-	ManagedPort    uint   `json:"managed_port"`
+	// ServerPort 服务端口
+	ServerPort uint `json:"server_port"`
+	// ManagePort 管理端口
+	ManagedPort uint `json:"managed_port"`
 
-	SidecarAgent   *agent.SidecarAgentConfig `json:"sidecar_agent"`
-	SystemHostInfo *sys.HostInfo             `json:"-"`
+	// SidecarAgent 保存 sidecar-agent 接管服务生命周期所需配置。
+	SidecarAgent *agent.SidecarAgentConfig `json:"sidecar_agent"`
+
+	// SystemHostInfo 保存宿主机信息，启动后由代码注入，不从配置文件反序列化。
+	SystemHostInfo *sys.HostInfo `json:"-"`
 }
 
-// NewBootstrapConfig 加载并补齐服务启动配置。
+// NewBootstrapConfig 读取并初始化服务启动配置。
 func NewBootstrapConfig(utils *Utils, hostInfo *sys.HostInfo) *BootstrapConfig {
 	var bc BootstrapConfig
-
+	// bootstrap.json 只承载启动期静态配置，不走运行时配置中心。
 	filePath := utils.GetConfigFilePath("bootstrap.json")
 	if err := utils.LoadJSONConfig(filePath, &bc); err != nil {
 		panic(err)
 	}
 
+	// App / Service 的 Bootstrap 会补齐实例标识、服务默认值等运行必要字段。
 	if err := bc.App.Bootstrap(); err != nil {
 		panic(err)
 	}
@@ -44,54 +52,13 @@ func NewBootstrapConfig(utils *Utils, hostInfo *sys.HostInfo) *BootstrapConfig {
 	if err := bc.Service.Bootstrap(); err != nil {
 		panic(err)
 	}
-	if bc.ServerPort == 0 {
-		bc.ServerPort = bc.Service.Port
-	}
-	if bc.ManagedPort == 0 && bc.ServerPort != 0 {
-		bc.ManagedPort = bc.ServerPort + 1
-	}
-	if bc.SidecarAgent == nil {
-		sidecarAgent := agent.DefaultSidecarAgentConfig("")
-		bc.SidecarAgent = &sidecarAgent
-	} else {
-		sidecarAgent := agent.DefaultSidecarAgentConfig(bc.SidecarAgent.BaseURL)
-		if bc.SidecarAgent.WatchURL != "" {
-			sidecarAgent.WatchURL = bc.SidecarAgent.WatchURL
-		}
-		if bc.SidecarAgent.GracePeriod != "" {
-			sidecarAgent.GracePeriod = bc.SidecarAgent.GracePeriod
-		}
-		if bc.SidecarAgent.RequestTimeout > 0 {
-			sidecarAgent.RequestTimeout = bc.SidecarAgent.RequestTimeout
-		}
-		if bc.SidecarAgent.ReconnectInterval > 0 {
-			sidecarAgent.ReconnectInterval = bc.SidecarAgent.ReconnectInterval
-		}
-		bc.SidecarAgent = &sidecarAgent
-	}
-	if bc.SidecarAgent.GracePeriod == "" {
-		bc.SidecarAgent.GracePeriod = "20s"
-	}
-
+	// 宿主机信息在启动期注入，供日志与注册链路复用。
 	bc.SystemHostInfo = hostInfo
+
 	return &bc
 }
 
+// NewLoggerConfig 暴露日志配置给 logger provider 复用。
 func NewLoggerConfig(bootstrapConfig *BootstrapConfig) *logger.Config {
 	return &bootstrapConfig.Logger
-}
-
-func (bc *BootstrapConfig) ServiceEndpoint() string {
-	return net.JoinHostPort("0.0.0.0", strconv.FormatUint(uint64(bc.ServerPort), 10))
-}
-
-func (bc *BootstrapConfig) ManagementEndpoint() string {
-	return net.JoinHostPort("0.0.0.0", strconv.FormatUint(uint64(bc.ManagedPort), 10))
-}
-
-func (bc *BootstrapConfig) SidecarAgentConfig() agent.SidecarAgentConfig {
-	if bc == nil || bc.SidecarAgent == nil {
-		return agent.DefaultSidecarAgentConfig("")
-	}
-	return *bc.SidecarAgent
 }

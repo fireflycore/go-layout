@@ -51,13 +51,23 @@ func NewInvocationConnectionManager(bootstrapConfig *conf.BootstrapConfig) (*inv
 
 // NewRemoteServiceManaged 在启动期集中登记本服务依赖的远程业务服务。
 //
-// 模板默认不声明下游服务；新增远程依赖时，在这里补充 invocation.DNS，
-// 再在 data 层按业务服务名绑定 RemoteServiceCaller。
-func NewRemoteServiceManaged(invoker *invocation.UnaryInvoker) *invocation.RemoteServiceManaged {
-	return invocation.NewRemoteServiceManaged(invoker)
+// 这里维护的是“config service 依赖了哪些远程业务服务”的总表，后续新增
+// 下游时继续在 dep 包集中扩展；`internal/data/rs_*.go` 只负责按业务服务
+// 名绑定 caller，不再承载多服务注册表本身。
+func NewRemoteServiceManaged(invoker *invocation.UnaryInvoker, bootstrapConfig *conf.BootstrapConfig) *invocation.RemoteServiceManaged {
+	return invocation.NewRemoteServiceManaged(
+		invoker,
+		invocation.DNS{
+			Service:   "auth",
+			Namespace: bootstrapConfig.Service.Namespace,
+		},
+	)
 }
 
 // NewUnaryInvoker 把连接管理器封装成统一的 unary 调用入口。
+//
+// v1.4.2 之后，统一 timeout 与当前服务身份都在初始化时注入，
+// repo 层不再按单次调用覆盖这些通用参数。
 func NewUnaryInvoker(manager *invocation.ConnectionManager, bootstrapConfig *conf.BootstrapConfig) *invocation.UnaryInvoker {
 	return invocation.NewUnaryInvoker(
 		manager,
@@ -67,10 +77,10 @@ func NewUnaryInvoker(manager *invocation.ConnectionManager, bootstrapConfig *con
 	)
 }
 
-// serviceAuthUnaryInterceptor 在所有出站调用上统一补 Authorization。
+// serviceAuthUnaryInterceptor 在所有出站调用上兜底补 Authorization。
 //
 // 这样 repo 层只表达“调哪个业务服务、调哪个 method”，
-// 不需要每次都重复拼接服务身份 token。
+// 不需要每次都重复处理服务级身份注入。
 func serviceAuthUnaryInterceptor(token string) grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req any, reply any, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 		// 没有 token 时，直接透传调用。
