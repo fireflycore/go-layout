@@ -23,7 +23,6 @@ type BootstrapConfig struct {
 
 	ServerPort     uint   `json:"server_port"`
 	ManagedPort    uint   `json:"managed_port"`
-	LoadConfigMode string `json:"load_config_mode"`
 
 	SidecarAgent   *agent.SidecarAgentConfig `json:"sidecar_agent"`
 	SystemHostInfo *sys.HostInfo             `json:"-"`
@@ -50,9 +49,6 @@ func NewBootstrapConfig(utils *Utils, hostInfo *sys.HostInfo) *BootstrapConfig {
 	}
 	if bc.ManagedPort == 0 && bc.ServerPort != 0 {
 		bc.ManagedPort = bc.ServerPort + 1
-	}
-	if bc.LoadConfigMode == "" {
-		bc.LoadConfigMode = "store"
 	}
 	if bc.SidecarAgent == nil {
 		sidecarAgent := agent.DefaultSidecarAgentConfig("")
