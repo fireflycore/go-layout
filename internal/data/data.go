@@ -25,7 +25,7 @@ type Data struct {
 	consul *api.Client
 }
 
-// NewData 汇总模板服务数据层基础依赖，统一向 Repo 暴露数据库、缓存与 Store 能力。
+// NewData 统一向各 Repo 暴露数据库、缓存与配置读取能力。
 func NewData(db *gorm.DB, rdb *redis.Client, store microConfig.Store, consul *api.Client) *Data {
 	return &Data{
 		db:  db,
@@ -36,7 +36,7 @@ func NewData(db *gorm.DB, rdb *redis.Client, store microConfig.Store, consul *ap
 	}
 }
 
-// NewMysql 初始化模板服务使用的 MySQL 连接，并保持示例实体自动迁移关闭。
+// NewMysql 初始化当前服务使用的 Mysql 连接，并保持自动迁移关闭。
 func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlConfig) (*gorm.DB, error) {
 	mysqlConfig.WithTables([]any{
 		&entity.Demo{},
@@ -64,12 +64,12 @@ func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlCon
 	return db.DB, nil
 }
 
-// NewRedis 创建模板服务默认 Redis 客户端。
+// NewRedis 创建当前服务使用的 Redis 客户端。
 func NewRedis(redisConf *redisx.Config) (*redis.Client, error) {
 	return redisx.New(redisConf)
 }
 
-// NewConfigStore 基于 Consul 客户端构造统一配置 Store，供运行期配置按当前主线直接从数据面读取。
+// NewConfigStore 基于 Consul 客户端构造统一配置 Store。
 func NewConfigStore(client *api.Client) (microConfig.Store, error) {
 	store, err := consulConfig.NewStore(client, nil)
 	if err != nil {
@@ -78,7 +78,23 @@ func NewConfigStore(client *api.Client) (microConfig.Store, error) {
 	return store, nil
 }
 
-// NewConsul 创建模板服务复用的 Consul 客户端。
+// NewConfigClient 基于 go-consul/config.Client 构造运行时配置客户端。
+func NewConfigClient(store microConfig.Store) microConfig.Client {
+	consulStore, ok := store.(*consulConfig.StoreInstance)
+	if !ok || consulStore == nil {
+		return nil
+	}
+
+	// 构造失败时返回 nil，让上层退回到直接走 Store.Get 的兜底路径。
+	client, err := consulConfig.NewClient(consulStore)
+	if err != nil {
+		return nil
+	}
+
+	return client
+}
+
+// NewConsul 创建当前服务复用的 Consul 客户端。
 func NewConsul(consulConf *consul.Config) (*api.Client, error) {
 	return consul.New(consulConf)
 }

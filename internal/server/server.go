@@ -52,7 +52,7 @@ func NewAppServer(
 			case err := <-errCh:
 				// 这里保留服务名与实例号，便于定位是哪一个实例先退出。
 				if err != nil {
-					log.Error("managed server exited with error",
+					log.Error("service server exited with error",
 						zap.String("service_name", bootstrapConfig.Service.Name),
 						zap.String("service_instance_id", bootstrapConfig.App.InstanceId),
 						zap.Error(err),

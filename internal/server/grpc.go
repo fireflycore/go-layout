@@ -59,7 +59,7 @@ func NewGrpcServer(
 	healthServer.SetServingStatus(bootstrapConfig.Service.Name, grpc_health_v1.HealthCheckResponse_SERVING)
 	grpc_health_v1.RegisterHealthServer(srv, healthServer)
 
-	// 显式注册本服务暴露的业务服务。
+	// 显式注册当前服务的 gRPC 业务服务。
 	demo.RegisterDemoServiceServer(srv, demoService)
 
 	return &GrpcServer{

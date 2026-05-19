@@ -8,7 +8,7 @@ import (
 	"github.com/google/wire"
 )
 
-// ProviderSet 组装公共依赖与出站调用相关 provider。
+// ProviderSet 组装公共依赖。
 var ProviderSet = wire.NewSet(
 	crypto.NewAESCrypto,
 	compress.NewZstd,

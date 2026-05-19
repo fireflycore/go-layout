@@ -19,10 +19,12 @@ func NewMysqlConfig(utils *Utils, bootstrapConfig *BootstrapConfig, store config
 		ctx,
 		store,
 		config.StoreParams{
-			AppId:      bootstrapConfig.App.Id,
-			Env:        bootstrapConfig.App.Env,
-			Group:      "database",
-			Name:       "mysql",
+			Key: config.Key{
+				AppId: bootstrapConfig.App.Id,
+				Env:   bootstrapConfig.App.Env,
+				Group: "database",
+				Key:   "mysql",
+			},
 			AppSecret:  []byte(bootstrapConfig.App.Secret),
 			Compressor: utils.Compressor(),
 			Encryptor:  utils.Encryptor(),
