@@ -20,7 +20,7 @@ type App struct {
 	Logger *logger.ServerLogger
 }
 
-// Run 使用 agent.Run 统一托管 gRPC、管理端口与 sidecar watch/replay，退出时自动收尾。
+// Run 使用 SidecarAgent.Run 统一托管 gRPC、管理端口与 sidecar watch/replay，退出时自动收尾。
 func (ist *App) Run(ctx context.Context) error {
 	// 启动前先输出服务基础元信息，便于排查部署实例与监听地址。
 	ist.Logger.Info("starting service",
@@ -55,7 +55,7 @@ func (ist *App) Run(ctx context.Context) error {
 		return errors.New("sidecar agent is required")
 	}
 
-	// 把主运行控制权交给 ManagedServer，统一托管 gRPC、管理端口和 sidecar 生命周期。
+	// 把主运行控制权交给 SidecarAgent，统一托管 gRPC、管理端口和 sidecar 生命周期。
 	err := ist.Server.SidecarAgent.Run(ctx)
 
 	// 托管运行结束后输出最终停止日志。
@@ -69,12 +69,12 @@ func (ist *App) Run(ctx context.Context) error {
 // NewApp 组装应用根对象。
 func NewApp(
 	bootstrapConfig *conf.BootstrapConfig,
-	Server *server.AppServer,
+	server *server.AppServer,
 	logger *logger.ServerLogger,
 ) *App {
 	return &App{
 		BootstrapConfig: bootstrapConfig,
-		Server:          Server,
+		Server:          server,
 		Logger:          logger,
 	}
 }

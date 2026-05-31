@@ -4,7 +4,6 @@
 package main
 
 import (
-	"github.com/google/wire"
 	"go-layout/internal/biz"
 	"go-layout/internal/conf"
 	"go-layout/internal/data"
@@ -12,8 +11,11 @@ import (
 	"go-layout/internal/dto"
 	"go-layout/internal/server"
 	"go-layout/internal/service"
+
+	"github.com/google/wire"
 )
 
+// wireApp 使用 Wire 把各层 ProviderSet 组装成应用根对象。
 func wireApp() (*App, error) {
 	panic(wire.Build(
 		dep.ProviderSet,
