@@ -9,10 +9,14 @@ import (
 // NewTelemetryProviders 创建服务级可观测性 provider 集合。
 func NewTelemetryProviders(bootstrapConfig *conf.BootstrapConfig) (*telemetry.Providers, error) {
 	return telemetry.NewProviders(&bootstrapConfig.Telemetry, &telemetry.Resource{
-		ServiceId:         bootstrapConfig.App.Id,
-		ServiceName:       bootstrapConfig.Service.Name,
-		ServiceVersion:    bootstrapConfig.App.Version,
-		ServiceNamespace:  bootstrapConfig.Service.Namespace,
+		ServiceId: bootstrapConfig.App.Id,
+		// ServiceName 服务名称
+		ServiceName: bootstrapConfig.Service.Name,
+		// ServiceVersion 服务版本
+		ServiceVersion: bootstrapConfig.App.Version,
+		// ServiceNamespace 服务命名空间
+		ServiceNamespace: bootstrapConfig.Service.Namespace,
+		// ServiceInstanceId 服务实例id
 		ServiceInstanceId: bootstrapConfig.App.InstanceId,
 	})
 }
