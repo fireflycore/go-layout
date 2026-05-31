@@ -46,7 +46,7 @@
 
 ### 常用命令
 
-- `make generate`: 执行 `buf generate` 并生成 DTO
+- `make generate`: 执行 `buf generate` 生成 Go 代码、`dep/protobuf/gen/gateway.manifest.json`，并生成 DTO
 - `make init`: 执行生成链路、`wire ./cmd/server` 和 `go mod tidy`
 - `make run`: 直接执行 `go run ./cmd/server`
 - `make build`: 先执行 `make init`，再注入构建信息并编译服务
@@ -54,7 +54,7 @@
 ## 当前框架主线
 
 - 启动托管：`App.Run(ctx)` 进入 `agent.Agent.Run(ctx)`，由 Agent 统一驱动 `gRPC + management + sidecar watch/replay`。
-- 服务注册：`internal/server/register.go` 基于 `agent.ServiceOptions + grpc.ServiceDesc` 组装 `agent.Agent`。
+- 服务注册：`internal/server/register.go` 基于 `agent.ServiceOptions + gateway.manifest.json` 组装 `agent.Agent`，服务能力统一由 manifest-first 注册链路提供。
 - 管理端口：`internal/server/managed.go` 暴露 `/health`、`/ready`、`/info`、`/metrics`，并在 `/ready`、`/info` 输出 sidecar 状态摘要。
 - 服务上下文：gRPC 入口通过 `gm.NewServiceContextUnaryInterceptor` 注入 `go-micro/service.Context`，业务代码不再解析旧 `invocation.UserContextMeta`。
 - 远程调用：`internal/dep/client.go` 保留 `ConnectionManager / UnaryInvoker / RemoteServiceManaged` 模板，新增下游服务时集中登记 `invocation.DNS`。
