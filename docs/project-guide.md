@@ -23,7 +23,7 @@
 - **Buf** (用于 Proto 管理): `npm install -g @bufbuild/buf` 或参考官方文档
 - **Wire** (用于依赖注入): `go install github.com/google/wire/cmd/wire@latest`
 - **Goverter** (用于数据转换): `go install github.com/jmattheis/goverter/cmd/goverter@latest`
-- **Protoc-Gen-Go** 相关插件 (参考 `buf.gen.yaml`)
+- **Protoc-Gen-Go** 相关插件与 **protoc-gen-gateway-manifest** (参考 `buf.gen.yaml`)
 
 ### 2. 初始化项目
 假设你要创建一个名为 `account-service` 的新服务：
@@ -69,8 +69,8 @@ make run
 
 ### Buf (Protobuf 管理)
 本项目不直接包含 `.proto` 文件，而是假设 Proto 定义在独立的仓库中管理（推荐做法）。
-- `buf.gen.yaml`: 定义了如何从 Proto 生成 Go 代码。
-- **生成代码**：通常通过 CI/CD 管道或脚本执行 `buf generate`，生成的代码位于 `dep/protobuf/gen`。
+- `buf.gen.yaml`: 定义了如何从 Proto 生成 Go 代码和 `gateway.manifest.json`。
+- **生成代码**：通常通过 CI/CD 管道或脚本执行 `buf generate`，生成的 Go 代码和 `dep/protobuf/gen/gateway.manifest.json` 位于 `dep/protobuf/gen`。
 
 ### Wire (依赖注入)
 - **入口**：`cmd/server/wire.go`

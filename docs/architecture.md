@@ -130,7 +130,7 @@ func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlCon
 
 当前模板以 `go-consul/agent.Agent` 作为裸机 sidecar-agent 桥接单入口：
 
-- `internal/server/register.go` 基于 `agent.ServiceOptions + grpc.ServiceDesc` 构造 `agent.Agent`。
+- `internal/server/register.go` 基于 `agent.ServiceOptions + gateway.manifest.json` 构造 `agent.Agent`，服务能力由 manifest-first 注册链路提供。
 - `internal/server/server.go` 通过 `Agent.ConfigureRun(...)` 注入业务 `Serve/Shutdown` 回调。
 - `cmd/server/app.go` 最终调用 `Agent.Run(ctx)`，统一驱动 `gRPC + management + sidecar watch/replay`。
 - `internal/server/managed.go` 暴露 `/health`、`/ready`、`/info`、`/metrics`，其中 `/ready` 和 `/info` 会返回 `agent.Status` 摘要。

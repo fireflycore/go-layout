@@ -25,7 +25,7 @@
 │   ├── dto/                    # [转换] DTO 注册与入口
 │   ├── server/                 # [服务] gRPC、management、sidecar 生命周期托管
 │   └── service/                # [接口] 应用服务层 (Application Service)
-├── buf.gen.yaml                # [工具] Buf 生成配置文件
+├── buf.gen.yaml                # [工具] Buf 生成 Go 代码与 gateway.manifest.json
 ├── go.mod                      # [依赖] Go 模块定义
 └── makefile                    # [工具] 常用命令封装，当前拆分为 generate/init/run/build
 ```
@@ -69,7 +69,7 @@
 
 - `grpc.go`: **[配置]** 业务 gRPC Server 封装，负责监听、OTel、访问日志和优雅停机。
 - `managed.go`: **[配置]** 管理端口，暴露 `/health`、`/ready`、`/info`、`/metrics`。
-- `register.go`: **[配置]** 基于 `agent.ServiceOptions + grpc.ServiceDesc` 组装 `go-consul/agent.Agent`。
+- `register.go`: **[配置]** 基于 `agent.ServiceOptions + gateway.manifest.json` 组装 `go-consul/agent.Agent`。
 - `server.go`: **[配置]** 通过 `Agent.ConfigureRun(...)` 注入业务 `Serve/Shutdown`，统一托管 `gRPC + management + sidecar watch/replay`。
 - `build_info.go`: **[配置]** 管理端口对外暴露的构建信息。
 
