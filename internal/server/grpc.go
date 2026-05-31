@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fireflycore/go-micro/authz"
 	"github.com/fireflycore/go-micro/logger"
 	gm "github.com/fireflycore/go-micro/middleware/grpc"
 	ggm "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -38,6 +39,12 @@ func NewGrpcServer(
 		panic(err)
 	}
 
+	// 根据 bootstrap 中的 authz_verification 构造服务侧验签选项；默认关闭时保持历史行为。
+	authzVerification, err := authz.NewVerificationOptions(bootstrapConfig.AuthzVerification)
+	if err != nil {
+		panic(err)
+	}
+
 	// 中间件顺序保持固定：先 recovery，再建立 ServiceContext，最后做校验错误映射和访问日志。
 	srv := grpc.NewServer(
 		grpc.StatsHandler(gm.NewOtelServerStatsHandler()),
@@ -47,6 +54,8 @@ func NewGrpcServer(
 			gm.NewServiceContextUnaryInterceptor(gm.ServiceContextInterceptorOptions{
 				ServiceAppId:      bootstrapConfig.App.Id,
 				ServiceInstanceId: bootstrapConfig.App.InstanceId,
+				AuthzVerification: authzVerification.AuthzVerification,
+				AuthzSkipMethods:  authzVerification.AuthzSkipMethods,
 			}),
 
 			gm.ValidationErrorToInvalidArgument(),
