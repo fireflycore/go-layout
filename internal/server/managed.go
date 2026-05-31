@@ -34,7 +34,7 @@ func NewAppManagedServer(bootstrapConfig *conf.BootstrapConfig, provider *teleme
 
 	mux := http.NewServeMux()
 
-	if provider.MetricsHandler != nil {
+	if provider != nil && provider.MetricsHandler != nil {
 		mux.Handle("/metrics", provider.MetricsHandler)
 	}
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {

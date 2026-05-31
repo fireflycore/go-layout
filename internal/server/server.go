@@ -80,7 +80,13 @@ func NewAppServer(
 					)
 				}
 			}
-			providers.Shutdown()
+			if err := providers.Shutdown(); err != nil {
+				log.Warn("failed to shutdown telemetry providers",
+					zap.String("service_name", bootstrapConfig.Service.Name),
+					zap.String("service_instance_id", bootstrapConfig.App.InstanceId),
+					zap.Error(err),
+				)
+			}
 			log.Info("service servers stopped",
 				zap.String("service_name", bootstrapConfig.Service.Name),
 				zap.String("service_instance_id", bootstrapConfig.App.InstanceId),

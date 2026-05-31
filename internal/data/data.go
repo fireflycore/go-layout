@@ -1,12 +1,13 @@
 package data
 
 import (
+	"fmt"
 	"go-layout/internal/conf"
 	"go-layout/internal/data/entity"
 
-	consul "github.com/fireflycore/go-consul"
+	"github.com/fireflycore/go-consul"
 	consulConfig "github.com/fireflycore/go-consul/config"
-	microConfig "github.com/fireflycore/go-micro/config"
+	"github.com/fireflycore/go-micro/config"
 	"github.com/fireflycore/go-micro/constant"
 	redisx "github.com/fireflycore/go-redis"
 	"github.com/fireflycore/gormx"
@@ -21,16 +22,15 @@ type Data struct {
 	db  *gorm.DB
 	rdb *redis.Client
 
-	store  microConfig.Store
+	store  config.Store
 	consul *api.Client
 }
 
 // NewData 统一向各 Repo 暴露数据库、缓存与配置读取能力。
-func NewData(db *gorm.DB, rdb *redis.Client, store microConfig.Store, consul *api.Client) *Data {
+func NewData(db *gorm.DB, rdb *redis.Client, store config.Store, consul *api.Client) *Data {
 	return &Data{
-		db:  db,
-		rdb: rdb,
-
+		db:     db,
+		rdb:    rdb,
 		store:  store,
 		consul: consul,
 	}
@@ -65,13 +65,13 @@ func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlCon
 }
 
 // NewRedis 创建当前服务使用的 Redis 客户端。
-func NewRedis(redisConf *redisx.Config) (*redis.Client, error) {
-	return redisx.New(redisConf)
+func NewRedis(redisConfig *redisx.Config) (*redis.Client, error) {
+	return redisx.New(redisConfig)
 }
 
 // NewConfigStore 基于 Consul 客户端构造统一配置 Store。
-func NewConfigStore(client *api.Client) (microConfig.Store, error) {
-	store, err := consulConfig.NewStore(client, nil)
+func NewConfigStore(client *api.Client, bootstrapConfig *conf.BootstrapConfig) (config.Store, error) {
+	store, err := consulConfig.NewStore(client, nil, config.WithNamespace(fmt.Sprintf("%s/config", bootstrapConfig.Service.Namespace)))
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func NewConfigStore(client *api.Client) (microConfig.Store, error) {
 }
 
 // NewConfigClient 基于 go-consul/config.Client 构造运行时配置客户端。
-func NewConfigClient(store microConfig.Store) microConfig.Client {
+func NewConfigClient(store config.Store) config.Client {
 	consulStore, ok := store.(*consulConfig.StoreInstance)
 	if !ok || consulStore == nil {
 		return nil
@@ -95,6 +95,6 @@ func NewConfigClient(store microConfig.Store) microConfig.Client {
 }
 
 // NewConsul 创建当前服务复用的 Consul 客户端。
-func NewConsul(consulConf *consul.Config) (*api.Client, error) {
-	return consul.New(consulConf)
+func NewConsul(consulConfig *consul.Config) (*api.Client, error) {
+	return consul.New(consulConfig)
 }
