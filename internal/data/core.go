@@ -7,10 +7,13 @@ import (
 // ProviderSet 组装 data 层 provider。
 var ProviderSet = wire.NewSet(
 	NewData,
-	NewConsul,
 	NewRedis,
+	NewConsul,
 	NewMysql,
+
+	NewConfigRepo,
 	NewConfigStore,
+	NewConfigClient,
 
 	NewDemoRepo,
 )
