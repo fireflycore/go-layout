@@ -3,6 +3,7 @@ package conf
 import (
 	"github.com/fireflycore/go-consul/agent"
 	"github.com/fireflycore/go-micro/app"
+	"github.com/fireflycore/go-micro/authz"
 	"github.com/fireflycore/go-micro/kernel"
 	"github.com/fireflycore/go-micro/logger"
 	"github.com/fireflycore/go-micro/service"
@@ -30,6 +31,9 @@ type BootstrapConfig struct {
 
 	// SidecarAgent 保存 sidecar-agent 接管服务生命周期所需配置。
 	SidecarAgent *agent.SidecarAgentConfig `json:"sidecar_agent"`
+
+	// AuthzVerification 保存服务侧本地验签 authz 上下文所需配置。
+	AuthzVerification *authz.VerificationConfig `json:"authz_verification"`
 
 	// SystemHostInfo 保存宿主机信息，启动后由代码注入，不从配置文件反序列化。
 	SystemHostInfo *sys.HostInfo `json:"-"`
