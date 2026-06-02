@@ -85,7 +85,7 @@
 ### 6. `internal/dep` (依赖适配层)
 **职责**：封装第三方库或基础设施，防止外部依赖污染业务代码。
 
-- `client.go`: 基于 `invocation` 的统一远程调用连接管理器，负责 DNS target、OTel、metadata 透传和服务身份兜底注入。
+- `client.go`: 基于 `invocation` 的统一远程调用连接管理器，负责 DNS target、OTel、出站 metadata 白名单清理和 service authority provider 装配点。
 - `telemetry.go`: 基于 `bootstrap.json` 的 app/service 身份创建 OTel providers。
 - 当前目录主要承载 `telemetry/logger/invocation` 相关依赖注入，不再单独保留旧版 remote logger repo。
 

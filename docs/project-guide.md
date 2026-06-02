@@ -11,6 +11,7 @@
 - **协议优先**：集成 `Buf` 和 `gRPC`，通过 Proto 定义驱动开发，自动生成接口代码和验证逻辑 (`protovalidate`)。
 - **配置管理**：启动时读取 `bootstrap.json` 与 `consul.json`，再通过 Consul Store 统一拉取多环境运行配置。`config` 数据面支持热更新，但当前模板默认只做启动期加载，未内置运行时 `Watcher` 重载链路。
 - **统一运行托管**：默认接入 `go-consul/agent.Agent`，统一托管业务 gRPC、management 端口和 sidecar-agent watch/replay 生命周期。
+- **目标身份链路**：入站由 authz 写入 `x-firefly-authz-sign`，服务侧可按需本地验签；出站由 `go-micro/invocation` 清理旧上下文，并在接入 provider 后覆盖 `x-firefly-service-authority`。
 - **数据转换**：集成 `Goverter`，自动生成高效的 DTO <-> PO/DO 转换代码，拒绝反射。
 - **统一基础设施**：预置了 `GORM` (MySQL), `Redis`, `Logger` 等常用组件的封装和最佳配置。
 - **示例模块**：内置完整的 `Demo` 模块，展示了从 API 定义到数据库存储的完整链路，作为开发的参考范本。
@@ -71,6 +72,13 @@ make run
 本项目不直接包含 `.proto` 文件，而是假设 Proto 定义在独立的仓库中管理（推荐做法）。
 - `buf.gen.yaml`: 定义了如何从 Proto 生成 Go 代码和 `gateway.manifest.json`。
 - **生成代码**：通常通过 CI/CD 管道或脚本执行 `buf generate`，生成的 Go 代码和 `dep/protobuf/gen/gateway.manifest.json` 位于 `dep/protobuf/gen`。
+- **服务 token 客户端**：公开 demo 模板不默认生成 `acme.auth.token.v1`。实际业务服务接入 service authority 时，需要在自身 `buf.gen.yaml` 输入中加入 `acme.auth.token.v1`，但 manifest 的 `include_package_prefix` 仍只覆盖当前业务服务包，避免把 auth 的接口注册成当前服务能力。
+
+### Authz 与 Service Authority
+- `bootstrap.json` 默认不写 `authz_verification`。未配置时 gRPC middleware 只构造 `service.Context`；显式配置后启动阶段会加载 Ed25519 公钥，并对 `x-firefly-authz-sign` 做本地验签。
+- Firefly current 身份入口只使用 `x-firefly-user-authority` 和 `x-firefly-service-authority`。`Authorization` 不作为模板身份入口。
+- `internal/dep/client.go` 的 `NewServiceAuthorityProvider` 是业务服务获取 service token 的统一接入点。业务服务生成 auth token client 后，在这里调用 auth 服务 `GenerateServiceToken(app_id, app_secret)`，再用 `authz.NewServiceAuthorityToken` 包装返回值。
+- 出站调用由 `go-micro/invocation.UnaryInvoker` 统一处理 metadata：透传用户 authority 和短 TTL authz sign，清理上一跳普通身份 metadata，并在 provider 存在时覆盖当前服务的 service authority。
 
 ### Wire (依赖注入)
 - **入口**：`cmd/server/wire.go`

@@ -141,3 +141,17 @@ func (uc *demoRepo) GetDemoList(ctx context.Context, sc *service.Context, reques
 4.  **读写分离策略**：
     *   **写入**：严格经过 PO 转换，确保数据完整性和约束。
     *   **读取**：灵活处理，允许直接返回 DTO 以减少对象拷贝开销，特别是在列表查询场景。
+
+## 身份与授权上下文流转
+
+当前模板只使用 Firefly current 身份头：
+
+```text
+x-firefly-user-authority
+x-firefly-service-authority
+x-firefly-authz-sign
+```
+
+入站时，Envoy ext_authz 已经调用 authz 完成权限判定；业务服务只负责读取 authz 注入的 metadata。`authz_verification` 为空时，模板只构造普通 `service.Context`；显式配置后，gRPC middleware 会验签 `x-firefly-authz-sign`，并用签名 payload 覆盖普通 metadata 字段。
+
+出站时，`go-micro/invocation.UnaryInvoker` 会按白名单准备 metadata：保留用户 authority、短 TTL authz sign、OTel trace/baggage 和客户端事实，清理上一跳普通身份字段。业务服务接入 `NewServiceAuthorityProvider` 后，每一跳都会用当前服务 token 覆盖 `x-firefly-service-authority`。

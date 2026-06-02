@@ -8,6 +8,7 @@
 - [架构分层与依赖注入](architecture.md)
 - [开发最佳实践与扩展指南](best-practices.md)
 - [Protovalidate 速查](protovalidate.md)
+- 当前 authz / service authority 接入口说明见 [架构分层与依赖注入](architecture.md) 和 [项目指南](project-guide.md)
 
 ## firefly（Proto 仓库）
 - 目录：`/Users/lhdht/product/lhdht/code/firefly`
