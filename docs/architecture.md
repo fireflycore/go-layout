@@ -141,11 +141,23 @@ gRPC 服务端入口通过 `gm.NewServiceContextUnaryInterceptor(...)` 注入 `g
 
 - Service 层通过 `service.FromContext(ctx)` 读取用户与服务身份。
 - Biz/Data 层不再解析 gRPC metadata。
-- 出站调用继续由 `go-micro/invocation.UnaryInvoker` 基于当前 context 复用 metadata，并注入当前服务身份。
+- `authz_verification` 为空时只解析普通 metadata；显式配置后会加载 authz Ed25519 公钥并校验 `x-firefly-authz-sign`。
+- 服务侧本地验签会校验 `target_app_id` 必须等于当前服务的 `app.id`，避免把别的 route 授权结果复用到当前服务。
+
+## 出站调用与服务身份
+
+出站调用统一走 `go-micro/invocation.UnaryInvoker`：
+
+- 透传 `x-firefly-user-authority`，保证用户身份可以贯穿整条链路。
+- 透传短 TTL `x-firefly-authz-sign`，供下一跳 authz 复用身份解析结果，但下一跳仍必须按当前 route 重新做权限判定。
+- 清理上一跳 authz 注入的普通身份 metadata，避免服务间调用复用上一跳的 `invoke_app_id/target_app_id/api_path`。
+- `NewServiceAuthorityProvider` 是模板预留的 service token 获取点；实际业务服务生成 `acme.auth.token.v1` client 后，在这里调用 auth 服务 `GenerateServiceToken`，并由 `UnaryInvoker` 每跳覆盖 `x-firefly-service-authority`。
+- `Authorization` 不属于 Firefly current 身份入口，模板不再注入或读取它。
 
 ## 总结
 - **Wire** 粘合了所有层级，修改组件依赖关系后必须重新生成。
 - **Bootstrap** 提供 `app/service` 身份、业务端口、管理端口、telemetry 与 sidecar-agent 基础信息。
 - **Conf Loader** 统一走 Consul Store 读取运行期配置，TLS 证书仅保留路径引用；`config` 具备热更新能力，但当前模板默认仅装配启动期加载。
 - **Agent** 统一托管业务服务运行和 sidecar-agent 生命周期，不再使用旧 `ServiceLifecycle/ManagedServer` 主线。
+- **Authz** 默认不强制本地验签；生产接入时通过 `authz_verification` 显式开启，并通过 auth 服务签发 service token。
 - **Makefile** 当前将 `generate/init/run/build` 明确拆分：`run` 只负责启动，生成与依赖整理需要显式执行 `make init`。
