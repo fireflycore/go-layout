@@ -32,7 +32,10 @@ type BootstrapConfig struct {
 	// SidecarAgent 保存 sidecar-agent 接管服务生命周期所需配置。
 	SidecarAgent *agent.SidecarAgentConfig `json:"sidecar_agent"`
 
-	// AuthzVerification 保存服务侧本地验签 authz 上下文所需配置。
+	// AuthzVerification 保存服务侧本地验签 x-firefly-authz-sign 所需配置。
+	//
+	// 为空表示当前模板只解析普通 metadata，不启用本地验签；
+	// 非空表示服务启动时必须能加载 authz Ed25519 公钥。
 	AuthzVerification *authz.VerificationConfig `json:"authz_verification"`
 
 	// SystemHostInfo 保存宿主机信息，启动后由代码注入，不从配置文件反序列化。
