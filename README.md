@@ -57,4 +57,6 @@
 - 服务注册：`internal/server/register.go` 基于 `agent.ServiceOptions + gateway.manifest.json` 组装 `agent.Agent`，服务能力统一由 manifest-first 注册链路提供。
 - 管理端口：`internal/server/managed.go` 暴露 `/health`、`/ready`、`/info`、`/metrics`，并在 `/ready`、`/info` 输出 sidecar 状态摘要。
 - 服务上下文：gRPC 入口通过 `gm.NewServiceContextUnaryInterceptor` 注入 `go-micro/service.Context`，业务代码不再解析旧 `invocation.UserContextMeta`。
+- 本地验签：`authz_verification` 不再默认写入 `bootstrap.json`；配置对象为空时只解析普通 metadata，显式配置后才加载 authz 公钥并校验 `x-firefly-authz-sign`。
 - 远程调用：`internal/dep/client.go` 保留 `ConnectionManager / UnaryInvoker / RemoteServiceManaged` 模板，新增下游服务时集中登记 `invocation.DNS`。
+- 服务身份：出站调用只使用 `x-firefly-user-authority`、`x-firefly-service-authority` 和 `x-firefly-authz-sign` 主线；模板提供 `NewServiceAuthorityProvider` 装配点，实际业务服务生成 `acme.auth.token.v1` client 后在此接入 `GenerateServiceToken`。
