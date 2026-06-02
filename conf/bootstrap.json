@@ -30,16 +30,5 @@
   "sidecar_agent": {
     "base_url": "http://127.0.0.1:15010",
     "grace_period": "20s"
-  },
-  "authz_verification": {
-    "enabled": false,
-    "kid": "default",
-    "public_key_path": "/etc/firefly/authz/keys/default-pub.pem",
-    "issuer": "firefly-authz",
-    "clock_skew": "5s",
-    "skip_methods": [
-      "/grpc.health.v1.Health/Check",
-      "/grpc.health.v1.Health/Watch"
-    ]
   }
 }
