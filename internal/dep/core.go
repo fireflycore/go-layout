@@ -20,6 +20,7 @@ var ProviderSet = wire.NewSet(
 
 	NewTelemetryProviders,
 
+	NewServiceAuthorityProvider,
 	NewInvocationConnectionManager,
 	NewRemoteServiceManaged,
 	NewUnaryInvoker,

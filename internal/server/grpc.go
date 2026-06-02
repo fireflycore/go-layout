@@ -39,7 +39,10 @@ func NewGrpcServer(
 		panic(err)
 	}
 
-	// 根据 bootstrap 中的 authz_verification 构造服务侧验签选项；默认关闭时保持历史行为。
+	// 根据 bootstrap 中的 authz_verification 构造服务侧验签选项。
+	//
+	// authz_verification 为空时只建立 service.Context，不做本地验签；
+	// 一旦配置对象存在，就必须能加载 authz 公钥并校验 x-firefly-authz-sign。
 	authzVerification, err := authz.NewVerificationOptions(bootstrapConfig.AuthzVerification)
 	if err != nil {
 		panic(err)
@@ -52,10 +55,10 @@ func NewGrpcServer(
 			recovery.UnaryServerInterceptor(),
 			// 在服务入口先建立统一的 ServiceContext，供日志与后续业务链路复用。
 			gm.NewServiceContextUnaryInterceptor(gm.ServiceContextInterceptorOptions{
-				ServiceAppId:      bootstrapConfig.App.Id,
-				ServiceInstanceId: bootstrapConfig.App.InstanceId,
-				AuthzVerification: authzVerification.AuthzVerification,
-				AuthzSkipMethods:  authzVerification.AuthzSkipMethods,
+				// ExpectedTargetAppId 用当前服务 app.id 校验 authz sign 不可跨服务复用。
+				ExpectedTargetAppId: bootstrapConfig.App.Id,
+				AuthzVerification:   authzVerification.AuthzVerification,
+				AuthzSkipMethods:    authzVerification.AuthzSkipMethods,
 			}),
 
 			gm.ValidationErrorToInvalidArgument(),
