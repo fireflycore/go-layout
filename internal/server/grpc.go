@@ -55,10 +55,12 @@ func NewGrpcServer(
 			recovery.UnaryServerInterceptor(),
 			// 在服务入口先建立统一的 ServiceContext，供日志与后续业务链路复用。
 			gm.NewServiceContextUnaryInterceptor(gm.ServiceContextInterceptorOptions{
-				// ExpectedTargetAppId 用当前服务 app.id 校验 authz sign 不可跨服务复用。
-				ExpectedTargetAppId: bootstrapConfig.App.Id,
-				AuthzVerification:   authzVerification.AuthzVerification,
-				AuthzSkipMethods:    authzVerification.AuthzSkipMethods,
+				// ServiceAppId 是当前服务自身 app_id，go-micro 会用它校验 authz sign 的 target_app_id。
+				ServiceAppId: bootstrapConfig.App.Id,
+				// ServiceInstanceId 只进入本地上下文和 metadata，供日志、OTel、gormx 等组件读取。
+				ServiceInstanceId: bootstrapConfig.App.InstanceId,
+				AuthzVerification: authzVerification.AuthzVerification,
+				AuthzSkipMethods:  authzVerification.AuthzSkipMethods,
 			}),
 
 			gm.ValidationErrorToInvalidArgument(),
