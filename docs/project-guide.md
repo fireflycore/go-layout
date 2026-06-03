@@ -77,7 +77,8 @@ make run
 ### Authz 与 Service Authority
 - `bootstrap.json` 默认不写 `authz_verification`。未配置时 gRPC middleware 只构造 `service.Context`；显式配置后启动阶段会加载 Ed25519 公钥，并对 `x-firefly-authz-sign` 做本地验签。
 - Firefly current 身份入口只使用 `x-firefly-user-authority` 和 `x-firefly-service-authority`。`Authorization` 不作为模板身份入口。
-- `internal/dep/client.go` 的 `NewServiceAuthorityProvider` 是业务服务获取 service token 的统一接入点。业务服务生成 auth token client 后，在这里调用 auth 服务 `GenerateServiceToken(app_id, app_secret)`，再用 `authz.NewServiceAuthorityToken` 包装返回值。
+- `internal/dep/client.go` 的 `NewServiceAuthorityProvider` 是业务服务获取 service token 的统一接入点。业务服务生成 auth token client 后，在这里使用 `ConnectionManager.Dial(...)` 直连 auth 服务调用 `GenerateServiceToken(app_id, app_secret)`，再用 `authz.NewServiceAuthorityToken` 包装返回值。
+- 获取 service token 不能走 `UnaryInvoker` 或 `RemoteServiceManaged`，因为它们会反过来依赖 provider 注入 `x-firefly-service-authority`，容易形成递归依赖。
 - 出站调用由 `go-micro/invocation.UnaryInvoker` 统一处理 metadata：透传用户 authority 和短 TTL authz sign，清理上一跳普通身份 metadata，并在 provider 存在时覆盖当前服务的 service authority。
 
 ### Wire (依赖注入)
