@@ -52,9 +52,9 @@ func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlCon
 		TenantId: constant.TenantId,
 
 		// gormx 当前字段名仍叫 ServiceAppId/ServiceInstanceId；
-		// 模板绑定 current 链路的调用服务上下文 metadata，避免继续使用旧 service-* 头。
-		ServiceAppId:      constant.InvokeAppId,
-		ServiceInstanceId: constant.InvokeInstanceId,
+		// 模板绑定当前服务自身入口本地 metadata，仅用于日志、OTel 和数据库链路排障。
+		ServiceAppId:      constant.ServiceAppId,
+		ServiceInstanceId: constant.ServiceInstanceId,
 	})
 
 	db, err := gormx.NewMysql(mysqlConfig)
