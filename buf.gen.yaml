@@ -23,10 +23,11 @@ plugins:
     # gateway manifest 是单文件聚合产物，必须让 Buf 一次性把所有待生成 proto 传给插件。
     strategy: all
     opt:
-      - descriptor_ref=https://minio.lhdht.cn/lhdht/descriptor/go-layout/v0.0.1.pb
+      - descriptor_ref=https://minio.local.com/default/descriptor/go-layout/v0.0.1.pb
       - include_package_prefix=acme.demo.
 inputs:
   - module: buf.build/firefly/demo:main
     types:
+      - acme.auth.token.v1
       - acme.config.v1
       - acme.demo.v1
