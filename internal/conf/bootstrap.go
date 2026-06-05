@@ -38,6 +38,9 @@ type BootstrapConfig struct {
 	// 非空表示服务启动时必须能加载 authz Ed25519 公钥。
 	AuthzVerification *authz.VerificationConfig `json:"authz_verification"`
 
+	// ServiceAuthority 保存服务间调用 service token 的主动刷新配置。
+	ServiceAuthority *authz.ServiceAuthorityConfig `json:"service_authority"`
+
 	// SystemHostInfo 保存宿主机信息，启动后由代码注入，不从配置文件反序列化。
 	SystemHostInfo *sys.HostInfo `json:"-"`
 }
