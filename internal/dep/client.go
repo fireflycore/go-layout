@@ -46,7 +46,7 @@ func NewInvocationConnectionManager(bootstrapConfig *conf.BootstrapConfig) (*inv
 // NewRemoteServiceManaged 在启动期集中登记本服务依赖的远程业务服务。
 //
 // 默认 demo 不登记任何远程业务服务；后续业务服务新增 rs_*.go 时，
-// 再按真实下游服务补充 DNS，避免模板默认制造 auth 依赖。
+// 再按真实下游服务补充 DNS。service token 获取由 authority.go 直连 auth，不放入远程业务注册表。
 func NewRemoteServiceManaged(invoker *invocation.UnaryInvoker, bootstrapConfig *conf.BootstrapConfig) *invocation.RemoteServiceManaged {
 	// 保留 bootstrapConfig 参数，便于新增下游服务时直接读取 namespace。
 	_ = bootstrapConfig
@@ -58,34 +58,9 @@ func NewRemoteServiceManaged(invoker *invocation.UnaryInvoker, bootstrapConfig *
 // 当前 go-micro/invocation 负责：
 // - 透传用户 authority 和短 TTL authz sign；
 // - 清理上一跳普通身份 metadata；
-// - 在配置 provider 后覆盖当前服务的 service authority。
-func NewUnaryInvoker(manager *invocation.ConnectionManager, provider authz.ServiceAuthorityProvider) *invocation.UnaryInvoker {
-	// ServiceAuthorityProvider 当前默认为 nil，表示模板只清理旧上下文，不伪造服务身份。
-	//
-	// 具体业务服务接入 auth token proto 后，应在 NewServiceAuthorityProvider 中
-	// 调用 auth 服务 GenerateServiceToken，并把 provider 注入到这里。
+// - 在配置 manager 后覆盖当前服务的 service authority。
+func NewUnaryInvoker(manager *invocation.ConnectionManager, provider authz.ServiceAuthorityManager) *invocation.UnaryInvoker {
+	// manager 来自 NewServiceAuthorityProvider，负责读取后台刷新的当前服务 service token。
 	return invocation.NewUnaryInvoker(manager, invocation.DefaultInvokeTimeout).
 		WithServiceAuthorityProvider(provider)
-}
-
-// NewServiceAuthorityProvider 是业务服务接入 service token 的标准装配点。
-//
-// go-layout 模板不生成 auth token proto，因此这里不伪造 token，也不把 app.instance_id
-// 写进任何身份头。实际服务需要生成 acme.auth.token.v1 后，在此处构造：
-//
-//	authz.NewServiceAuthorityProvider(&authz.ServiceAuthorityConfig{...}, fetchFunc)
-//
-// fetchFunc 内部应使用 manager.Dial(...) 创建 auth token client，再调用
-// GenerateServiceToken(app_id, app_secret)，最后返回
-// authz.NewServiceAuthorityToken(resp.Data.Token, resp.Data.Expired)。
-//
-// 注意不要通过 UnaryInvoker 或 RemoteServiceManaged 获取服务 token：
-// 它们会依赖当前 provider 注入 x-firefly-service-authority，容易形成递归依赖。
-func NewServiceAuthorityProvider(bootstrapConfig *conf.BootstrapConfig, manager *invocation.ConnectionManager) authz.ServiceAuthorityProvider {
-	// 保留 bootstrapConfig 参数，便于业务服务在接入时直接读取 app.id/app.secret。
-	_ = bootstrapConfig
-	// 保留 manager 参数，便于业务服务接入时直接拨 auth 服务，避免依赖 UnaryInvoker。
-	_ = manager
-	// nil 表示当前模板不自动注入 x-firefly-service-authority。
-	return nil
 }
