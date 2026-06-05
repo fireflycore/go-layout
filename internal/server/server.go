@@ -6,6 +6,7 @@ import (
 	"go-layout/internal/conf"
 
 	"github.com/fireflycore/go-consul/agent"
+	"github.com/fireflycore/go-micro/authz"
 	"github.com/fireflycore/go-micro/invocation"
 	"github.com/fireflycore/go-micro/logger"
 	"github.com/fireflycore/go-micro/telemetry"
@@ -15,6 +16,7 @@ import (
 // AppServer 汇总服务运行期需要持有的主对象。
 type AppServer struct {
 	ConnectionManager *invocation.ConnectionManager
+	ServiceAuthority  authz.ServiceAuthorityManager
 	ManagedServer     *AppManagedServer
 	SidecarAgent      *agent.Agent
 	GrpcServer        *GrpcServer
@@ -32,6 +34,7 @@ func NewAppServer(
 	managedServer *AppManagedServer,
 
 	connectionManager *invocation.ConnectionManager,
+	serviceAuthority authz.ServiceAuthorityManager,
 ) (*AppServer, error) {
 	if sidecarAgent == nil {
 		return nil, errors.New("sidecar agent is required")
@@ -40,6 +43,10 @@ func NewAppServer(
 	// 统一把 gRPC 与管理端口的启动、关闭动作挂到 sidecar 生命周期上。
 	sidecarAgent.ConfigureRun(agent.SidecarAgentConfig{
 		Serve: func(ctx context.Context) error {
+			// ServiceToken 管理器只启动后台刷新协程，不等待 auth 服务返回 token。
+			if err := serviceAuthority.Start(ctx); err != nil {
+				return err
+			}
 			errCh := make(chan error, 2)
 			// 管理端口与 gRPC 端口并行启动，任何一个异常退出都视为服务异常。
 			go func() {
@@ -71,6 +78,9 @@ func NewAppServer(
 			)
 			managedServer.Stop()
 			grpcServer.Stop()
+			// 服务监听停止后再关闭刷新协程，避免正在收尾的请求失去 provider。
+			serviceAuthority.Stop()
+
 			if connectionManager != nil {
 				if err := connectionManager.Close(); err != nil {
 					log.Warn("failed to close invocation connection manager",
@@ -97,6 +107,7 @@ func NewAppServer(
 
 	return &AppServer{
 		ConnectionManager: connectionManager,
+		ServiceAuthority:  serviceAuthority,
 		ManagedServer:     managedServer,
 		SidecarAgent:      sidecarAgent,
 		GrpcServer:        grpcServer,
