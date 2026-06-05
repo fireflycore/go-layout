@@ -81,14 +81,12 @@ func NewAppServer(
 			// 服务监听停止后再关闭刷新协程，避免正在收尾的请求失去 provider。
 			serviceAuthority.Stop()
 
-			if connectionManager != nil {
-				if err := connectionManager.Close(); err != nil {
-					log.Warn("failed to close invocation connection manager",
-						zap.String("service_name", bootstrapConfig.Service.Name),
-						zap.String("service_instance_id", bootstrapConfig.App.InstanceId),
-						zap.Error(err),
-					)
-				}
+			if err := connectionManager.Close(); err != nil {
+				log.Warn("failed to close invocation connection manager",
+					zap.String("service_name", bootstrapConfig.Service.Name),
+					zap.String("service_instance_id", bootstrapConfig.App.InstanceId),
+					zap.Error(err),
+				)
 			}
 			if err := providers.Shutdown(); err != nil {
 				log.Warn("failed to shutdown telemetry providers",
