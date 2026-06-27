@@ -72,6 +72,7 @@ make run
 本项目不直接包含 `.proto` 文件，而是假设 Proto 定义在独立的仓库中管理（推荐做法）。
 - `buf.gen.yaml`: 定义了如何从 Proto 生成 Go 代码和 `gateway.manifest.json`。
 - **生成代码**：通常通过 CI/CD 管道或脚本执行 `buf generate`，生成的 Go 代码和 `dep/protobuf/gen/gateway.manifest.json` 位于 `dep/protobuf/gen`。
+- 模板不提供业务服务级 api-gateway descriptor 配置；namespace descriptor 的生成与发布由 proto 仓库和 Firefly CLI 负责。
 - **服务 token 客户端**：公开 demo 模板不默认生成 `acme.auth.token.v1`。实际业务服务接入 service authority 时，需要在自身 `buf.gen.yaml` 输入中加入 `acme.auth.token.v1`，但 manifest 的 `include_package_prefix` 仍只覆盖当前业务服务包，避免把 auth 的接口注册成当前服务能力。
 
 ### Authz 与 Service Authority

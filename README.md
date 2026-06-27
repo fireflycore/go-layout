@@ -51,6 +51,8 @@
 - `make run`: 直接执行 `go run ./cmd/server`
 - `make build`: 先执行 `make init`，再注入构建信息并编译服务
 
+模板侧的 `buf generate` 只负责当前服务的 Go 代码和 `gateway.manifest.json`；namespace 级 descriptor 的生成与发布由 proto 仓库和 Firefly CLI 单独负责。
+
 ## 当前框架主线
 
 - 启动托管：`App.Run(ctx)` 进入 `agent.Agent.Run(ctx)`，由 Agent 统一驱动 `gRPC + management + sidecar watch/replay`。
