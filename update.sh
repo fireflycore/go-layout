@@ -1,7 +1,7 @@
 #!/bin/bash
 
-go get github.com/fireflycore/go-consul@v0.3.3
-go get github.com/fireflycore/go-micro@v1.6.3
+go get github.com/fireflycore/go-consul@v0.3.6
+go get github.com/fireflycore/go-micro@v1.6.4
 go get github.com/fireflycore/go-redis@v0.1.3
 go get github.com/fireflycore/go-utils@v0.3.7
 go get github.com/fireflycore/gormx@v1.0.0
