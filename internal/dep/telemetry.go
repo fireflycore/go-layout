@@ -10,6 +10,8 @@ import (
 func NewTelemetryProviders(bootstrapConfig *conf.BootstrapConfig) (*telemetry.Providers, error) {
 	return telemetry.NewProviders(&bootstrapConfig.Telemetry, &telemetry.Resource{
 		ServiceId: bootstrapConfig.App.Id,
+		// Environment 服务运行环境
+		Environment: bootstrapConfig.App.Env,
 		// ServiceName 服务名称
 		ServiceName: bootstrapConfig.Service.Name,
 		// ServiceVersion 服务版本
