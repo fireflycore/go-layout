@@ -4,8 +4,8 @@ go 1.25.3
 
 require (
 	buf.build/go/protovalidate v1.1.3
-	github.com/fireflycore/go-consul v0.3.6
-	github.com/fireflycore/go-micro v1.6.4
+	github.com/fireflycore/go-consul v0.3.9
+	github.com/fireflycore/go-micro v1.6.7
 	github.com/fireflycore/go-redis v0.1.3
 	github.com/fireflycore/go-utils v0.3.7
 	github.com/fireflycore/gormx v1.0.0
