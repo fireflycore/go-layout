@@ -150,7 +150,7 @@ gRPC 服务端入口通过 `gm.NewServiceContextUnaryInterceptor(...)` 注入 `g
 
 - 透传 `x-firefly-user-authority`，保证用户身份可以贯穿整条链路。
 - 透传短 TTL `x-firefly-authz-sign`，供下一跳 authz 复用身份解析结果，但下一跳仍必须按当前 route 重新做权限判定。
-- 清理上一跳 authz 注入的普通身份 metadata，避免服务间调用复用上一跳的 `invoke_app_id/target_app_id/api_path`。
+- 清理上一跳 authz 注入的普通身份和 route/target metadata，避免服务间调用复用上一跳的 `invoke_app_id/target_app_id/route_path/target_path`。
 - `NewServiceAuthorityProvider` 是模板预留的 service token 获取点；实际业务服务生成 `acme.auth.token.v1` client 后，应使用 `ConnectionManager.Dial(...)` 直连 auth 服务调用 `GenerateServiceToken`，再由 `UnaryInvoker` 每跳覆盖 `x-firefly-service-authority`。
 - 获取 service token 时不要使用 `UnaryInvoker` 或 `RemoteServiceManaged`，避免“provider 依赖 invoker，invoker 又依赖 provider”的递归链路。
 - `Authorization` 不属于 Firefly current 身份入口，模板不再注入或读取它。
