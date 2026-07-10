@@ -63,8 +63,8 @@ func NewGrpcServer(
 				AuthzSkipMethods:  authzVerification.AuthzSkipMethods,
 			}),
 
-			gm.ValidationErrorToInvalidArgument(),
 			gm.NewAccessLogger(log),
+			gm.ErrorToStatus(),
 		)),
 	)
 
