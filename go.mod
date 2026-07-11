@@ -4,11 +4,11 @@ go 1.25.12
 
 require (
 	buf.build/go/protovalidate v1.1.3
-	github.com/fireflycore/go-consul v0.4.0
-	github.com/fireflycore/go-micro v1.6.8
+	github.com/fireflycore/go-consul v0.4.1
+	github.com/fireflycore/go-micro v1.6.9
 	github.com/fireflycore/go-redis v0.1.3
 	github.com/fireflycore/go-utils v0.3.7
-	github.com/fireflycore/gormx v1.0.0
+	github.com/fireflycore/gormx v1.0.1
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
@@ -27,7 +27,7 @@ require (
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260209202127-80ab13bee0bf.1 // indirect
 	cel.dev/expr v0.25.1 // indirect
-	filippo.io/edwards25519 v1.1.0 // indirect
+	filippo.io/edwards25519 v1.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -91,10 +91,10 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
-	golang.org/x/net v0.52.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/text v0.35.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260311181403-84a4fc48630c // indirect
 	gorm.io/driver/mysql v1.6.0 // indirect
 	gorm.io/driver/postgres v1.6.0 // indirect
