@@ -46,7 +46,7 @@ func NewInvocationConnectionManager(bootstrapConfig *conf.BootstrapConfig) (*inv
 // NewRemoteServiceManaged 在启动期集中登记本服务依赖的远程业务服务。
 //
 // 默认 demo 不登记任何远程业务服务；后续业务服务新增 rs_*.go 时，
-// 再按真实下游服务补充 DNS。service token 获取由 authority.go 直连 auth，不放入远程业务注册表。
+// 再按真实下游服务补充 DNS。service token 由独立 bootstrap 入口获取，不放入业务注册表。
 func NewRemoteServiceManaged(invoker *invocation.UnaryInvoker, bootstrapConfig *conf.BootstrapConfig) *invocation.RemoteServiceManaged {
 	// 保留 bootstrapConfig 参数，便于新增下游服务时直接读取 namespace。
 	_ = bootstrapConfig
@@ -56,11 +56,11 @@ func NewRemoteServiceManaged(invoker *invocation.UnaryInvoker, bootstrapConfig *
 // NewUnaryInvoker 把连接管理器封装成统一的 unary 调用入口。
 //
 // 当前 go-micro/invocation 负责：
-// - 透传用户 authority 和短 TTL authz sign；
-// - 清理上一跳普通身份 metadata；
-// - 在配置 manager 后覆盖当前服务的 service authority。
+// - 私有继承用户 authority，不发送上一跳 AuthzSign；
+// - 每次调用独立构建允许列表，保留取消、期限和活动 span；
+// - 必须取得当前服务的 authority，缺失或失败不能降级为用户直调。
 func NewUnaryInvoker(manager *invocation.ConnectionManager, provider authz.ServiceAuthorityManager) *invocation.UnaryInvoker {
-	// manager 来自 NewServiceAuthorityProvider，负责读取后台刷新的当前服务 service token。
+	// provider 来自 NewServiceAuthorityProvider，负责读取后台刷新的当前服务 service token。
 	return invocation.NewUnaryInvoker(manager, invocation.DefaultInvokeTimeout).
 		WithServiceAuthorityProvider(provider)
 }

@@ -9,33 +9,34 @@ import (
 	"github.com/fireflycore/go-micro/invocation"
 )
 
-// NewServiceAuthorityFetchFunc 创建当前服务获取 service token 的签发函数。
+// NewServiceAuthorityFetchFunc 创建当前服务凭证的获取函数，签发仍由 auth 服务负责。
 //
-// fetch 只负责向 auth 服务换取 token，不负责缓存、刷新和出站注入；
+// 获取函数只负责向 auth 服务换取凭证，不负责缓存、刷新和出站注入；
 // 模板默认提供该装配点，确保新业务服务一开始就具备统一服务身份链路。
 func NewServiceAuthorityFetchFunc(bootstrapConfig *conf.BootstrapConfig, manager *invocation.ConnectionManager) authz.ServiceAuthorityFetchFunc {
+	// 直接复用普通调用的连接管理器，但获取凭证不经过依赖凭证的业务调用器。
+	// 凭证申请只允许该精确方法，并清空业务身份和入站/出站元数据，防止递归与串号。
+	bootstrap := invocation.NewBootstrapUnaryInvoker(manager, invocation.DefaultInvokeTimeout, authToken.AuthTokenService_GenerateServiceToken_FullMethodName)
+
 	return func(ctx context.Context) (*authz.ServiceAuthorityToken, error) {
-		// 获取 service token 不能走 UnaryInvoker，否则 provider 会递归依赖自身。
-		conn, err := manager.Dial(ctx, &invocation.DNS{
+		var resp authToken.GenerateServiceTokenResponse
+
+		dns := &invocation.DNS{
 			// auth 是统一的 service token 签发服务。
 			Service: "auth",
 			// 默认与当前服务处于同一 namespace。
 			Namespace: bootstrapConfig.Service.Namespace,
-		})
-		if err != nil {
-			return nil, err
 		}
 
-		// app_id/app_secret 来自当前服务启动配置，由 auth 校验后签发 service token。
-		client := authToken.NewAuthTokenServiceClient(conn)
-		resp, err := client.GenerateServiceToken(ctx, &authToken.GenerateServiceTokenRequest{
+		err := bootstrap.Invoke(ctx, dns, authToken.AuthTokenService_GenerateServiceToken_FullMethodName, &authToken.GenerateServiceTokenRequest{
+			// 仅使用当前服务本地配置，不能采用请求中的用户或上一跳应用。
 			AppId:     bootstrapConfig.App.Id,
 			AppSecret: bootstrapConfig.App.Secret,
-		})
+		}, &resp)
 		if err != nil {
 			return nil, err
 		}
-		if resp == nil || resp.GetData() == nil {
+		if resp.GetData() == nil {
 			return nil, authz.ErrServiceAuthorityTokenMissing
 		}
 
