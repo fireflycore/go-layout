@@ -25,6 +25,12 @@
     "metrics": true,
     "logs": false
   },
+  "authz_verification": {
+    "public_key_path": "conf/certs/authz/public_key.pem",
+    "kid": "default",
+    "issuer": "firefly-authz",
+    "clock_skew": "5s"
+  },
   "server_port": 10500,
   "managed_port": 10501,
   "sidecar_agent": {

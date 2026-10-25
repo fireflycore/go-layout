@@ -2,6 +2,7 @@ package server
 
 import (
 	"errors"
+	"fmt"
 	demo "go-layout/dep/protobuf/gen/acme/demo/v1"
 	"go-layout/internal/conf"
 	"go-layout/internal/service"
@@ -32,18 +33,15 @@ func NewGrpcServer(
 
 	demoService *service.DemoService,
 ) *GrpcServer {
-	// gRPC 监听地址固定绑定所有网卡，具体暴露端口由 bootstrap 控制。
-	listen, err := net.Listen("tcp", net.JoinHostPort("0.0.0.0", strconv.FormatUint(uint64(bootstrapConfig.ServerPort), 10)))
-
+	// 启动先验证配置；漏配或公钥加载失败时不打开监听端口。
+	contextOptions, err := serviceContextOptions(bootstrapConfig)
 	if err != nil {
 		panic(err)
 	}
 
-	// 根据 bootstrap 中的 authz_verification 构造服务侧验签选项。
-	//
-	// authz_verification 为空时只建立 service.Context，不做本地验签；
-	// 一旦配置对象存在，就必须能加载 authz 公钥并校验 x-firefly-authz-sign。
-	authzVerification, err := authz.NewVerificationOptions(bootstrapConfig.AuthzVerification)
+	// gRPC 监听地址固定绑定所有网卡，具体暴露端口由 bootstrap 控制。
+	listen, err := net.Listen("tcp", net.JoinHostPort("0.0.0.0", strconv.FormatUint(uint64(bootstrapConfig.ServerPort), 10)))
+
 	if err != nil {
 		panic(err)
 	}
@@ -54,18 +52,15 @@ func NewGrpcServer(
 		grpc.UnaryInterceptor(ggm.ChainUnaryServer(
 			recovery.UnaryServerInterceptor(),
 			// 在服务入口先建立统一的 ServiceContext，供日志与后续业务链路复用。
-			gm.NewServiceContextUnaryInterceptor(gm.ServiceContextInterceptorOptions{
-				// ServiceAppId 是当前服务自身 app_id，go-micro 会用它校验 authz sign 的 target_app_id。
-				ServiceAppId: bootstrapConfig.App.Id,
-				// ServiceInstanceId 只进入本地上下文和 metadata，供日志、OTel、gormx 等组件读取。
-				ServiceInstanceId: bootstrapConfig.App.InstanceId,
-				AuthzVerification: authzVerification.AuthzVerification,
-				AuthzSkipMethods:  authzVerification.AuthzSkipMethods,
-			}),
+			gm.NewServiceContextUnaryInterceptor(contextOptions),
 
 			gm.NewAccessLogger(log),
 			gm.ErrorToStatus(),
 		)),
+		grpc.ChainStreamInterceptor(
+			recovery.StreamServerInterceptor(),
+			gm.NewServiceContextStreamInterceptor(contextOptions),
+		),
 	)
 
 	// 注册服务级 health check，供 sidecar 与管理链路探活。
@@ -80,6 +75,32 @@ func NewGrpcServer(
 		lister: listen,
 		srv:    srv,
 	}
+}
+
+// serviceContextOptions 绑定本地服务身份，实际 GRPC/FullMethod 始终由框架捕获。
+// 管理 HTTP 端口独立装配；健康 Check/List/Watch 仅精确跳过，不建立可信用户身份。
+func serviceContextOptions(cfg *conf.BootstrapConfig) (gm.ServiceContextInterceptorOptions, error) {
+	if cfg.AuthzVerification == nil {
+		return gm.ServiceContextInterceptorOptions{}, fmt.Errorf("authz_verification is required for business entries")
+	}
+
+	verification, err := authz.NewVerificationOptions(cfg.AuthzVerification)
+	if err != nil {
+		return gm.ServiceContextInterceptorOptions{}, err
+	}
+
+	skip := append(verification.AuthzSkipMethods,
+		grpc_health_v1.Health_Check_FullMethodName,
+		grpc_health_v1.Health_List_FullMethodName,
+		grpc_health_v1.Health_Watch_FullMethodName,
+	)
+
+	return gm.ServiceContextInterceptorOptions{
+		ServiceAppId:      cfg.App.Id,
+		ServiceInstanceId: cfg.App.InstanceId,
+		AuthzVerification: verification.AuthzVerification,
+		AuthzSkipMethods:  skip,
+	}, nil
 }
 
 // Serve 启动 gRPC 服务。

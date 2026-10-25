@@ -12,8 +12,8 @@ import (
 type DemoRepo interface {
 	// CreateDemo 创建 Demo 记录。
 	CreateDemo(ctx context.Context, row *entity.Demo) error
-	// GetDemoList 按服务上下文边界分页查询 Demo 列表。
-	GetDemoList(ctx context.Context, um *service.Context, request *pb.GetDemoListRequest) *pb.GetDemoListResponse
+	// GetDemoList 按已验证用户的用户和应用边界分页查询 Demo 列表。
+	GetDemoList(ctx context.Context, um *service.UserContext, request *pb.GetDemoListRequest) *pb.GetDemoListResponse
 	// GetDemoInfo 按主键查询单个 Demo。
 	GetDemoInfo(ctx context.Context, id string) (*pb.Demo, error)
 	// UpdateDemo 按主键更新 Demo 的指定字段。

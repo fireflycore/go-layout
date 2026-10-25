@@ -25,22 +25,29 @@ func NewDemoUseCase(dto convert.DemoConvert, repo repo.DemoRepo) *DemoUseCase {
 
 // CreateDemo 创建 Demo 数据。
 func (uc *DemoUseCase) CreateDemo(ctx context.Context, request *pb.CreateDemoRequest) error {
-	um := service.MustFromContext(ctx)
+	// 此用例必须有用户；双身份正常读取用户，纯服务或匿名请求由框架统一拒绝。
+	user, err := service.RequireUserFromContext(ctx)
+	if err != nil {
+		return err
+	}
 
 	// 先把请求转换成实体，再由上下文补齐租户、应用和用户边界。
 	row := uc.dto.ToCreate(request)
-	row.AppId = um.AppId
-	row.UserId = um.UserId
-	row.TenantId = um.TenantId
+	row.AppId = user.AppId
+	row.UserId = user.UserId
+	row.TenantId = user.TenantId
 
 	return uc.repo.CreateDemo(ctx, row)
 }
 
 // GetDemoList 查询 Demo 列表。
 func (uc *DemoUseCase) GetDemoList(ctx context.Context, request *pb.GetDemoListRequest) *pb.GetDemoListResponse {
-	um := service.MustFromContext(ctx)
+	user, err := service.RequireUserFromContext(ctx)
+	if err != nil {
+		return &pb.GetDemoListResponse{}
+	}
 
-	return uc.repo.GetDemoList(ctx, um, request)
+	return uc.repo.GetDemoList(ctx, user, request)
 }
 
 // GetDemoInfo 查询单个 Demo 详情。

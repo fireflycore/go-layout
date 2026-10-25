@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"fmt"
 	"go-layout/internal/conf"
 	"go-layout/internal/data/entity"
@@ -8,7 +9,7 @@ import (
 	"github.com/fireflycore/go-consul"
 	consulConfig "github.com/fireflycore/go-consul/config"
 	"github.com/fireflycore/go-micro/config"
-	"github.com/fireflycore/go-micro/constant"
+	"github.com/fireflycore/go-micro/service"
 	redisx "github.com/fireflycore/go-redis"
 	"github.com/fireflycore/gormx"
 	"github.com/fireflycore/gormx/logger"
@@ -43,19 +44,7 @@ func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlCon
 	})
 	mysqlConfig.WithAutoMigrate(false)
 	mysqlConfig.WithLoggerConsole(bootstrapConfig.Logger.Console)
-	mysqlConfig.WithUserContextFields(&logger.UserContextFields{
-		UserId:  constant.UserId,
-		OrgIds:  constant.OrgIds,
-		RoleIds: constant.RoleIds,
-
-		AppId:    constant.AppId,
-		TenantId: constant.TenantId,
-
-		// gormx 当前字段名仍叫 ServiceAppId/ServiceInstanceId；
-		// 模板绑定当前服务自身入口本地 metadata，仅用于日志、OTel 和数据库链路排障。
-		ServiceAppId:      constant.ServiceAppId,
-		ServiceInstanceId: constant.ServiceInstanceId,
-	})
+	mysqlConfig.WithLogIdentityReader(readLogIdentity)
 
 	db, err := gormx.NewMysql(mysqlConfig)
 
@@ -64,6 +53,18 @@ func NewMysql(bootstrapConfig *conf.BootstrapConfig, mysqlConfig *gormx.MysqlCon
 	}
 
 	return db.DB, nil
+}
+
+// readLogIdentity 仅把框架可信投影适配为 ORM 原有五项身份，不读取 token/metadata。
+func readLogIdentity(ctx context.Context) logger.LogIdentity {
+	i := service.TrustedLogIdentity(ctx)
+	return logger.LogIdentity{
+		UserId:            i.UserId,
+		AppId:             i.AppId,
+		TenantId:          i.TenantId,
+		ServiceAppId:      i.ServiceAppId,
+		ServiceInstanceId: i.ServiceInstanceId,
+	}
 }
 
 // NewRedis 创建当前服务使用的 Redis 客户端。

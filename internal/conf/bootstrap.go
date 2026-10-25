@@ -34,8 +34,8 @@ type BootstrapConfig struct {
 
 	// AuthzVerification 保存服务侧本地验签 x-firefly-authz-sign 所需配置。
 	//
-	// 为空表示当前模板只解析普通 metadata，不启用本地验签；
-	// 非空表示服务启动时必须能加载 authz Ed25519 公钥。
+	// 业务入口必须配置并成功加载 authz Ed25519 公钥；缺失时启动失败。
+	// 公共业务接口同样需要匿名或已认证的本跳证明，只有精确独立入口跳过验签。
 	AuthzVerification *authz.VerificationConfig `json:"authz_verification"`
 
 	// ServiceAuthority 保存服务间调用 service token 的主动刷新配置。

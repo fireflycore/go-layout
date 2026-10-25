@@ -26,14 +26,14 @@ func (uc *demoRepo) CreateDemo(ctx context.Context, row *entity.Demo) error {
 	return uc.data.db.WithContext(ctx).Create(row).Error
 }
 
-// GetDemoList 按服务上下文边界分页查询 Demo 列表。
-func (uc *demoRepo) GetDemoList(ctx context.Context, sc *service.Context, request *pb.GetDemoListRequest) *pb.GetDemoListResponse {
+// GetDemoList 按已验证用户的用户和应用边界分页查询 Demo 列表。
+func (uc *demoRepo) GetDemoList(ctx context.Context, um *service.UserContext, request *pb.GetDemoListRequest) *pb.GetDemoListResponse {
 	var raw pb.GetDemoListResponse
 
 	sql := uc.data.db.WithContext(ctx).Model(&entity.Demo{})
 	// Demo 列表按当前用户和应用过滤，避免跨应用或跨用户读取示例数据。
-	sql.Where("user_id = ?", sc.UserId)
-	sql.Where("app_id = ?", sc.AppId)
+	sql.Where("user_id = ?", um.UserId)
+	sql.Where("app_id = ?", um.AppId)
 	// SearchKey 只做标题模糊检索，不参与身份判定。
 	if len(request.SearchKey) != 0 {
 		sk := "%" + request.SearchKey + "%"
