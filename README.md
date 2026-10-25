@@ -42,6 +42,7 @@
 4.  **准备配置**
 
     - 修改 `conf/bootstrap.json`，填写 `app`、`service`、端口、sidecar-agent、logger 与 telemetry 基础信息。
+    - 准备独立 AuthzSign Ed25519 公钥并配置 `authz_verification.public_key_path/kid/issuer`；示例只提供路径，不包含密钥。缺失配置或公钥加载失败时，业务 gRPC 在监听前启动失败。
     - 修改 `conf/consul.json`，填写 Consul 地址、协议、数据中心与令牌。
 
 ### 常用命令
@@ -58,7 +59,17 @@
 - 启动托管：`App.Run(ctx)` 进入 `agent.Agent.Run(ctx)`，由 Agent 统一驱动 `gRPC + management + sidecar watch/replay`。
 - 服务注册：`internal/server/register.go` 基于 `agent.ServiceOptions + gateway.manifest.json` 组装 `agent.Agent`，服务能力统一由 manifest-first 注册链路提供。
 - 管理端口：`internal/server/managed.go` 暴露 `/health`、`/ready`、`/info`、`/metrics`，并在 `/ready`、`/info` 输出 sidecar 状态摘要。
-- 服务上下文：gRPC 入口通过 `gm.NewServiceContextUnaryInterceptor` 注入 `go-micro/service.Context`，业务代码不再解析旧 `invocation.UserContextMeta`。
-- 本地验签：`authz_verification` 不再默认写入 `bootstrap.json`；配置对象为空时只解析普通 metadata，显式配置后才加载 authz 公钥并校验 `x-firefly-authz-sign`。
+- 服务上下文：gRPC unary/stream 入口注入 `go-micro/service.Context`；本地 AppId/InstanceId 来自配置，实际方法来自适配器。必须有用户的用例通过 `service.RequireUserFromContext` 读取用户；允许无用户的用例继续处理可选 `UserContext`。
+- 本地验签：业务入口必须配置 `authz_verification` 并核对签名 `service_app_id/service_method/service_path`，不能用签名反填本地事实。公共业务接口同样需要本跳证明；健康 Check/List/Watch 精确跳过，management HTTP 端口保持独立。
 - 远程调用：`internal/dep/client.go` 保留 `ConnectionManager / UnaryInvoker / RemoteServiceManaged` 模板，新增下游服务时集中登记 `invocation.DNS`。
-- 服务身份：出站调用只使用 `x-firefly-user-authority`、`x-firefly-service-authority` 和 `x-firefly-authz-sign` 主线；模板提供 `NewServiceAuthorityProvider` 装配点，实际业务服务生成 `acme.auth.token.v1` client 后在此接入 `GenerateServiceToken`。
+- 服务身份：`NewServiceAuthorityProvider` 通过精确方法的 `BootstrapUnaryInvoker` 调用 `GenerateServiceToken`，仅使用本地 AppId/app_secret，清空业务 metadata，保留取消和期限，不递归依赖自身 provider。
+- 出站传播：每次独立构造允许列表，私有继承用户凭证，服务凭证来自当前 provider，不传播上一跳 AuthzSign；缺失或获取失败直接拒绝，不降级为用户直调。Invoke 方法来自当前实际入口，OTel 使用当前活动 span。
+- ORM 日志：通过 `WithLogIdentityReader` 注入框架五项可信身份，不解析原始 metadata 或增加身份集合。
+
+## Context 迁移边界
+
+当前依赖为 `go-micro v1.7.4`、`gormx v1.0.3`。签名协议沿用 `v1.7.3`，与更早的旧协议不兼容，须协调签发端及全部在线验签端一起切换或回退，不支持双读和缺字段回退。
+
+Demo 创建需要用户上下文；无用户列表返回空结果，不能用服务身份替代用户或删除原有用户过滤。模板不检查用户与服务租户相等，也不代替业务所有权与数据范围规则。
+
+当前保留的本地测试覆盖签名绑定、伪造输入、访问日志脱敏，以及真实 TCP 健康 Check/List/Watch。未完成完整模板生成、Consul、数据库、外部授权提供方或 Envoy 环境联调，也未在本模板复验 bootstrap、取消/超时及并发出站，不代表模板生成后的业务链已经端到端验收。
