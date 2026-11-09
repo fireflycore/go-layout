@@ -8,6 +8,7 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/fireflycore/go-consul/agent"
 	"github.com/fireflycore/go-micro/logger"
 	"go.uber.org/zap"
 )
@@ -57,6 +58,15 @@ func (ist *App) Run(ctx context.Context) error {
 
 	// 把主运行控制权交给 SidecarAgent，统一托管 gRPC、管理端口和 sidecar 生命周期。
 	err := ist.Server.SidecarAgent.Run(ctx)
+	// 主动停机时，sidecar 不可达不影响本地资源完成关闭；其他阶段或混合错误仍向上返回。
+	if ctx.Err() == context.Canceled && agent.IsShutdownConnectionError(err) {
+		ist.Logger.Warn("failed to notify sidecar during service shutdown",
+			zap.String("service_name", ist.BootstrapConfig.Service.Name),
+			zap.String("service_instance_id", ist.BootstrapConfig.App.InstanceId),
+			zap.Error(err),
+		)
+		err = nil
+	}
 
 	// 托管运行结束后输出最终停止日志。
 	ist.Logger.Info("service stopped",
