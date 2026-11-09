@@ -1,14 +1,14 @@
 module go-layout
 
-go 1.26.10
+go 1.27.3
 
 require (
 	buf.build/go/protovalidate v1.1.3
-	github.com/fireflycore/go-consul v0.4.6
-	github.com/fireflycore/go-micro v1.7.5
-	github.com/fireflycore/go-redis v0.1.4
-	github.com/fireflycore/go-utils v0.3.8
-	github.com/fireflycore/gormx v1.0.4
+	github.com/fireflycore/go-consul v0.4.7
+	github.com/fireflycore/go-micro v1.7.6
+	github.com/fireflycore/go-redis v0.1.5
+	github.com/fireflycore/go-utils v0.3.9
+	github.com/fireflycore/gormx v1.0.5
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
@@ -91,10 +91,10 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
-	golang.org/x/net v0.60.0 // indirect
-	golang.org/x/sync v0.23.0 // indirect
-	golang.org/x/sys v0.48.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/net v0.61.0 // indirect
+	golang.org/x/sync v0.24.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260803160001-6ac0973c030d // indirect
 	gorm.io/driver/mysql v1.6.0 // indirect
 	gorm.io/driver/postgres v1.6.0 // indirect
